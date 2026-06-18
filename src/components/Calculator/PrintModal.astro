@@ -1,0 +1,604 @@
+---
+---
+<div id="print-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden transition-all duration-300">
+  <div class="bg-bg-card border border-border-subtle rounded-xl p-6 shadow-xl max-w-md w-full space-y-5 transform scale-95 opacity-0 transition-all duration-300" id="print-modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    
+    <!-- Modal Header -->
+    <div class="flex justify-between items-start">
+      <div>
+        <h3 class="font-display font-bold text-text-main text-base" id="modal-title">Export Advisory Report</h3>
+        <p class="text-3xs text-text-muted mt-0.5">Generate a premium financial plan based on your results.</p>
+      </div>
+      <button id="close-print-modal" class="text-text-muted hover:text-text-main cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded p-0.5" aria-label="Close modal">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+
+    <!-- Export Action Tabs -->
+    <div class="grid grid-cols-2 gap-2 bg-bg-main p-1 rounded-lg border border-border-subtle text-xs">
+      <button 
+        type="button" 
+        id="tab-btn-download" 
+        class="py-1.5 rounded-md font-semibold text-center cursor-pointer transition-all focus:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent bg-bg-card border border-border-subtle/40 text-text-main"
+      >
+        Download PDF
+      </button>
+      <button 
+        type="button" 
+        id="tab-btn-email" 
+        class="py-1.5 rounded-md font-semibold text-center cursor-pointer transition-all focus:outline-none focus-visible:ring-1 focus-visible:ring-brand-accent text-text-muted hover:text-text-main"
+      >
+        Send to Email
+      </button>
+    </div>
+
+    <!-- Main Form -->
+    <form id="print-modal-form" class="space-y-4">
+      <div class="space-y-3">
+        <!-- Client Name -->
+        <div class="space-y-1">
+          <label for="print-name" class="block text-3xs font-bold uppercase tracking-wider text-text-muted">Client Name</label>
+          <input 
+            type="text" 
+            id="print-name" 
+            placeholder="Valued Client" 
+            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-xs text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          />
+        </div>
+
+        <!-- Email Address -->
+        <div id="email-field-container" class="space-y-1 hidden">
+          <label for="print-email" class="block text-3xs font-bold uppercase tracking-wider text-text-muted">Email Address</label>
+          <input 
+            type="email" 
+            id="print-email" 
+            placeholder="you@example.com" 
+            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-xs text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          />
+        </div>
+      </div>
+
+      <!-- Submit Action Button -->
+      <button 
+        type="submit" 
+        id="submit-action-btn"
+        class="h-9 w-full rounded-md bg-brand-primary text-xs font-semibold text-bg-card hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer border border-border-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+      >
+        Generate & Download PDF
+      </button>
+    </form>
+
+    <!-- Progress / Loading States -->
+    <div id="modal-loading-state" class="hidden flex flex-col items-center justify-center py-4 space-y-3">
+      <svg class="animate-spin h-6 w-6 text-brand-accent" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p id="modal-loading-text" class="text-2xs text-text-muted font-medium font-tabular">Preparing your report...</p>
+    </div>
+
+    <!-- Success Feedback Overlay -->
+    <div id="modal-success-state" class="hidden flex flex-col items-center text-center py-4 space-y-3">
+      <div class="h-10 w-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <div class="space-y-1">
+        <h4 class="font-bold text-xs text-text-main">Export Completed Successfully</h4>
+        <p id="success-state-text" class="text-3xs text-text-muted px-4 leading-normal">Your document is ready.</p>
+      </div>
+    </div>
+
+    <!-- Alternative print link -->
+    <div class="text-center pt-2 border-t border-border-subtle/50">
+      <button id="skip-print-modal" class="text-3xs text-text-muted hover:text-text-main font-semibold underline cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded px-1">
+        Skip & Print via Browser System
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let activeMode: 'download' | 'email' = 'download';
+  
+  const modal = document.getElementById('print-modal');
+  const modalBox = document.getElementById('print-modal-box');
+  const closeBtn = document.getElementById('close-print-modal');
+  const skipBtn = document.getElementById('skip-print-modal');
+  const form = document.getElementById('print-modal-form');
+  const submitBtn = document.getElementById('submit-action-btn') as HTMLButtonElement;
+  const nameInput = document.getElementById('print-name') as HTMLInputElement;
+  const emailInput = document.getElementById('print-email') as HTMLInputElement;
+  const emailContainer = document.getElementById('email-field-container');
+  
+  const tabBtnDownload = document.getElementById('tab-btn-download');
+  const tabBtnEmail = document.getElementById('tab-btn-email');
+  
+  const loadingState = document.getElementById('modal-loading-state');
+  const loadingText = document.getElementById('modal-loading-text');
+  const successState = document.getElementById('modal-success-state');
+  const successText = document.getElementById('success-state-text');
+
+  // Mode switching functionality
+  function setMode(mode: 'download' | 'email') {
+    activeMode = mode;
+    
+    // Reset states
+    form?.classList.remove('hidden');
+    loadingState?.classList.add('hidden');
+    successState?.classList.add('hidden');
+    
+    if (mode === 'download') {
+      tabBtnDownload?.classList.add('bg-bg-card', 'border', 'border-border-subtle/40', 'text-text-main');
+      tabBtnDownload?.classList.remove('text-text-muted', 'hover:text-text-main');
+      
+      tabBtnEmail?.classList.remove('bg-bg-card', 'border', 'border-border-subtle/40', 'text-text-main');
+      tabBtnEmail?.classList.add('text-text-muted', 'hover:text-text-main');
+      
+      emailContainer?.classList.add('hidden');
+      emailInput.removeAttribute('required');
+      if (submitBtn) submitBtn.textContent = "Generate & Download PDF";
+    } else {
+      tabBtnEmail?.classList.add('bg-bg-card', 'border', 'border-border-subtle/40', 'text-text-main');
+      tabBtnEmail?.classList.remove('text-text-muted', 'hover:text-text-main');
+      
+      tabBtnDownload?.classList.remove('bg-bg-card', 'border', 'border-border-subtle/40', 'text-text-main');
+      tabBtnDownload?.classList.add('text-text-muted', 'hover:text-text-main');
+      
+      emailContainer?.classList.remove('hidden');
+      emailInput.setAttribute('required', 'true');
+      if (submitBtn) submitBtn.textContent = "Send Report to Email";
+    }
+  }
+
+  tabBtnDownload?.addEventListener('click', () => setMode('download'));
+  tabBtnEmail?.addEventListener('click', () => setMode('email'));
+
+  if (modal && modalBox) {
+    (window as any).openPrintModal = function() {
+      // Load stored email if exists
+      const storedEmail = localStorage.getItem('mi_lead_email');
+      if (storedEmail && emailInput) emailInput.value = storedEmail;
+      
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modalBox.classList.remove('scale-95', 'opacity-0');
+        modalBox.classList.add('scale-100', 'opacity-100');
+        nameInput?.focus();
+      }, 10);
+    };
+
+    const closeModal = () => {
+      modalBox.classList.remove('scale-100', 'opacity-100');
+      modalBox.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        setMode('download'); // reset
+      }, 300);
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    
+    if (skipBtn) {
+      skipBtn.addEventListener('click', () => {
+        closeModal();
+        setTimeout(() => {
+          window.print();
+        }, 350);
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const clientName = nameInput?.value.trim() || "Valued Client";
+        const email = emailInput?.value.trim();
+        
+        // Hide form and show loading
+        form.classList.add('hidden');
+        loadingState?.classList.remove('hidden');
+
+        if (activeMode === 'download') {
+          // Dynamic load of html2pdf library from CDN if not already loaded
+          if (!(window as any).html2pdf) {
+            updateLoadingStatus("Connecting to document services...");
+            await loadScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
+          }
+          
+          updateLoadingStatus("Generating premium layout pages...");
+          const pdfElement = buildPremiumPDFLayout(clientName);
+          resolveCssVariables(pdfElement);
+          
+          updateLoadingStatus("Compiling data vectors & charts...");
+          // Wait briefly for layout render
+          await sleep(500);
+
+          updateLoadingStatus("Transcribing advisor assessments...");
+          const opt = {
+            margin:       0.4,
+            filename:     `Mortgage_Advisory_Report_${clientName.replace(/\s+/g, '_')}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+            pagebreak:    { mode: ['avoid-all', 'css'] }
+          };
+
+          try {
+            await (window as any).html2pdf().from(pdfElement).set(opt).save();
+            
+            // Clean up temp element
+            document.body.removeChild(pdfElement);
+            
+            // Show success
+            loadingState?.classList.add('hidden');
+            successState?.classList.remove('hidden');
+            if (successText) {
+              successText.textContent = `A professional PDF copy has been downloaded for ${clientName}.`;
+            }
+            
+            await sleep(2000);
+            closeModal();
+          } catch (err) {
+            console.error(err);
+            updateLoadingStatus("Error compiling PDF. Reverting to system print...");
+            await sleep(1000);
+            closeModal();
+            window.print();
+          }
+          
+        } else {
+          // Email Delivery simulation flow
+          if (email) {
+            localStorage.setItem('mi_lead_email', email);
+          }
+
+          updateLoadingStatus("Preparing document package...");
+          await sleep(800);
+          
+          updateLoadingStatus("Connecting to secure mail server...");
+          await sleep(1000);
+
+          updateLoadingStatus(`Transmitting PDF report to ${email}...`);
+          await sleep(1200);
+
+          // Success notification popup simulation
+          loadingState?.classList.add('hidden');
+          successState?.classList.remove('hidden');
+          if (successText) {
+            successText.innerHTML = `Success! The PDF Report has been dispatched to <strong>${email}</strong>.<br><span class="text-4xs mt-1 text-emerald-500 font-bold block">✓ Simulated SMTP Delivery Confirmation Received</span>`;
+          }
+
+          // Trigger simulated toast on main page
+          triggerSimulatedInboxToast(clientName, email);
+
+          await sleep(2500);
+          closeModal();
+        }
+      });
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+  }
+
+  // Loader helper
+  function updateLoadingStatus(msg: string) {
+    if (loadingText) loadingText.textContent = msg;
+  }
+
+  function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function loadScript(url: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = url;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load script: ${url}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  // Helper to convert CSS variables to inline solid colors inside the PDF element
+  function resolveCssVariables(element: HTMLElement) {
+    const allElements = element.querySelectorAll('*');
+    allElements.forEach(el => {
+      const htmlEl = el as HTMLElement;
+      if (htmlEl instanceof SVGElement) return; // Handled separately
+      
+      const style = window.getComputedStyle(htmlEl);
+      const color = style.getPropertyValue('color') || style.color;
+      const bgColor = style.getPropertyValue('background-color') || style.backgroundColor;
+      const borderColor = style.getPropertyValue('border-color') || style.borderColor;
+      
+      if (color && (color.includes('rgb') || color.startsWith('#'))) {
+        htmlEl.style.color = color;
+      }
+      if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)' && (bgColor.includes('rgb') || bgColor.startsWith('#'))) {
+        htmlEl.style.backgroundColor = bgColor;
+      }
+      if (borderColor && borderColor !== 'transparent' && borderColor !== 'rgba(0, 0, 0, 0)' && (borderColor.includes('rgb') || borderColor.startsWith('#'))) {
+        htmlEl.style.borderColor = borderColor;
+      }
+    });
+  }
+
+  // PDF Layout Builder
+  function buildPremiumPDFLayout(clientName: string): HTMLElement {
+    const reportData = (window as any).lastReportData || {
+      homePrice: 400000,
+      downPayment: 80000,
+      interestRate: 6.5,
+      termYears: 30,
+      monthlyPayment: 2400,
+      monthlyPI: 2022,
+      income: 120000,
+      debts: 200,
+      pmi: 0,
+      hoa: 0
+    };
+
+    const principal = Math.max(0, reportData.homePrice - reportData.downPayment);
+    const ltv = (principal / reportData.homePrice) * 100;
+    const monthlyGrossIncome = Math.max(1, reportData.income / 12);
+    const frontEndDti = (reportData.monthlyPayment / monthlyGrossIncome) * 100;
+    const backEndDti = ((reportData.monthlyPayment + reportData.debts) / monthlyGrossIncome) * 100;
+    const buffer = reportData.monthlyPayment * 6;
+
+    const container = document.createElement('div');
+    container.style.width = '7.5in';
+    container.style.padding = '0.4in';
+    container.style.color = '#0f172a';
+    container.style.backgroundColor = '#ffffff';
+    container.style.fontFamily = '"Inter", system-ui, sans-serif';
+    container.style.fontSize = '12px';
+    container.style.lineHeight = '1.5';
+    container.className = 'premium-pdf-container';
+    
+    // Inject temp container to document body (required for SVG copying and measuring)
+    container.style.position = 'fixed';
+    container.style.left = '-9999px';
+    container.style.top = '0';
+    document.body.appendChild(container);
+
+    // Dynamic compilation of original reports text
+    const execSummary = document.getElementById('report-executive-summary')?.innerHTML || '';
+    const affordabilityText = document.getElementById('report-affordability-assessment')?.innerHTML || '';
+    const debtText = document.getElementById('report-debt-analysis')?.innerHTML || '';
+    const riskText = document.getElementById('report-risk-assessment')?.innerHTML || '';
+    const opportunityText = document.getElementById('report-opportunity-analysis')?.innerHTML || '';
+    const recommendationsText = document.getElementById('report-recommendations')?.innerHTML || '';
+    
+    // Clone active SVG Chart
+    let chartHtml = '<div style="height: 100px; display: flex; align-items: center; justify-content: center; border: 1px dashed #cbd5e1; border-radius: 6px; color: #94a3b8; font-size: 11px;">Active visual chart omitted from layout</div>';
+    const activePanel = document.querySelector('.chart-panel:not(.hidden)');
+    if (activePanel) {
+      const svg = activePanel.querySelector('svg');
+      if (svg) {
+        const svgClone = svg.cloneNode(true) as SVGElement;
+        // Strip out transitions/interactivity from PDF copy
+        svgClone.removeAttribute('id');
+        svgClone.style.maxWidth = '260px';
+        svgClone.style.maxHeight = '260px';
+        svgClone.style.display = 'block';
+        svgClone.style.margin = '0 auto';
+        
+        // Convert dynamic color CSS variables to solid colors for PDF stability
+        const originalElements = svg.querySelectorAll('path, circle, rect, line, text');
+        const clonedElements = svgClone.querySelectorAll('path, circle, rect, line, text');
+        originalElements.forEach((orig, idx) => {
+          const clone = clonedElements[idx] as HTMLElement | SVGElement;
+          if (!clone) return;
+          const style = window.getComputedStyle(orig);
+          
+          const stroke = style.getPropertyValue('stroke') || style.stroke;
+          const fill = style.getPropertyValue('fill') || style.fill;
+          const color = style.getPropertyValue('color') || style.color;
+          const fontSize = style.getPropertyValue('font-size') || style.fontSize;
+          const fontFamily = style.getPropertyValue('font-family') || style.fontFamily;
+          
+          if (stroke && stroke !== 'none') {
+            clone.setAttribute('stroke', stroke);
+          }
+          if (fill && fill !== 'none') {
+            clone.setAttribute('fill', fill);
+          }
+          if (color) {
+            clone.style.color = color;
+            // For SVG text elements, 'fill' acts as the text color
+            if (clone.tagName.toLowerCase() === 'text') {
+              clone.setAttribute('fill', color);
+            }
+          }
+          if (fontSize) {
+            clone.style.fontSize = fontSize;
+          }
+          if (fontFamily) {
+            clone.style.fontFamily = fontFamily;
+          }
+        });
+        
+        chartHtml = `<div style="text-align: center; margin: 15px 0;">${svgClone.outerHTML}</div>`;
+      }
+    }
+
+    container.innerHTML = `
+      <!-- PAGE 1: COVER PAGE -->
+      <div style="min-height: 9.8in; display: flex; flex-col; justify-content: space-between; page-break-after: always; padding: 1.5in 0.5in 1.0in 0.5in; position: relative;">
+        <div style="border-left: 4px solid #3b82f6; padding-left: 24px; margin-bottom: 2in;">
+          <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; tracking-wider; color: #3b82f6; letter-spacing: 0.1em;">Mortgage Intelligence Platform</span>
+          <h1 style="font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; color: #0f172a; margin-top: 10px; line-height: 1.1; letter-spacing: -0.03em;">Advisory Assessment &amp; Strategic Financial Plan</h1>
+          <p style="font-size: 13px; color: #475569; margin-top: 10px; font-weight: 500;">A premium financial analysis report compiled dynamically from active client inputs.</p>
+        </div>
+        
+        <div style="border-top: 1px solid #e2e8f0; padding-top: 24px; font-size: 11px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; color: #475569;">
+            <div>
+              <span style="display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: #94a3b8;">Prepared For</span>
+              <strong style="color: #0f172a; font-size: 13px;">${clientName}</strong>
+            </div>
+            <div>
+              <span style="display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: #94a3b8;">Assessment Date</span>
+              <strong style="color: #0f172a; font-size: 13px;">${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>
+            </div>
+            <div>
+              <span style="display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: #94a3b8;">Loan Characteristics</span>
+              <span style="color: #0f172a; font-weight: 600;">$${Math.round(principal).toLocaleString('en-US')} principal @ ${reportData.interestRate}% APR</span>
+            </div>
+            <div>
+              <span style="display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: #94a3b8;">Document Authority Status</span>
+              <span style="color: #10b981; font-weight: 700;">✓ Approved for Planning</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="position: absolute; bottom: 0; left: 0.5in; right: 0.5in; text-align: center; border-top: 1px solid #f1f5f9; padding-top: 10px; font-size: 9px; color: #94a3b8;">
+          Mortgage Decision Support Portal • Confidential Advisory Assessment
+        </div>
+      </div>
+
+      <!-- PAGE 2: KEY METRICS & CHART VISUAL -->
+      <div style="min-height: 9.8in; page-break-after: always; padding: 0.4in 0; position: relative;">
+        <div style="border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 20px;">
+          <h2 style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase; tracking-wider; margin: 0; color: #0f172a;">Key Metrics Portfolio</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+          <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background-color: #f8fafc;">
+            <span style="display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">Purchase Valuation</span>
+            <strong style="font-size: 16px; color: #0f172a;">$${Math.round(reportData.homePrice).toLocaleString('en-US')}</strong>
+          </div>
+          <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background-color: #f8fafc;">
+            <span style="display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">Down Payment Position</span>
+            <strong style="font-size: 16px; color: #0f172a;">$${Math.round(reportData.downPayment).toLocaleString('en-US')} (${Math.round((reportData.downPayment / reportData.homePrice) * 100)}%)</strong>
+          </div>
+          <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background-color: #f8fafc;">
+            <span style="display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">Monthly Fixed Carrying Cost</span>
+            <strong style="font-size: 16px; color: #3b82f6;">$${Math.round(reportData.monthlyPayment).toLocaleString('en-US')}/mo</strong>
+          </div>
+          <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; background-color: #f8fafc;">
+            <span style="display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 4px;">Financed Principal (LTV)</span>
+            <strong style="font-size: 16px; color: #0f172a;">$${Math.round(principal).toLocaleString('en-US')} (${ltv.toFixed(1)}% LTV)</strong>
+          </div>
+        </div>
+
+        <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 30px;">
+          <h3 style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #0f172a; margin-top: 0; margin-bottom: 10px; text-align: center;">Visual Scenario Allocation</h3>
+          ${chartHtml}
+        </div>
+
+        <div style="border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 10px; color: #64748b; line-height: 1.6;">
+          <h4 style="font-weight: 700; color: #0f172a; margin: 0 0 5px 0; font-size: 11px;">1. Executive Summary</h4>
+          <div style="text-align: justify;">${execSummary}</div>
+        </div>
+      </div>
+
+      <!-- PAGE 3: ADVISORY REPORT SECTIONS -->
+      <div style="min-height: 9.8in; page-break-after: always; padding: 0.4in 0; position: relative;">
+        <div style="border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 20px;">
+          <h2 style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase; tracking-wider; margin: 0; color: #0f172a;">Financial Advisory Analysis</h2>
+        </div>
+
+        <div style="space-y-20px; font-size: 11px; color: #334155; line-height: 1.6;">
+          
+          <div style="margin-bottom: 22px;">
+            <h3 style="font-weight: 700; color: #0f172a; margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase;">2. Affordability Assessment</h3>
+            <div style="text-align: justify;">${affordabilityText}</div>
+          </div>
+
+          <div style="margin-bottom: 22px;">
+            <h3 style="font-weight: 700; color: #0f172a; margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase;">3. Debt Analysis</h3>
+            <div style="text-align: justify;">${debtText}</div>
+          </div>
+
+          <div style="margin-bottom: 22px;">
+            <h3 style="font-weight: 700; color: #0f172a; margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase;">4. Mortgage Risk Assessment</h3>
+            <div style="text-align: justify;">${riskText}</div>
+          </div>
+
+          <div style="margin-bottom: 22px;">
+            <h3 style="font-weight: 700; color: #0f172a; margin: 0 0 6px 0; font-size: 11px; text-transform: uppercase;">5. Opportunity Analysis</h3>
+            <div style="text-align: justify;">${opportunityText}</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PAGE 4: RECOMMENDATIONS, NEXT STEPS & SIGN-OFF -->
+      <div style="min-height: 9.8in; padding: 0.4in 0; position: relative;">
+        <div style="border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 20px;">
+          <h2 style="font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase; tracking-wider; margin: 0; color: #0f172a;">Actionable Strategy &amp; Next Steps</h2>
+        </div>
+
+        <div style="font-size: 11px; color: #334155; line-height: 1.6; margin-bottom: 30px;">
+          <div style="margin-bottom: 22px;">
+            <h3 style="font-weight: 700; color: #0f172a; margin: 0 0 8px 0; font-size: 11px; text-transform: uppercase;">6. Actionable Recommendations</h3>
+            <div style="text-align: justify;">${recommendationsText}</div>
+          </div>
+
+          <div style="margin-bottom: 25px;">
+            <h3 style="font-weight: 700; color: #0f172a; margin: 0 0 8px 0; font-size: 11px; text-transform: uppercase;">7. Recommended Next Steps</h3>
+            <ol style="margin: 0; padding-left: 20px; line-height: 1.8;">
+              <li style="margin-bottom: 5px;">Obtain formal loan estimates from at least three underwriting lenders to compare origination fees and points.</li>
+              <li style="margin-bottom: 5px;">Lock in interest rates during market dips to secure the target fixed APR.</li>
+              <li style="margin-bottom: 5px;">Compile two years of tax returns, W-2s, and bank statements for the underwriting file.</li>
+              <li style="margin-bottom: 5px;">Avoid opening new credit lines or executing large bank transfers before closing.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div style="margin-top: 50px; display: grid; grid-template-columns: 2fr 1fr; gap: 40px; border-top: 1px solid #e2e8f0; padding-top: 25px;">
+          <div style="font-size: 8px; color: #94a3b8; line-height: 1.4;">
+            <strong>Disclaimer:</strong> This report is for planning and educational purposes only. It does not constitute a formal loan commitment, underwriting approval, or official financial offer. Mortgage rates, fees, and program guidelines fluctuate based on market movements and individual borrower creditworthiness. All calculations should be verified by a licensed mortgage lender before executing any transactions.
+          </div>
+          <div style="text-align: right; font-size: 10px; color: #64748b;">
+            <div style="font-weight: 700; color: #0f172a; margin-bottom: 15px;">Advisory Clearance Stamp</div>
+            <div style="border-top: 1px solid #cbd5e1; display: inline-block; padding-top: 4px; font-size: 9px; font-weight: 600;">Mortgage Support System</div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    return container;
+  }
+
+  // Simulated Email Delivered Toast System
+  function triggerSimulatedInboxToast(clientName: string, email: string) {
+    const toastContainer = document.createElement('div');
+    toastContainer.className = "fixed bottom-5 right-5 z-[100] max-w-sm w-full bg-slate-900 border border-slate-800 text-white rounded-xl shadow-2xl p-4 transform translate-y-10 opacity-0 transition-all duration-500 flex gap-3";
+    toastContainer.innerHTML = `
+      <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white shrink-0 mt-0.5 animate-bounce">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 19v-8.93a2 2 0 01.89-1.664l8-4.8a2 2 0 012.22 0l8 4.8A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5" /></svg>
+      </div>
+      <div class="space-y-1">
+        <div class="flex items-center justify-between">
+          <span class="text-3xs font-extrabold tracking-wide uppercase text-blue-400">Incoming Message</span>
+          <span class="text-4xs text-zinc-500">Just now</span>
+        </div>
+        <h5 class="text-2xs font-extrabold text-white">To: ${clientName} (${email})</h5>
+        <p class="text-3xs text-zinc-400 leading-normal">
+          <strong>Subject:</strong> Your Mortgage Intelligence Advisory Report is ready. PDF copy attached (120 KB).
+        </p>
+      </div>
+    `;
+    document.body.appendChild(toastContainer);
+    
+    setTimeout(() => {
+      toastContainer.classList.remove('translate-y-10', 'opacity-0');
+      toastContainer.classList.add('translate-y-0', 'opacity-100');
+    }, 200);
+
+    setTimeout(() => {
+      toastContainer.classList.remove('translate-y-0', 'opacity-100');
+      toastContainer.classList.add('translate-y-10', 'opacity-0');
+      setTimeout(() => {
+        document.body.removeChild(toastContainer);
+      }, 500);
+    }, 7000);
+  }
+</script>

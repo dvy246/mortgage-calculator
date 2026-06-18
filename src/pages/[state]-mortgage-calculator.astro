@@ -1,0 +1,489 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SVGCharts from '../components/Calculator/SVGCharts.astro';
+import AffordabilityGuard from '../components/Calculator/AffordabilityGuard.astro';
+import StressTest from '../components/Calculator/StressTest.astro';
+import AmortizationTable from '../components/Calculator/AmortizationTable.astro';
+import LeadGenCard from '../components/LeadGenCard.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+import PrintModal from '../components/Calculator/PrintModal.astro';
+import MortgageReport from '../components/Calculator/MortgageReport.astro';
+import { stateDatabase, type StateData } from '../data/states';
+
+export async function getStaticPaths() {
+  return [
+    { params: { state: "california" }, props: { stateKey: "california" } },
+    { params: { state: "texas" }, props: { stateKey: "texas" } },
+    { params: { state: "florida" }, props: { stateKey: "florida" } },
+    { params: { state: "new-york" }, props: { stateKey: "new-york" } },
+    { params: { state: "illinois" }, props: { stateKey: "illinois" } }
+  ];
+}
+
+interface Props {
+  stateKey: string;
+}
+
+const { stateKey } = Astro.props;
+const state: StateData = stateDatabase[stateKey];
+
+const faqSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": state.faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+});
+---
+
+<Layout 
+  title={`${state.name} Mortgage Calculator - Localized Estimator`}
+  description={`Calculate mortgage payments in ${state.name} with local property taxes (${state.taxRate}%), insurance, and home values. Stress-test rates.`}
+  canonicalUrl={`/${state.slug}-mortgage-calculator`}
+  schemaMarkup={faqSchema}
+>
+  <Header activeSlug="" />
+
+  <!-- PDF Print Report Header -->
+  <div id="print-header" class="border-b border-border-subtle pb-4 mb-6 hidden">
+    <div class="flex justify-between items-end">
+      <div>
+        <h1 class="text-xl font-bold font-display text-text-main">Mortgage Intelligence Report</h1>
+        <p class="text-2xs text-text-muted">Advisory Assessment: Localized {state.name} Home Purchase Analysis</p>
+      </div>
+      <div class="text-right text-text-muted text-2xs">
+        <span>Generated: {new Date().toLocaleDateString()}</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-2">
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">{state.name} Mortgage Calculator</h1>
+      <p class="text-xs text-text-muted">Pre-populated with localized averages for property taxes, homeowners insurance, and market interest rates.</p>
+    </div>
+
+    <!-- 2-Column Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT: Controls Pane -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-6">
+          <h2 class="font-display text-sm font-semibold text-text-main border-b border-border-subtle pb-2">Mortgage Variables ({state.name})</h2>
+          
+          <!-- Home Price -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="price-input" class="font-medium text-text-muted">Median Home Price</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">Median home sales value in this state, useful as a starting purchase price guide.</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="price-display">${state.medianHomePrice.toLocaleString('en-US')}</span>
+            </div>
+            <input 
+              type="range" 
+              id="price-slider" 
+              min="50000" 
+              max="2000000" 
+              step="10000" 
+              value={state.medianHomePrice} 
+              aria-label="Home Price Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted/65 text-3xs">$50k</span>
+              <input type="number" id="price-input" value={state.medianHomePrice} class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" aria-label="Home Price Input" />
+              <span class="text-text-muted/65 text-3xs">$2M</span>
+            </div>
+          </div>
+
+          <!-- Down Payment (Default to 20%) -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="down-input" class="font-medium text-text-muted">Down Payment</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">Upfront cash contribution. Aiming for 20% drops PMI requirements and improves your rate options.</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="down-display">${(state.medianHomePrice * 0.2).toLocaleString('en-US')} (20%)</span>
+            </div>
+            <input 
+              type="range" 
+              id="down-slider" 
+              min="0" 
+              max={state.medianHomePrice} 
+              step="5000" 
+              value={state.medianHomePrice * 0.2} 
+              aria-label="Down Payment Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted/65 text-3xs">$0</span>
+              <input type="number" id="down-input" value={state.medianHomePrice * 0.2} class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" aria-label="Down Payment Input" />
+              <span class="text-text-muted/65 text-3xs">100%</span>
+            </div>
+          </div>
+
+          <!-- Rate & Term -->
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="rate-input" class="font-medium text-text-muted">Average Rate (%)</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">Representative interest rate for buyers in this region. Adjust based on credit history.</span>
+                </span>
+              </span>
+              <input type="number" id="rate-input" value={state.averageMortgageRate} step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="term-select" class="font-medium text-text-muted">Term</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The scheduled length of your mortgage.</span>
+                </span>
+              </span>
+              <select id="term-select" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main focus:border-border-focus focus:outline-none">
+                <option value="30">30 Years</option>
+                <option value="20">20 Years</option>
+                <option value="15">15 Years</option>
+                <option value="10">10 Years</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Escrows -->
+          <div class="space-y-4 pt-3 border-t border-border-subtle">
+            <div class="grid grid-cols-2 gap-4 text-xs">
+              <div class="space-y-1.5">
+                <span class="flex items-center">
+                  <label for="tax-input" class="font-medium text-text-muted">Property Tax (%)</label>
+                  <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span class="tooltip-text">Average annual property tax percentage for this state. Property tax is held in escrow and paid yearly.</span>
+                  </span>
+                </span>
+                <input type="number" id="tax-input" value={state.taxRate} step="0.01" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              </div>
+              <div class="space-y-1.5">
+                <span class="flex items-center">
+                  <label for="ins-input" class="font-medium text-text-muted">Insurance Rate (%)</label>
+                  <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span class="tooltip-text">Typical homeowners insurance premium represented as a percentage of home value.</span>
+                  </span>
+                </span>
+                <input type="number" id="ins-input" value={state.insuranceRate} step="0.01" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4 text-xs">
+              <div class="space-y-1.5">
+                <span class="flex items-center">
+                  <label for="pmi-input" class="font-medium text-text-muted">PMI Rate (%)</label>
+                  <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span class="tooltip-text">Private Mortgage Insurance rate applied if down payment is under 20%.</span>
+                  </span>
+                </span>
+                <input type="number" id="pmi-input" value="0.75" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              </div>
+              <div class="space-y-1.5">
+                <span class="flex items-center">
+                  <label for="hoa-input" class="font-medium text-text-muted">Monthly HOA ($)</label>
+                  <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span class="tooltip-text">Homeowners Association monthly dues (if applicable).</span>
+                  </span>
+                </span>
+                <input type="number" id="hoa-input" value="0" step="10" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <LeadGenCard />
+      </div>
+      
+      <!-- RIGHT: Dashboard Outputs -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Summary Numbers -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 grid grid-cols-2 gap-6 relative">
+          <div>
+            <span class="text-text-muted text-xs font-semibold block">Total Monthly Payment</span>
+            <span class="text-3xl font-extrabold text-text-main font-display font-tabular tracking-tight mt-1" id="out-monthly">$0</span>
+            <span class="text-3xs text-text-muted block mt-1" id="out-pi-split">P&I portion: $0</span>
+          </div>
+          <div class="border-l border-border-subtle pl-6 flex justify-between items-start">
+            <div>
+              <span class="text-text-muted text-xs font-semibold block">Total Interest Paid</span>
+              <span class="text-3xl font-extrabold text-blue-500 font-display font-tabular tracking-tight mt-1" id="out-total-interest">$0</span>
+              <span class="text-3xs text-text-muted block mt-1" id="out-total-cost">Total loan cost: $0</span>
+            </div>
+            
+            <button 
+              class="absolute top-4 right-4 p-1.5 rounded-md border border-border-subtle bg-bg-main hover:bg-bg-card-hover text-text-muted hover:text-brand-accent transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              id="download-report-btn"
+              title="Download PDF Planning Report"
+              aria-label="Download PDF Planning Report"
+            >
+              <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Local DTI Gauge -->
+        <div class="hidden" id="dti-holder">
+          <AffordabilityGuard />
+        </div>
+        
+        <SVGCharts />
+        
+        <StressTest />
+        <MortgageReport />
+
+      </div>
+    </div>
+
+    <!-- Repayment Table -->
+    <AmortizationTable />
+
+    <!-- Localized Mortgage Handbook Guide -->
+    <MortgageGuide 
+      title={`${state.name} Mortgage`}
+      subtitle={`Navigating home financing and local home loans in ${state.name}`}
+      whatItDoes={`Calculates your monthly payments pre-populated with ${state.name} specific property tax averages and insurance estimates.`}
+      whenToUse={`Use this calculator when evaluating a home purchase in ${state.name} to see a more accurate local representation of monthly expenses.`}
+      howItWorks="Runs standard amortization schedules tracking cumulative payments. Property tax and home insurance are calculated as percentages of the home value based on regional averages."
+      mistakes={`Neglecting local tax assessments. Some municipalities in ${state.name} have special assessment taxes or homestead exemptions that significantly change your actual tax liability.`}
+      faqs={state.faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <!-- PDF Print Disclaimer -->
+  <div id="print-disclaimer" class="hidden">
+    <h4 class="font-bold mb-1">Mortgage Intelligence Report Disclaimer</h4>
+    <p>
+      This document constitutes an advisory summary compiled under user-input assumptions. Estimates are not guaranteed. Lenders will execute separate underwriting passes before issuing binding commitments. Consult certified financial planners.
+    </p>
+  </div>
+
+  <PrintModal />
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateMortgage } from '../utils/mortgage';
+
+  // Grab controls
+  const priceSlider = document.getElementById('price-slider') as HTMLInputElement;
+  const priceInput = document.getElementById('price-input') as HTMLInputElement;
+  const priceDisplay = document.getElementById('price-display');
+
+  const downSlider = document.getElementById('down-slider') as HTMLInputElement;
+  const downInput = document.getElementById('down-input') as HTMLInputElement;
+  const downDisplay = document.getElementById('down-display');
+
+  const rateInput = document.getElementById('rate-input') as HTMLInputElement;
+  const termSelect = document.getElementById('term-select') as HTMLSelectElement;
+
+  const taxInput = document.getElementById('tax-input') as HTMLInputElement;
+  const insInput = document.getElementById('ins-input') as HTMLInputElement;
+  const pmiInput = document.getElementById('pmi-input') as HTMLInputElement;
+  const hoaInput = document.getElementById('hoa-input') as HTMLInputElement;
+
+  function syncInputs(slider: HTMLInputElement, input: HTMLInputElement, display: HTMLElement | null, isPrice = true) {
+    const update = () => {
+      input.value = slider.value;
+      updateDisplay();
+      recalculate();
+    };
+    slider.addEventListener('input', update);
+    input.addEventListener('input', () => {
+      let val = parseFloat(input.value) || 0;
+      val = Math.min(parseFloat(slider.max), Math.max(parseFloat(slider.min), val));
+      slider.value = String(val);
+      updateDisplay();
+      recalculate();
+    });
+
+    function updateDisplay() {
+      if (!display) return;
+      if (isPrice) {
+        display.textContent = `$${parseInt(slider.value).toLocaleString('en-US')}`;
+      } else {
+        const price = parseFloat(priceSlider.value) || 1;
+        const down = parseFloat(slider.value) || 0;
+        const percent = Math.round((down / price) * 100);
+        display.textContent = `$${down.toLocaleString('en-US')} (${percent}%)`;
+      }
+    }
+  }
+
+  syncInputs(priceSlider, priceInput, priceDisplay, true);
+  syncInputs(downSlider, downInput, downDisplay, false);
+
+  priceSlider.addEventListener('input', () => {
+    const maxDown = Math.floor(parseFloat(priceSlider.value) * 0.9);
+    downSlider.max = String(maxDown);
+    if (parseFloat(downSlider.value) > maxDown) {
+      downSlider.value = String(maxDown);
+      downInput.value = String(maxDown);
+    }
+  });
+
+  [rateInput, termSelect, taxInput, insInput, pmiInput, hoaInput].forEach(ctrl => {
+    ctrl.addEventListener('input', recalculate);
+  });
+
+  function recalculate() {
+    const homePrice = parseFloat(priceInput.value) || 0;
+    const downPayment = parseFloat(downInput.value) || 0;
+    const interestRate = parseFloat(rateInput.value) || 0;
+    const loanTermYears = parseInt(termSelect.value) || 30;
+
+    const propertyTaxRate = parseFloat(taxInput.value) || 0;
+    const insuranceRate = parseFloat(insInput.value) || 0;
+    const pmiRate = parseFloat(pmiInput.value) || 0;
+    const hoaFee = parseFloat(hoaInput.value) || 0;
+
+    const result = calculateMortgage({
+      homePrice,
+      downPayment,
+      interestRate,
+      loanTermYears,
+      propertyTaxRate,
+      insuranceRate,
+      pmiRate,
+      hoaFee,
+      extraMonthly: 0,
+      extraAnnual: 0,
+      extraOneTime: []
+    });
+
+    const originalPrincipal = Math.max(0, homePrice - downPayment);
+
+    // Update displays
+    const outMonthly = document.getElementById('out-monthly');
+    const outPISplit = document.getElementById('out-pi-split');
+    if (outMonthly) outMonthly.textContent = `$${Math.round(result.totalMonthlyPayment).toLocaleString('en-US')}`;
+    if (outPISplit) outPISplit.textContent = `P&I portion: $${Math.round(result.monthlyPrincipalAndInterest).toLocaleString('en-US')}/mo`;
+
+    const outInterest = document.getElementById('out-total-interest');
+    const outTotalCost = document.getElementById('out-total-cost');
+    if (outInterest) outInterest.textContent = `$${Math.round(result.totalInterestPaid).toLocaleString('en-US')}`;
+    if (outTotalCost) outTotalCost.textContent = `Total loan cost: $${Math.round(result.totalPaymentsSum).toLocaleString('en-US')}`;
+
+    // Donut and chart updates
+    if (window.drawDonutChart) {
+      window.drawDonutChart(
+        result.monthlyPrincipalAndInterest,
+        result.monthlyPropertyTax,
+        result.monthlyInsurance,
+        result.monthlyPMI,
+        result.monthlyHOA
+      );
+    }
+
+    if (window.drawAmortizationChart) {
+      window.drawAmortizationChart(result.amortizationSchedule);
+    }
+
+    if ((window as any).generateMortgageReport) {
+      (window as any).generateMortgageReport({
+        homePrice,
+        downPayment,
+        interestRate,
+        termYears: loanTermYears,
+        monthlyPayment: result.totalMonthlyPayment,
+        monthlyPI: result.monthlyPrincipalAndInterest,
+        income: 0, // Not gathered
+        debts: 0,
+        pmi: result.monthlyPMI,
+        hoa: result.monthlyHOA
+      });
+    }
+
+    if ((window as any).updateChartInsights) {
+      const ltv = (originalPrincipal / homePrice) * 100;
+      (window as any).updateChartInsights([
+        {
+          label: "Monthly Payment",
+          value: `$${Math.round(result.totalMonthlyPayment).toLocaleString('en-US')}/mo`,
+          badge: `P&I portion: $${Math.round(result.monthlyPrincipalAndInterest).toLocaleString('en-US')}`,
+          badgeColor: "blue"
+        },
+        {
+          label: "Interest Liability",
+          value: `$${Math.round(result.totalInterestPaid).toLocaleString('en-US')}`,
+          badge: `Principal: $${Math.round(originalPrincipal).toLocaleString('en-US')}`,
+          badgeColor: "amber"
+        },
+        {
+          label: "Property Taxes",
+          value: `$${Math.round((homePrice * (propertyTaxRate / 100)) / 12).toLocaleString('en-US')}/mo`,
+          badge: `State avg rate: ${propertyTaxRate}%`,
+          badgeColor: "blue"
+        },
+        {
+          label: "PMI Termination",
+          value: ltv <= 80 ? "No PMI" : (result.pmiCancellationMonth > 0 ? `Month ${result.pmiCancellationMonth}` : "Life of Loan"),
+          badge: ltv <= 80 ? "LTV ≤ 80%" : (result.pmiCancellationMonth > 0 ? `~${(result.pmiCancellationMonth / 12).toFixed(1)} yrs` : "PMI active"),
+          badgeColor: ltv <= 80 ? "emerald" : (result.pmiCancellationMonth > 0 ? "amber" : "rose")
+        }
+      ]);
+    }
+
+    if (window.renderAmortizationTable) {
+      window.renderAmortizationTable(result.amortizationSchedule);
+    }
+
+    if (window.updateStressTest) {
+      window.updateStressTest(originalPrincipal, interestRate, loanTermYears, result.monthlyPropertyTax + result.monthlyInsurance + result.monthlyPMI + result.monthlyHOA);
+    }
+
+    // Register data for comparative save
+    if (window.registerCurrentRunData) {
+      window.registerCurrentRunData({
+        homePrice,
+        downPayment,
+        interestRate,
+        termYears: loanTermYears,
+        monthlyPayment: result.totalMonthlyPayment,
+        totalInterest: result.totalInterestPaid
+      });
+    }
+  }
+
+  // Bind PDF Download report trigger
+  const printBtn = document.getElementById('download-report-btn');
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      if ((window as any).openPrintModal) {
+        (window as any).openPrintModal();
+      } else {
+        window.print();
+      }
+    });
+  }
+
+  // Trigger initial calculation
+  recalculate();
+</script>

@@ -1,0 +1,462 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ScenarioComparer from '../components/Calculator/ScenarioComparer.astro';
+
+const calculators = [
+  {
+    name: "House Affordability Calculator",
+    href: "/house-affordability-calculator",
+    description: "Determine your maximum home purchase price based on gross income, recurring monthly debts, and standard Debt-to-Income (DTI) rule brackets.",
+    icon: `<svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>`
+  },
+  {
+    name: "Mortgage Payoff Calculator",
+    href: "/mortgage-payoff-calculator",
+    description: "Analyze the long-term impact of loan terms and interest rate movements. See full amortization metrics and learn how to reduce your payoff timeline.",
+    icon: `<svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+  },
+  {
+    name: "Extra Payment Calculator",
+    href: "/extra-payment-calculator",
+    description: "Model the exact interest savings and years saved by making regular monthly, annual, or one-time extra payments toward your mortgage principal.",
+    icon: `<svg class="h-6 w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>`
+  },
+  {
+    name: "Refinance Calculator",
+    href: "/refinance-calculator",
+    description: "Compare your current mortgage terms against today's rates. Factor in closing costs to identify your break-even month and lifetime net savings.",
+    icon: `<svg class="h-6 w-6 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>`
+  },
+  {
+    name: "PMI Calculator",
+    href: "/mortgage-calculator-with-pmi",
+    description: "Estimate monthly Private Mortgage Insurance costs for down payments below 20%. Calculate exactly when PMI will automatically terminate.",
+    icon: `<svg class="h-6 w-6 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>`
+  }
+];
+
+const guides = [
+  { title: "First-Time Home Buyer Guide", slug: "first-time-home-buyer-guide", desc: "A comprehensive handbook navigating credit approval, down payments, and closing fees." },
+  { title: "PMI Removal Guide", slug: "pmi-removal-guide", desc: "Learn the rules to cancel private mortgage insurance and save hundreds monthly." },
+  { title: "FHA vs Conventional Loans", slug: "fha-vs-conventional-loans", desc: "Compare guidelines, down payment minimums, and insurance rates side-by-side." },
+  { title: "Mortgage Closing Costs Explained", slug: "mortgage-closing-costs-explained", desc: "A breakdown of lender fees, escrow accounts, and transfer taxes." },
+  { title: "Average Mortgage Rates by State", slug: "average-mortgage-rates-by-state", desc: "Explore local interest trends and macroeconomic regional variables." }
+];
+
+const faqs = [
+  {
+    q: "What is a mortgage?",
+    a: "A mortgage is a specialized debt agreement used to purchase or maintain a home, land, or other real estate. The property itself acts as collateral, securing the loan in case of default."
+  },
+  {
+    q: "How does a mortgage calculator work?",
+    a: "A mortgage calculator uses the loan amortization equation to compute your monthly principal and interest payments based on the home price, down payment, interest rate, and term length."
+  },
+  {
+    q: "How much mortgage can I afford?",
+    a: "Your affordability depends on your income, existing monthly debts, down payment size, and local property expenses. Underwriters use these metrics to gauge your debt service capacity."
+  },
+  {
+    q: "How much house can I afford based on my income?",
+    a: "As a general baseline, you can afford a home valued between 3 to 5 times your gross annual income, depending on your recurring debt liabilities and down payment."
+  },
+  {
+    q: "How much mortgage can I qualify for?",
+    a: "Mortgage qualification is determined by lenders evaluating your credit score, debt-to-income (DTI) ratio, employment history, and liquid financial reserves."
+  },
+  {
+    q: "How much can I borrow for a mortgage?",
+    a: "Your borrowing limit is capped by your debt-to-income ratio. Typically, conventional guidelines restrict your monthly housing expenses to 28% of your gross monthly income."
+  },
+  {
+    q: "What factors determine how much mortgage I can afford?",
+    a: "Key variables include gross household income, monthly debt payments (credit cards, student loans, auto loans), down payment amount, interest rates, property taxes, insurance, and HOA dues."
+  },
+  {
+    q: "How are mortgage payments calculated?",
+    a: "Payments are calculated using the amortization formula: M = P * [r(1+r)^n] / [(1+r)^n - 1], where M is monthly payment, P is principal, r is monthly rate, and n is total months."
+  },
+  {
+    q: "What is included in a monthly mortgage payment?",
+    a: "A standard monthly payment includes Principal and Interest (P&I), plus Escrow reserves for Property Taxes, Homeowners Insurance, and Private Mortgage Insurance (PMI) if applicable."
+  },
+  {
+    q: "How do mortgage interest rates affect monthly payments?",
+    a: "Higher interest rates increase the interest charges added to your balance each month, resulting in higher monthly payments and reducing your overall purchasing power."
+  },
+  {
+    q: "What is an amortization schedule?",
+    a: "An amortization schedule is a month-by-month table showing how much of each payment goes toward interest versus principal, and the outstanding balance remaining."
+  },
+  {
+    q: "What is PMI (Private Mortgage Insurance)?",
+    a: "PMI is an insurance policy required by lenders when your down payment is under 20% of the purchase price. It protects the lender from default and increases your monthly payment."
+  },
+  {
+    q: "How much down payment do I need for a mortgage?",
+    a: "You can put down as little as 3% for conventional loans or 3.5% for FHA loans. VA and USDA loans offer 0% down options. A 20% down payment is required to avoid PMI."
+  },
+  {
+    q: "Should I make extra payments on my mortgage?",
+    a: "Yes. Directing extra payments toward your loan principal bypasses frontloaded interest, reduces your outstanding balance faster, and shaves years off your term."
+  },
+  {
+    q: "How can I pay off my mortgage faster?",
+    a: "You can pay off your mortgage faster by switching to bi-weekly payments, adding extra principal monthly, making annual lump-sum prepayments, or refinancing to a shorter term."
+  },
+  {
+    q: "How much interest can I save with extra mortgage payments?",
+    a: "Depending on your rate and loan size, adding an extra $100 to $200 per month can save you tens of thousands of dollars in cumulative lifetime interest charges."
+  },
+  {
+    q: "How long will it take to pay off my mortgage?",
+    a: "A standard term is 15 or 30 years, but making regular extra principal payments can help you pay off a 30-year mortgage in 20 to 25 years."
+  },
+  {
+    q: "Should I refinance my mortgage?",
+    a: "Refinancing makes sense if current market interest rates are significantly lower than your current rate, allowing you to reduce your payment or shorten your loan term."
+  },
+  {
+    q: "When does refinancing a mortgage make sense?",
+    a: "It makes sense when the monthly savings from a lower interest rate will cover the transaction's closing costs before you plan to sell the home or move (the break-even point)."
+  },
+  {
+    q: "What is the difference between a 15-year and 30-year mortgage?",
+    a: "A 15-year mortgage features higher monthly payments but lower interest rates, resulting in half the amortization time and up to 60% savings in total interest costs."
+  },
+  {
+    q: "What is a fixed-rate mortgage?",
+    a: "A fixed-rate mortgage locks in your interest rate and monthly principal and interest payment for the entire duration of the loan, protecting you from rate hikes."
+  },
+  {
+    q: "What is an adjustable-rate mortgage (ARM)?",
+    a: "An ARM features a fixed rate for an initial period (like 5 or 7 years) and then adjusts periodically based on prevailing market interest rate indices."
+  },
+  {
+    q: "What are the different types of mortgages?",
+    a: "Major categories include Conventional loans, Government-backed loans (FHA, VA, USDA), Jumbo loans (for high-value properties), Fixed-rate, and Adjustable-rate mortgages."
+  },
+  {
+    q: "What is the 28/36 debt-to-income (DTI) rule?",
+    a: "It is a standard lending guideline: housing costs should not exceed 28% of your gross monthly income, and total debts (housing + other bills) should not exceed 36%."
+  },
+  {
+    q: "What credit score do I need for a mortgage?",
+    a: "Conventional loans typically require a minimum score of 620, while FHA loans allow scores down to 580 (or 500 with a 10% down payment). Higher scores yield lower rates."
+  },
+  {
+    q: "How much are closing costs on a mortgage?",
+    a: "Closing costs typically average between 2% and 5% of the total loan amount, covering origination charges, title fees, appraisals, government taxes, and escrow prepaids."
+  },
+  {
+    q: "What is the total cost of a mortgage over its lifetime?",
+    a: "The total cost represents the initial principal borrowed plus all cumulative interest payments over 15 or 30 years, which can double the original cost of the home."
+  },
+  {
+    q: "How much would the mortgage payment be on a $500,000 house?",
+    a: "With a 20% down payment ($400,000 loan) at 6.5% interest, the monthly principal and interest payment is approximately $2,528. Taxes, insurance, and HOA fees are extra."
+  },
+  {
+    q: "What is a reverse mortgage?",
+    a: "A reverse mortgage allows homeowners aged 62 and older to borrow against their home equity. The lender pays the borrower, and the loan is repaid when the home is sold."
+  },
+  {
+    q: "What is a commercial mortgage?",
+    a: "A commercial mortgage is a loan secured by commercial real estate (office spaces, retail centers, apartment buildings) rather than primary single-family residential properties."
+  },
+  {
+    q: "Mortgage calculator how much can I afford?",
+    a: "By entering your gross household income, monthly debt payments, and down payment, an affordability calculator solves for your maximum purchase price within safe DTI margins."
+  },
+  {
+    q: "How does a reverse mortgage work?",
+    a: "A reverse mortgage pays you tax-free cash from your home's equity in lump sums, monthly lines, or term payments. Interest accumulates, and the loan is settled when you sell or leave."
+  },
+  {
+    q: "How much does it cost to refinance a mortgage?",
+    a: "Refinancing costs match standard closing fees, typically ranging between 2% to 5% of the new loan balance for appraisals, underwriting, title insurance, and recording."
+  }
+];
+
+const schemaMarkupObj = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": `<p>${faq.a}</p>`
+    }
+  }))
+};
+
+const schemaMarkup = JSON.stringify(schemaMarkupObj);
+---
+
+<Layout title="Mortgage Intelligence Hub - Planning & Analytics" schemaMarkup={schemaMarkup}>
+  <Header activeSlug="home" />
+
+  <main class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-16 flex-grow">
+    <!-- Hero Section -->
+    <div class="text-center max-w-3xl mx-auto space-y-4">
+      <div class="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-bg-card px-3 py-1.5 text-xs text-text-muted font-semibold">
+        <span class="h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+        <span>Advanced Mortgage Planning &amp; Scenario Analytics</span>
+      </div>
+      <h1 class="font-display text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl lg:text-6xl">
+        Calculate the <span class="text-brand-accent">true cost</span> of buying a home.
+      </h1>
+      <p class="text-lg text-text-muted leading-relaxed">
+        Model monthly payments, calculate PMI drop milestones, compare refinance break-even dates, and map accelerated payoff timelines on a zero-bloat, privacy-first platform.
+      </p>
+    </div>
+
+    <!-- Calculators Grid -->
+    <div class="space-y-6">
+      <h2 class="font-display text-xl font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">Financial Decision Engines</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {calculators.map(calc => (
+          <a 
+            href={calc.href} 
+            class="group rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col justify-between hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          >
+            <div class="space-y-3">
+              <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
+                <Fragment set:html={calc.icon} />
+              </div>
+              <h3 class="font-display text-base font-semibold text-text-main group-hover:text-brand-accent transition-colors">
+                {calc.name}
+              </h3>
+              <p class="text-xs text-text-muted leading-relaxed">
+                {calc.description}
+              </p>
+            </div>
+            <div class="mt-6 flex items-center gap-1.5 text-xs font-semibold text-brand-accent group-hover:text-brand-accent-hover">
+              <span>Launch Engine</span>
+              <svg class="h-3.5 w-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- Comparative Engine Section -->
+    <div class="space-y-4">
+      <h2 class="font-display text-xl font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">Compare Scenarios</h2>
+      <p class="text-sm text-text-muted max-w-2xl">
+        Adjust parameters on any of our calculators to lock in options. They will automatically sync to your comparison panel below.
+      </p>
+      <ScenarioComparer />
+    </div>
+
+    <!-- Topical Authority Hub -->
+    <div class="space-y-6">
+      <h2 class="font-display text-xl font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">Mortgage Education & Research</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {guides.map(guide => (
+          <a 
+            href={`/guides/${guide.slug}`} 
+            class="group p-5 rounded-lg border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          >
+            <h3 class="font-display text-sm font-semibold text-text-main group-hover:text-brand-accent transition-colors">{guide.title}</h3>
+            <p class="text-2xs text-text-muted mt-2 leading-relaxed">{guide.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- Platform Policies & Information Section -->
+    <div class="space-y-6">
+      <h2 class="font-display text-xl font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">Platform Policies & Information</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <a 
+          href="/about-us" 
+          class="group p-5 rounded-lg border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        >
+          <h3 class="font-display text-sm font-semibold text-text-main group-hover:text-brand-accent transition-colors">About Us</h3>
+          <p class="text-2xs text-text-muted mt-2 leading-relaxed">Learn about our mission, our values, and the mortgage math experts behind our tools.</p>
+          <span class="inline-flex items-center gap-1 text-2xs font-semibold text-text-muted group-hover:text-brand-accent transition-colors mt-4">
+            <span>Learn More</span>
+            <svg class="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </span>
+        </a>
+        <a 
+          href="/contact-us" 
+          class="group p-5 rounded-lg border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        >
+          <h3 class="font-display text-sm font-semibold text-text-main group-hover:text-brand-accent transition-colors">Contact Us</h3>
+          <p class="text-2xs text-text-muted mt-2 leading-relaxed">Have feedback, questions, or ideas? Get in touch with our team directly.</p>
+          <span class="inline-flex items-center gap-1 text-2xs font-semibold text-text-muted group-hover:text-brand-accent transition-colors mt-4">
+            <span>Get in Touch</span>
+            <svg class="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </span>
+        </a>
+        <a 
+          href="/privacy-policy" 
+          class="group p-5 rounded-lg border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        >
+          <h3 class="font-display text-sm font-semibold text-text-main group-hover:text-brand-accent transition-colors">Privacy Policy</h3>
+          <p class="text-2xs text-text-muted mt-2 leading-relaxed">We protect your privacy. Read our policy on how we handle user calculations and data.</p>
+          <span class="inline-flex items-center gap-1 text-2xs font-semibold text-text-muted group-hover:text-brand-accent transition-colors mt-4">
+            <span>View Policy</span>
+            <svg class="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </span>
+        </a>
+        <a 
+          href="/terms-and-conditions" 
+          class="group p-5 rounded-lg border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        >
+          <h3 class="font-display text-sm font-semibold text-text-main group-hover:text-brand-accent transition-colors">Terms &amp; Conditions</h3>
+          <p class="text-2xs text-text-muted mt-2 leading-relaxed">Understand the rules, guidelines, and terms for utilizing our financial analytics engine.</p>
+          <span class="inline-flex items-center gap-1 text-2xs font-semibold text-text-muted group-hover:text-brand-accent transition-colors mt-4">
+            <span>Read Terms</span>
+            <svg class="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Frequently Asked Questions -->
+    <div class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="font-display text-xl font-bold text-text-main tracking-tight">Frequently Asked Questions</h2>
+          <p class="text-xs text-text-muted mt-1">Get instant answers to common mortgage, rate, and affordability queries.</p>
+        </div>
+        <div class="relative max-w-xs w-full">
+          <input 
+            type="text" 
+            id="faq-search" 
+            placeholder="Search questions..." 
+            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 py-1.5 text-xs text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="faq-list">
+        {faqs.map(faq => (
+          <details class="faq-item group rounded-lg border border-border-subtle bg-bg-card p-4 hover:border-border-focus transition-all duration-200 focus-within:ring-2 focus-within:ring-brand-accent">
+            <summary class="font-display text-xs sm:text-sm font-semibold text-text-main cursor-pointer list-none flex items-center justify-between focus:outline-none select-none">
+              <span>{faq.q}</span>
+              <span class="text-text-muted group-open:rotate-180 transition-transform duration-200 ml-4 shrink-0">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </span>
+            </summary>
+            <p class="text-xs text-text-muted leading-relaxed mt-3 pt-3 border-t border-border-subtle/50">
+              {faq.a}
+            </p>
+          </details>
+        ))}
+      </div>
+
+      <div id="faq-empty-state" class="hidden text-center py-12 text-xs text-text-muted">
+        No questions match your search query. Try another term.
+      </div>
+    </div>
+
+    <!-- SEO Informational Section (600+ words targetting keywords) -->
+    <section class="border-t border-border-subtle pt-12 mt-16 space-y-8 text-xs sm:text-sm text-text-muted leading-relaxed max-w-5xl mx-auto">
+      <div class="space-y-4">
+        <h2 class="font-display text-xl font-bold text-text-main tracking-tight">
+          Strategic Home Finance: Navigating the Mortgage &amp; Home Buying Ecosystem
+        </h2>
+        <p>
+          Securing a <strong>house mortgage</strong> is one of the most significant financial milestones in an individual's lifetime. Whether you are searching for a <strong>simple mortgage calculator</strong> to estimate basic payments, or a comprehensive <strong>house cost calculator</strong> to model escrow dynamics, understanding the relationship between principal, <strong>mortgage interest rates</strong>, and loan duration is critical. By using a data-driven <strong>mortgage payment calculator</strong>, buyers can stress-test different borrowing brackets and avoid underestimating their total monthly cash outflow. A reliable <strong>monthly mortgage calculator</strong> gives you the insights needed to establish correct budget boundaries before you look at properties.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+        <div class="space-y-4">
+          <h3 class="font-display text-sm font-bold text-text-main">
+            How to Calculate House Mortgage Payments and Limits
+          </h3>
+          <p>
+            When preparing to buy a home, many buyers begin with a basic search for a <strong>free mortgage calculator</strong> or a quick <strong>google mortgage calculator</strong> tool. While these are excellent for high-level estimates, they often omit essential regional variables. For example, a <strong>mortgage calculator california</strong> must account for state-specific property taxes, insurance surcharges, and localized HOA limits. 
+          </p>
+          <p>
+            To truly <strong>calculate house mortgage</strong> viability, you must look beyond the base principal and interest. A comprehensive <strong>monthly mortgage calculator</strong> should always include property taxes and insurance allocations—commonly referred to as PITI. Using a <strong>mortgage calculator with taxes</strong> ensures that you do not face a major budget shock at closing. For example, modeling a <strong>500 000 house mortgage payment</strong> without adding 1.2% in property taxes and $800 annually in home insurance will cause you to underestimate your monthly cash commitment by hundreds of dollars.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <h3 class="font-display text-sm font-bold text-text-main">
+            The Power of Amortization &amp; Extra Payments
+          </h3>
+          <p>
+            When analyzing a long-term loan, a <strong>mortgage calculator amortization</strong> schedule is your most powerful strategic tool. It maps out how each payment is split between reducing your principal balance and paying off the accumulated interest. In the early years of a 30-year loan, the vast majority of your monthly payment is consumed by interest, meaning your home equity grows slowly.
+          </p>
+          <p>
+            This is why utilizing a <strong>mortgage calculator with extra payments</strong> is a game-changer. By adding a small, regular amount to your monthly principal, you can bypass front-loaded interest and cut years off your amortization timeline. For residential purchases, securing the <strong>best house mortgage rates</strong> combined with an accelerated payment strategy represents the single highest return on investment available to standard homeowners. Using a <strong>house mortgage calculator</strong> regularly allows you to adjust parameters and find the perfect balance.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-4">
+        <h3 class="font-display text-sm font-bold text-text-main">
+          Specialized Lending: Commercial, Reverse, and Carrying Costs
+        </h3>
+        <p>
+          Not all home loans are structured the same way. While standard home buyers look for a <strong>house mortgage rates calculator</strong> to model primary residences, investors planning property acquisitions require a specialized <strong>commercial mortgage calculator</strong>. Commercial underwriting models focus heavily on Debt Service Coverage Ratios (DSCR) and rental yields rather than personal gross income.
+        </p>
+        <p>
+          On the other side of the spectrum, senior homeowners who want to convert accumulated home equity into cash flow without selling their home look for a <strong>reverse mortgage calculator</strong>. These reverse loans have unique compounding interest dynamics that require careful calculation.
+        </p>
+        <p>
+          To maintain a healthy household budget, you must calculate the <strong>total house cost calculator</strong> metrics. Combining your <strong>monthly house cost calculator</strong> and your standard non-mortgage obligations gives you a complete view of your financial health. Using a professional-grade <strong>monthly house cost calculator</strong> helps you compare options side-by-side, ensuring you lock in the ideal structure for your home investment. By utilizing a <strong>house mortgage calculator</strong>, a <strong>house mortgage payment calculator</strong>, and analyzing your target <strong>house mortgage rate</strong>, you protect your long-term wealth and buy with confidence.
+        </p>
+      </div>
+
+      <!-- Platform & Support Links -->
+      <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold text-text-muted border-t border-border-subtle pt-8 mt-12">
+        <a href="/about-us" class="hover:text-brand-accent transition-colors">About Us</a>
+        <span class="h-1.5 w-1.5 rounded-full bg-border-subtle"></span>
+        <a href="/contact-us" class="hover:text-brand-accent transition-colors">Contact Us</a>
+        <span class="h-1.5 w-1.5 rounded-full bg-border-subtle"></span>
+        <a href="/privacy-policy" class="hover:text-brand-accent transition-colors">Privacy Policy</a>
+        <span class="h-1.5 w-1.5 rounded-full bg-border-subtle"></span>
+        <a href="/terms-and-conditions" class="hover:text-brand-accent transition-colors">Terms &amp; Conditions</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const searchInput = document.getElementById('faq-search') as HTMLInputElement;
+    const faqItems = document.querySelectorAll('.faq-item');
+    const emptyState = document.getElementById('faq-empty-state');
+
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        faqItems.forEach(item => {
+          const detailsEl = item as HTMLDetailsElement;
+          const text = detailsEl.innerText.toLowerCase();
+          
+          if (text.includes(query)) {
+            detailsEl.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            detailsEl.classList.add('hidden');
+            detailsEl.open = false; // close if hidden
+          }
+        });
+
+        if (emptyState) {
+          if (visibleCount === 0) {
+            emptyState.classList.remove('hidden');
+          } else {
+            emptyState.classList.add('hidden');
+          }
+        }
+      });
+    }
+  </script>
+
+  <Footer />
+</Layout>

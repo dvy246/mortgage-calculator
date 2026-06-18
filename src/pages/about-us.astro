@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="About Us - Mortgage Intelligence" description="Learn about the mission, values, and calculations behind the Mortgage Intelligence Platform.">
+  <Header activeSlug="about" />
+
+  <main class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <div class="space-y-4 text-center max-w-2xl mx-auto">
+      <span class="text-4xs font-bold uppercase tracking-widest text-brand-accent">Our Mission</span>
+      <h1 class="font-display text-3xl font-extrabold tracking-tight text-text-main sm:text-4xl">
+        About Mortgage Intelligence
+      </h1>
+      <p class="text-sm text-text-muted leading-relaxed">
+        Providing direct, ad-free financial math to help buyers calculate carrying costs and borrow with confidence.
+      </p>
+    </div>
+
+    <div class="space-y-8 text-xs sm:text-sm text-text-muted leading-relaxed">
+      <div class="space-y-3">
+        <h2 class="font-display text-lg font-bold text-text-main">Why We Built This Platform</h2>
+        <p>
+          The mortgage shopping journey is frequently cluttered by aggressive sales funnels, hidden costs, and advertising bias. Most online mortgage tools are designed to capture your personal contact details and sell them as lead lists to third-party underwriters. 
+        </p>
+        <p>
+          We built <strong>Mortgage Intelligence</strong> to offer an alternative: a pure, privacy-first math engine that computes precise principal, interest, taxes, HOA fees, and PMI drop thresholds without requiring personal registrations or pushing sponsored lender biases.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+        <div class="space-y-3">
+          <h3 class="font-display text-base font-bold text-text-main">Underwriting Accuracy</h3>
+          <p>
+            Our models are based on standard banking equations, incorporating piecewise functions to back-calculate home prices from strict Debt-to-Income (DTI) caps. We use standard Freddie Mac weekly mortgage surveys to inform default rate suggestions, ensuring real-world relevancy.
+          </p>
+        </div>
+        <div class="space-y-3">
+          <h3 class="font-display text-base font-bold text-text-main">Open &amp; Transparent Math</h3>
+          <p>
+            Unlike calculators that hide their underlying assumptions, we publish our exact formulas, regional tax averages, and loan payment equations in our dedicated Methodology and Assumptions Directory. Transparency builds financial trust.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-4 border-t border-border-subtle">
+        <h2 class="font-display text-lg font-bold text-text-main">Core Engineering Principles</h2>
+        <p>
+          To deliver a world-class financial planning dashboard, our development follows three strict tenets:
+        </p>
+        <ul class="list-disc pl-5 space-y-2">
+          <li><strong>Performance First:</strong> Built as a static MPA (Multi-Page Application) on Astro, achieving a 100/100 Core Web Vitals score.</li>
+          <li><strong>Theme-Aware Design:</strong> Seamless light/dark preferences matching high-end financial platforms like Stripe and Ramp.</li>
+          <li><strong>Data Privacy:</strong> All calculation parameters remain inside your browser's local sandbox. We do not track or store your financial planning data.</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

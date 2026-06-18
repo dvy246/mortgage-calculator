@@ -1,0 +1,534 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SVGCharts from '../components/Calculator/SVGCharts.astro';
+import AffordabilityGuard from '../components/Calculator/AffordabilityGuard.astro';
+import StressTest from '../components/Calculator/StressTest.astro';
+import AmortizationTable from '../components/Calculator/AmortizationTable.astro';
+import LeadGenCard from '../components/LeadGenCard.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+import PrintModal from '../components/Calculator/PrintModal.astro';
+import MortgageReport from '../components/Calculator/MortgageReport.astro';
+
+const faqs = [
+  {
+    question: "Can I buy a house with a higher DTI than 36%?",
+    answer: "Yes, some programs like FHA loans allow total debt ratios up to 43% or even 50% with compensating factors. However, spending half your gross income on housing and debt severely restricts your ability to save or cover emergencies."
+  },
+  {
+    question: "Should I include utility bills in my monthly debts?",
+    answer: "No, utilities, phone bills, car insurance, and groceries are not reporting debts. Only include recurring obligations that appear on your credit report, such as student loans, credit card minimums, and car payments."
+  },
+  {
+    question: "How much cash reserves should I maintain after closing?",
+    answer: "Beyond your down payment and closing costs (which average 2% to 5% of purchase price), it is highly recommended to retain at least 3 to 6 months of total housing expenses in an emergency fund."
+  }
+];
+---
+
+<Layout 
+  title="House Affordability Calculator - Can I Afford This House?"
+  description="Calculate your home buying budget using the 28/36 rule. See comfortable vs stretch pricing guidelines based on your income and debts."
+  canonicalUrl="/house-affordability-calculator"
+>
+  <Header activeSlug="affordability" />
+
+  <!-- PDF Print Report Header -->
+  <div id="print-header" class="border-b border-border-subtle pb-4 mb-6 hidden">
+    <div class="flex justify-between items-end">
+      <div>
+        <h1 class="text-xl font-bold font-display text-text-main">Mortgage Intelligence Report</h1>
+        <p class="text-2xs text-text-muted">Advisory Assessment: House Purchasing Affordability</p>
+      </div>
+      <div class="text-right text-text-muted text-2xs">
+        <span>Generated: {new Date().toLocaleDateString()}</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-2">
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">House Affordability Calculator</h1>
+      <p class="text-xs text-text-muted">Analyze your safe housing budget and DTI metrics based on your financial profile.</p>
+    </div>
+
+    <!-- 2-Column Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT: Controls Pane (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-6">
+          <h2 class="font-display text-sm font-semibold text-text-main border-b border-border-subtle pb-2">Financial Profiles</h2>
+          
+          <!-- Gross Annual Income -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="income-input" class="font-medium text-text-muted">Gross Annual Income</label>
+                <!-- Interactive Tooltip -->
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">Your total pre-tax earnings in a year. Lenders use this base to calculate your maximum monthly payment capabilities.</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="income-display">$120,000</span>
+            </div>
+            <input 
+              type="range" 
+              id="income-slider" 
+              min="30000" 
+              max="300000" 
+              step="5000" 
+              value="120000" 
+              aria-label="Gross Annual Income Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted text-3xs">$30k</span>
+              <input 
+                type="number" 
+                id="income-input" 
+                value="120000" 
+                class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none"
+                aria-label="Gross Annual Income Input"
+              />
+              <span class="text-text-muted text-3xs">$300k</span>
+            </div>
+          </div>
+
+          <!-- Monthly Debts -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="debts-input" class="font-medium text-text-muted">Monthly Debts</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">Include recurring monthly payments that appear on your credit report (e.g. credit card minimums, student loans, car notes). Exclude utilities or groceries.</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="debts-display">$500</span>
+            </div>
+            <input 
+              type="range" 
+              id="debts-slider" 
+              min="0" 
+              max="5000" 
+              step="100" 
+              value="500" 
+              aria-label="Monthly Debts Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted text-3xs">$0</span>
+              <input 
+                type="number" 
+                id="debts-input" 
+                value="500" 
+                class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none"
+                aria-label="Monthly Debts Input"
+              />
+              <span class="text-text-muted text-3xs">$5k</span>
+            </div>
+          </div>
+
+          <!-- Down Payment -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="down-input" class="font-medium text-text-muted">Down Payment</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">Upfront capital you plan to pay at closing. Down payments below 20% of the purchase price require Private Mortgage Insurance (PMI).</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="down-display">$60,000</span>
+            </div>
+            <input 
+              type="range" 
+              id="down-slider" 
+              min="5000" 
+              max="200000" 
+              step="5000" 
+              value="60000" 
+              aria-label="Available Down Payment Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted text-3xs">$5k</span>
+              <input 
+                type="number" 
+                id="down-input" 
+                value="60000" 
+                class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none"
+                aria-label="Available Down Payment Input"
+              />
+              <span class="text-text-muted text-3xs">$200k</span>
+            </div>
+          </div>
+
+          <!-- Rate & Term Group -->
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="rate-input" class="font-medium text-text-muted">Interest Rate (%)</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The expected annual interest rate of your home loan. Higher APR reduces your overall home price affordability.</span>
+                </span>
+              </span>
+              <input 
+                type="number" 
+                id="rate-input" 
+                value="6.50" 
+                step="0.1" 
+                min="0.1" 
+                max="15"
+                class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none"
+              />
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="term-select" class="font-medium text-text-muted">Loan Term</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The repayment duration of the loan. A 15-year term features higher monthly payments but saves massive interest over a 30-year term.</span>
+                </span>
+              </span>
+              <select 
+                id="term-select" 
+                class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main focus:border-border-focus focus:outline-none"
+              >
+                <option value="30">30 Years, Fixed</option>
+                <option value="20">20 Years, Fixed</option>
+                <option value="15">15 Years, Fixed</option>
+                <option value="10">10 Years, Fixed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Advanced Accordion Toggle -->
+          <details class="group text-xs">
+            <summary class="flex justify-between items-center cursor-pointer text-text-muted font-semibold hover:text-text-main py-2">
+              <span>Advanced Estimates (Escrow, PMI)</span>
+              <svg class="h-4 w-4 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </summary>
+            <div class="space-y-4 pt-3 border-t border-border-subtle mt-2">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                  <label for="tax-input" class="font-medium text-text-muted">Property Tax Rate (%)</label>
+                  <input type="number" id="tax-input" value="1.1" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+                </div>
+                <div class="space-y-1.5">
+                  <label for="ins-input" class="font-medium text-text-muted">Home Insurance (%)</label>
+                  <input type="number" id="ins-input" value="0.5" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                  <label for="pmi-input" class="font-medium text-text-muted">PMI Rate (%)</label>
+                  <input type="number" id="pmi-input" value="0.75" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+                </div>
+                <div class="space-y-1.5">
+                  <label for="hoa-input" class="font-medium text-text-muted">Monthly HOA ($)</label>
+                  <input type="number" id="hoa-input" value="0" step="10" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <LeadGenCard />
+      </div>
+      
+      <!-- RIGHT: Dashboard Outputs (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Summary Numbers Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 grid grid-cols-2 gap-6 relative">
+          <div>
+            <span class="text-text-muted text-xs font-semibold block">Comfortable Home Price</span>
+            <span class="text-3xl font-extrabold text-text-main font-display font-tabular tracking-tight mt-1 animate-fade-in" id="price-comfortable">$0</span>
+            <span class="text-3xs text-text-muted block mt-1" id="payment-comfortable">Est. payment: $0/mo</span>
+          </div>
+          <div class="border-l border-border-subtle pl-6 flex justify-between items-start">
+            <div>
+              <span class="text-text-muted text-xs font-semibold block">Stretch Home Price</span>
+              <span class="text-3xl font-extrabold text-blue-500 font-display font-tabular tracking-tight mt-1" id="price-stretch">$0</span>
+              <span class="text-3xs text-text-muted block mt-1" id="payment-stretch">Est. payment: $0/mo</span>
+            </div>
+            
+            <!-- Download PDF Report Button -->
+            <button 
+              class="absolute top-4 right-4 p-1.5 rounded-md border border-border-subtle bg-bg-main hover:bg-bg-card-hover text-text-muted hover:text-brand-accent transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              id="download-report-btn"
+              title="Download PDF Planning Report"
+              aria-label="Download PDF Planning Report"
+            >
+              <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <AffordabilityGuard />
+        
+        <SVGCharts />
+        
+        <StressTest />
+        <MortgageReport />
+
+      </div>
+    </div>
+
+    <!-- Repayment Table Section -->
+    <AmortizationTable />
+
+    <!-- Reusable Mortgage Handbook component -->
+    <MortgageGuide 
+      title="House Affordability"
+      subtitle="Evaluating purchasing thresholds using the 28/36 rule"
+      whatItDoes="Analyzes your gross income, ongoing recurring obligations, down payment capital, and local escrow costs to back-calculate your safe and maximum purchasing power."
+      whenToUse="Use this calculator at the very start of your home shopping journey, before seeking mortgage pre-approvals, to establish real budget guardrails."
+      howItWorks="Calculates two target housing payments: Comfortable (28% of gross monthly income) and Stretch (36% of gross monthly income minus monthly debts). It then runs piecewise back-calculations solving for Home Price H where: Monthly P&I + Taxes + Insurance + PMI + HOA equals the target payment."
+      mistakes="Avoid assuming you can borrow up to FHA max DTI ratios (43% to 50%) without severe budget strain. Lenders define what you can borrow, not what you should spend. Always factor in local property tax assessments and condo/HOA dues."
+      faqs={faqs}
+    />
+
+    <!-- Disclaimer card -->
+    <Disclaimer />
+  </main>
+
+  <!-- PDF Print Disclaimer -->
+  <div id="print-disclaimer" class="hidden">
+    <h4 class="font-bold mb-1">Mortgage Intelligence Report Disclaimer</h4>
+    <p>
+      This document constitutes an advisory summary compiled under user-input assumptions. Estimates are not guaranteed. Lenders will execute separate underwriting passes before issuing binding commitments. Consult certified financial planners.
+    </p>
+  </div>
+
+  <PrintModal />
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateAffordability, calculateMortgage } from '../utils/mortgage';
+
+  // Grab DOM inputs
+  const incomeSlider = document.getElementById('income-slider') as HTMLInputElement;
+  const incomeInput = document.getElementById('income-input') as HTMLInputElement;
+  const incomeDisplay = document.getElementById('income-display');
+
+  const debtsSlider = document.getElementById('debts-slider') as HTMLInputElement;
+  const debtsInput = document.getElementById('debts-input') as HTMLInputElement;
+  const debtsDisplay = document.getElementById('debts-display');
+
+  const downSlider = document.getElementById('down-slider') as HTMLInputElement;
+  const downInput = document.getElementById('down-input') as HTMLInputElement;
+  const downDisplay = document.getElementById('down-display');
+
+  const rateInput = document.getElementById('rate-input') as HTMLInputElement;
+  const termSelect = document.getElementById('term-select') as HTMLSelectElement;
+
+  const taxInput = document.getElementById('tax-input') as HTMLInputElement;
+  const insInput = document.getElementById('ins-input') as HTMLInputElement;
+  const pmiInput = document.getElementById('pmi-input') as HTMLInputElement;
+  const hoaInput = document.getElementById('hoa-input') as HTMLInputElement;
+
+  // Sync Slider to Input Box and Recalculate
+  function setupSync(slider: HTMLInputElement, input: HTMLInputElement, display: HTMLElement | null, formatAsPrice = true) {
+    const update = () => {
+      input.value = slider.value;
+      if (display) {
+        display.textContent = formatAsPrice 
+          ? `$${parseInt(slider.value).toLocaleString('en-US')}` 
+          : slider.value;
+      }
+      recalculate();
+    };
+    slider.addEventListener('input', update);
+    input.addEventListener('input', () => {
+      let val = parseFloat(input.value) || 0;
+      val = Math.min(parseFloat(slider.max), Math.max(parseFloat(slider.min), val));
+      slider.value = String(val);
+      if (display) {
+        display.textContent = formatAsPrice 
+          ? `$${Math.round(val).toLocaleString('en-US')}` 
+          : String(val);
+      }
+      recalculate();
+    });
+  }
+
+  setupSync(incomeSlider, incomeInput, incomeDisplay);
+  setupSync(debtsSlider, debtsInput, debtsDisplay);
+  setupSync(downSlider, downInput, downDisplay);
+
+  [rateInput, termSelect, taxInput, insInput, pmiInput, hoaInput].forEach(control => {
+    control.addEventListener('input', recalculate);
+  });
+
+  function recalculate() {
+    const annualIncome = parseFloat(incomeInput.value) || 0;
+    const monthlyDebts = parseFloat(debtsInput.value) || 0;
+    const downPayment = parseFloat(downInput.value) || 0;
+    const interestRate = parseFloat(rateInput.value) || 0;
+    const loanTermYears = parseInt(termSelect.value) || 30;
+
+    const propertyTaxRate = parseFloat(taxInput.value) || 0;
+    const insuranceRate = parseFloat(insInput.value) || 0;
+    const pmiRate = parseFloat(pmiInput.value) || 0;
+    const hoaFee = parseFloat(hoaInput.value) || 0;
+
+    const aff = calculateAffordability({
+      annualIncome,
+      monthlyDebts,
+      downPayment,
+      interestRate,
+      loanTermYears,
+      propertyTaxRate,
+      insuranceRate,
+      pmiRate,
+      hoaFee
+    });
+
+    const compPriceEl = document.getElementById('price-comfortable');
+    const compPayEl = document.getElementById('payment-comfortable');
+    if (compPriceEl) compPriceEl.textContent = `$${Math.round(aff.comfortableHomePrice).toLocaleString('en-US')}`;
+    if (compPayEl) compPayEl.textContent = `Est. payment: $${Math.round(aff.comfortableTotalMonthly).toLocaleString('en-US')}/mo`;
+
+    const stretchPriceEl = document.getElementById('price-stretch');
+    const stretchPayEl = document.getElementById('payment-stretch');
+    if (stretchPriceEl) stretchPriceEl.textContent = `$${Math.round(aff.stretchHomePrice).toLocaleString('en-US')}`;
+    if (stretchPayEl) stretchPayEl.textContent = `Est. payment: $${Math.round(aff.stretchTotalMonthly).toLocaleString('en-US')}/mo`;
+
+    const originalPrincipal = Math.max(0, aff.comfortableHomePrice - downPayment);
+    const result = calculateMortgage({
+      homePrice: aff.comfortableHomePrice,
+      downPayment,
+      interestRate,
+      loanTermYears,
+      propertyTaxRate,
+      insuranceRate,
+      pmiRate,
+      hoaFee,
+      extraMonthly: 0,
+      extraAnnual: 0,
+      extraOneTime: []
+    });
+
+    if (window.updateDTIGauge) {
+      window.updateDTIGauge(result.totalMonthlyPayment - hoaFee, monthlyDebts, annualIncome);
+    }
+    
+    const stretchResult = calculateMortgage({
+      homePrice: aff.stretchHomePrice,
+      downPayment,
+      interestRate,
+      loanTermYears,
+      propertyTaxRate,
+      insuranceRate,
+      pmiRate,
+      hoaFee,
+      extraMonthly: 0,
+      extraAnnual: 0,
+      extraOneTime: []
+    });
+
+    if (window.updateDTIGauge) {
+      window.updateDTIGauge(result.totalMonthlyPayment - hoaFee, monthlyDebts, annualIncome);
+    }
+    
+    if (window.drawDonutChart) {
+      window.drawDonutChart(
+        result.monthlyPrincipalAndInterest,
+        result.monthlyPropertyTax,
+        result.monthlyInsurance,
+        result.monthlyPMI,
+        result.monthlyHOA
+      );
+    }
+
+    if (window.drawAmortizationChart) {
+      window.drawAmortizationChart(result.amortizationSchedule, stretchResult.amortizationSchedule);
+    }
+
+    if ((window as any).generateMortgageReport) {
+      (window as any).generateMortgageReport({
+        homePrice: aff.comfortableHomePrice,
+        downPayment,
+        interestRate,
+        termYears: loanTermYears,
+        monthlyPayment: result.totalMonthlyPayment,
+        monthlyPI: result.monthlyPrincipalAndInterest,
+        income: annualIncome,
+        debts: monthlyDebts,
+        pmi: result.monthlyPMI,
+        hoa: result.monthlyHOA
+      });
+    }
+
+    if ((window as any).updateChartInsights) {
+      (window as any).updateChartInsights([
+        {
+          label: "Comfortable Purchase",
+          value: `$${Math.round(aff.comfortableHomePrice).toLocaleString('en-US')}`,
+          badge: `Payment: $${Math.round(aff.comfortableTotalMonthly).toLocaleString('en-US')}/mo`,
+          badgeColor: "emerald"
+        },
+        {
+          label: "Stretch Purchase Limit",
+          value: `$${Math.round(aff.stretchHomePrice).toLocaleString('en-US')}`,
+          badge: `Payment: $${Math.round(aff.stretchTotalMonthly).toLocaleString('en-US')}/mo`,
+          badgeColor: "amber"
+        },
+        {
+          label: "Gross Monthly Income",
+          value: `$${Math.round(annualIncome / 12).toLocaleString('en-US')}/mo`,
+          badge: "28/36 DTI limit",
+          badgeColor: "blue"
+        },
+        {
+          label: "Underwriting Debts",
+          value: `$${Math.round(monthlyDebts).toLocaleString('en-US')}/mo`,
+          badge: monthlyDebts > 0 ? "Reduced borrowing cap" : "No debt liability",
+          badgeColor: monthlyDebts > 0 ? "rose" : "muted"
+        }
+      ]);
+    }
+
+    if (window.renderAmortizationTable) {
+      window.renderAmortizationTable(result.amortizationSchedule);
+    }
+
+    if (window.updateStressTest) {
+      window.updateStressTest(originalPrincipal, interestRate, loanTermYears, result.monthlyPropertyTax + result.monthlyInsurance + result.monthlyPMI + result.monthlyHOA);
+    }
+
+    if (window.registerCurrentRunData) {
+      window.registerCurrentRunData({
+        homePrice: aff.comfortableHomePrice,
+        downPayment,
+        interestRate,
+        termYears: loanTermYears,
+        monthlyPayment: result.totalMonthlyPayment,
+        totalInterest: result.totalInterestPaid
+      });
+    }
+  }
+
+  // Bind PDF Download report trigger
+  const printBtn = document.getElementById('download-report-btn');
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      if ((window as any).openPrintModal) {
+        (window as any).openPrintModal();
+      } else {
+        window.print();
+      }
+    });
+  }
+
+  // Initial calculation run
+  recalculate();
+</script>

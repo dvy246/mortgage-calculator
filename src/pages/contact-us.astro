@@ -1,0 +1,117 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Contact Us - Mortgage Intelligence" description="Get in touch with the Mortgage Intelligence platform for general inquiries, feedback, and support.">
+  <Header activeSlug="contact" />
+
+  <main class="mx-auto max-w-lg px-4 py-16 sm:px-6 lg:px-8 space-y-8 flex-grow">
+    <div class="space-y-3 text-center">
+      <span class="text-4xs font-bold uppercase tracking-widest text-brand-accent">Get in Touch</span>
+      <h1 class="font-display text-3xl font-extrabold tracking-tight text-text-main">
+        Contact Us
+      </h1>
+      <p class="text-xs text-text-muted">
+        Have feedback about our calculators or want to report an underwriting bug? Let us know.
+      </p>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-6 shadow-xs relative">
+      <form id="contact-form" class="space-y-4 text-xs">
+        <div class="space-y-1">
+          <label for="contact-name" class="block font-medium text-text-muted">Name</label>
+          <input 
+            type="text" 
+            id="contact-name" 
+            placeholder="John Doe" 
+            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            required
+          />
+        </div>
+
+        <div class="space-y-1">
+          <label for="contact-email" class="block font-medium text-text-muted">Email Address</label>
+          <input 
+            type="email" 
+            id="contact-email" 
+            placeholder="john@example.com" 
+            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            required
+          />
+        </div>
+
+        <div class="space-y-1">
+          <label for="contact-subject" class="block font-medium text-text-muted">Subject</label>
+          <select 
+            id="contact-subject" 
+            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-2.5 text-text-main focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            required
+          >
+            <option value="feedback">General Feedback</option>
+            <option value="calculator">Calculator Inaccuracy / Bug</option>
+            <option value="licensing">API / Business Licensing</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label for="contact-message" class="block font-medium text-text-muted">Message</label>
+          <textarea 
+            id="contact-message" 
+            rows="4" 
+            placeholder="Your message details..." 
+            class="w-full rounded-md border border-border-input bg-bg-input p-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent resize-none"
+            required
+          ></textarea>
+        </div>
+
+        <button 
+          type="submit" 
+          id="contact-submit-btn"
+          class="h-9 w-full rounded-md bg-brand-primary text-xs font-semibold text-bg-card hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer border border-border-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        >
+          Send Message
+        </button>
+      </form>
+
+      <!-- Success Overlay -->
+      <div id="contact-success" class="hidden flex flex-col items-center justify-center text-center py-12 space-y-3">
+        <div class="h-10 w-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div class="space-y-1">
+          <h4 class="font-bold text-xs text-text-main">Message Transmitted</h4>
+          <p class="text-3xs text-text-muted px-4 leading-normal">
+            Thank you for contacting us. We appreciate your feedback and generally respond within 48 business hours.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('contact-form') as HTMLFormElement;
+    const success = document.getElementById('contact-success');
+    const submitBtn = document.getElementById('contact-submit-btn') as HTMLButtonElement;
+
+    if (form && success && submitBtn) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending…";
+        
+        setTimeout(() => {
+          form.classList.add('hidden');
+          success.classList.remove('hidden');
+        }, 1200);
+      });
+    }
+  </script>
+
+  <Footer />
+</Layout>

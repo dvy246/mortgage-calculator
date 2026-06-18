@@ -1,0 +1,179 @@
+---
+interface Props {
+  activeSlug?: string;
+}
+
+const { activeSlug } = Astro.props;
+
+const links = [
+  { name: "Affordability", href: "/house-affordability-calculator", slug: "affordability" },
+  { name: "Payoff", href: "/mortgage-payoff-calculator", slug: "payoff" },
+  { name: "Extra Payments", href: "/extra-payment-calculator", slug: "extra" },
+  { name: "Refinance", href: "/refinance-calculator", slug: "refinance" },
+  { name: "PMI", href: "/mortgage-calculator-with-pmi", slug: "pmi" }
+];
+---
+
+<header class="sticky top-0 z-50 w-full border-b border-border-subtle bg-bg-card/85 backdrop-blur-md">
+  <div class="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-6">
+      <a href="/" class="flex items-center gap-2 font-display text-base font-semibold tracking-tight text-text-main transition-opacity hover:opacity-90">
+        <svg class="h-5 w-5 text-brand-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span>Mortgage<span class="text-brand-accent">Intelligence</span></span>
+      </a>
+      <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-text-muted">
+        {links.map(link => (
+          <a
+            href={link.href}
+            class={`px-3 py-1.5 rounded-md transition-colors hover:text-text-main ${
+              activeSlug === link.slug ? "text-text-main bg-bg-card-hover border border-border-subtle" : "hover:bg-bg-card-hover/50"
+            }`}
+          >
+            {link.name}
+          </a>
+        ))}
+      </nav>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <a 
+        href="/#compare-anchor" 
+        class="hidden sm:inline text-xs font-medium text-text-muted hover:text-text-main transition-colors"
+        id="header-compare-link"
+      >
+        Compare Scenarios
+      </a>
+      <a 
+        href="/glossary" 
+        class="hidden sm:inline text-xs font-medium text-text-muted hover:text-text-main transition-colors"
+        id="header-glossary-link"
+      >
+        Glossary
+      </a>
+      
+      <!-- Theme Switcher Button -->
+      <button 
+        id="theme-toggle"
+        class="p-1.5 rounded-md border border-border-subtle bg-bg-card hover:bg-bg-card-hover text-text-muted hover:text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-colors cursor-pointer"
+        aria-label="Toggle theme color"
+      >
+        <!-- Sun Icon -->
+        <svg id="theme-icon-sun" class="h-4.5 w-4.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <!-- Moon Icon -->
+        <svg id="theme-icon-moon" class="h-4.5 w-4.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      <a
+        href="/#rates-cta"
+        class="inline-flex h-8 items-center justify-center rounded-md bg-brand-primary px-3.5 text-xs font-semibold text-bg-main border border-border-subtle transition-all hover:opacity-90 active:scale-[0.98]"
+      >
+        Check Rates
+      </a>
+      
+      <!-- Mobile menu trigger -->
+      <button 
+        class="md:hidden p-1.5 text-text-muted hover:text-text-main focus:outline-none" 
+        id="mobile-menu-toggle"
+        aria-label="Toggle Navigation Menu"
+        aria-expanded="false"
+      >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mobile Navigation Drawer -->
+  <div class="hidden border-b border-border-subtle bg-bg-card px-4 py-3 md:hidden" id="mobile-menu">
+    <nav class="flex flex-col gap-2 text-sm font-medium text-text-muted">
+      {links.map(link => (
+        <a
+          href={link.href}
+          class={`px-3 py-2 rounded-md transition-colors ${
+            activeSlug === link.slug ? "text-text-main bg-bg-card-hover" : "hover:text-text-main hover:bg-bg-card-hover"
+          }`}
+        >
+          {link.name}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggleBtn = document.getElementById('mobile-menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  if (toggleBtn && menu) {
+    toggleBtn.addEventListener('click', () => {
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', String(!isExpanded));
+      menu.classList.toggle('hidden');
+    });
+  }
+
+  // Theme Toggler JavaScript
+  const themeToggle = document.getElementById('theme-toggle');
+  const sunIcon = document.getElementById('theme-icon-sun');
+  const moonIcon = document.getElementById('theme-icon-moon');
+
+  function getTheme() {
+    return localStorage.getItem('mi_theme') || 'system';
+  }
+
+  function updateIcons() {
+    if (!sunIcon || !moonIcon) return;
+    const isDarkNow = document.documentElement.classList.contains('dark');
+    if (isDarkNow) {
+      sunIcon.classList.remove('hidden');
+      moonIcon.classList.add('hidden');
+    } else {
+      sunIcon.classList.add('hidden');
+      moonIcon.classList.remove('hidden');
+    }
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isCurrentlyDark = document.documentElement.classList.contains('dark');
+      const newTheme = isCurrentlyDark ? 'light' : 'dark';
+      
+      localStorage.setItem('mi_theme', newTheme);
+      document.documentElement.classList.toggle('dark', newTheme === 'dark');
+      
+      updateIcons();
+      
+      // Dispatch event to redraw SVG charts
+      window.dispatchEvent(new Event('themechange'));
+    });
+
+    // Run once on load to sync icons
+    updateIcons();
+  }
+
+  // Handle system preference changes
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (getTheme() === 'system') {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.toggle('dark', isDark);
+      updateIcons();
+      window.dispatchEvent(new Event('themechange'));
+    }
+  });
+</script>

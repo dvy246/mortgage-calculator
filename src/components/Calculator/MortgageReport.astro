@@ -1,0 +1,264 @@
+---
+---
+<div id="mortgage-report-card" class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6 shadow-xs hidden print:block print:border-none print:shadow-none print:p-0">
+  <!-- Header with Advisor Brand Stamp -->
+  <div class="flex justify-between items-start border-b border-border-subtle pb-4 print:pb-2">
+    <div>
+      <span class="text-4xs font-bold uppercase tracking-widest text-brand-accent print:text-xs">Mortgage Intelligence Group</span>
+      <h3 class="font-display text-base font-bold text-text-main sm:text-lg mt-1">Financial Advisory Summary Report</h3>
+    </div>
+    <div class="text-right text-3xs text-text-muted print:text-2xs font-tabular">
+      <span id="report-date">Date: June 18, 2026</span>
+    </div>
+  </div>
+
+  <!-- Report Sections Grid -->
+  <div class="space-y-5 text-xs text-text-muted leading-relaxed print:text-2xs print:space-y-4 print:leading-normal">
+    <!-- 1. Executive Summary -->
+    <div class="space-y-1">
+      <h4 class="font-display font-semibold text-text-main text-xs uppercase tracking-wider print:text-xs">1. Executive Summary</h4>
+      <p id="report-executive-summary">
+        Initializing executive summary...
+      </p>
+    </div>
+
+    <!-- 2. Affordability Assessment -->
+    <div class="space-y-1">
+      <h4 class="font-display font-semibold text-text-main text-xs uppercase tracking-wider print:text-xs">2. Affordability Assessment</h4>
+      <p id="report-affordability-assessment">
+        Initializing affordability limits check...
+      </p>
+    </div>
+
+    <!-- 3. Debt Analysis -->
+    <div class="space-y-1">
+      <h4 class="font-display font-semibold text-text-main text-xs uppercase tracking-wider print:text-xs">3. Debt Analysis</h4>
+      <p id="report-debt-analysis">
+        Analyzing debt-to-income metrics...
+      </p>
+    </div>
+
+    <!-- 4. Mortgage Risk Assessment -->
+    <div class="space-y-1">
+      <h4 class="font-display font-semibold text-text-main text-xs uppercase tracking-wider print:text-xs">4. Mortgage Risk Assessment</h4>
+      <p id="report-risk-assessment">
+        Evaluating cash flow risk factors...
+      </p>
+    </div>
+
+    <!-- 5. Opportunity Analysis -->
+    <div class="space-y-1">
+      <h4 class="font-display font-semibold text-text-main text-xs uppercase tracking-wider print:text-xs">5. Opportunity Analysis</h4>
+      <p id="report-opportunity-analysis">
+        Scanning interest savings opportunities...
+      </p>
+    </div>
+
+    <!-- 6. Actionable Recommendations -->
+    <div class="space-y-1">
+      <h4 class="font-display font-semibold text-text-main text-xs uppercase tracking-wider print:text-xs">6. Actionable Recommendations</h4>
+      <p id="report-recommendations">
+        Compiling strategic recommendations...
+      </p>
+    </div>
+
+    <!-- 7. Next Steps -->
+    <div class="space-y-1">
+      <h4 class="font-display font-semibold text-text-main text-xs uppercase tracking-wider print:text-xs">7. Next Steps</h4>
+      <ol class="list-decimal pl-4 space-y-1" id="report-next-steps">
+        <li>Confirm underwriting constraints.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Sign-off Block for Print Authenticity -->
+  <div class="border-t border-border-subtle pt-4 flex justify-between items-center text-3xs text-text-muted print:text-2xs print:pt-2">
+    <span>Prepared for Mortgage Decision Support Portal</span>
+    <span class="font-semibold text-text-main">Status: Approved for Planning</span>
+  </div>
+</div>
+
+<script>
+  // Expose global generator hook
+  (window as any).generateMortgageReport = function(data: {
+    homePrice: number;
+    downPayment: number;
+    interestRate: number;
+    termYears: number;
+    monthlyPayment: number;
+    monthlyPI: number;
+    income: number;
+    debts: number;
+    pmi: number;
+    hoa: number;
+    extraMonthly?: number;
+    totalInterestSaved?: number;
+    yearsSaved?: number;
+    refiSavings?: number;
+  }) {
+    const reportCard = document.getElementById('mortgage-report-card');
+    if (!reportCard) return;
+
+    // Save report data globally for PDF metadata access
+    (window as any).lastReportData = data;
+
+    // Make report visible
+    reportCard.classList.remove('hidden');
+
+    // Set Report Date
+    const dateEl = document.getElementById('report-date');
+    if (dateEl) {
+      const today = new Date();
+      dateEl.textContent = `Date: ${today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+    }
+
+    const principal = Math.max(0, data.homePrice - data.downPayment);
+    const ltv = (principal / data.homePrice) * 100;
+    
+    const monthlyGrossIncome = Math.max(1, data.income / 12);
+    const frontEndDti = (data.monthlyPayment / monthlyGrossIncome) * 100;
+    const backEndDti = ((data.monthlyPayment + data.debts) / monthlyGrossIncome) * 100;
+    const buffer = data.monthlyPayment * 6;
+
+    // --- 1. EXECUTIVE SUMMARY ---
+    const execSummaryEl = document.getElementById('report-executive-summary');
+    if (execSummaryEl) {
+      const lifetimeInterest = Math.round(data.monthlyPI * data.termYears * 12 - principal);
+      const interestToLoanRatio = ((lifetimeInterest / principal) * 100).toFixed(0);
+      execSummaryEl.innerHTML = `
+        This assessment evaluates a proposed fixed-rate home loan structure for a property value of 
+        <strong>$${Math.round(data.homePrice).toLocaleString('en-US')}</strong>. With a down payment contribution of 
+        <strong>$${Math.round(data.downPayment).toLocaleString('en-US')}</strong> (${Math.round((data.downPayment / data.homePrice) * 100)}%), 
+        the initial financed principal balance of <strong>$${Math.round(principal).toLocaleString('en-US')}</strong> is scheduled 
+        at a <strong>${data.interestRate}%</strong> fixed APR for a <strong>${data.termYears}-year</strong> term. Under standard amortization, 
+        the base monthly Principal and Interest (P&amp;I) obligation totals <strong>$${Math.round(data.monthlyPI).toLocaleString('en-US')}/mo</strong>, 
+        producing a scheduled lifetime interest liability of <strong>$${lifetimeInterest.toLocaleString('en-US')}</strong> 
+        (${interestToLoanRatio}% of the original loan principal). The total estimated monthly carrying cost is 
+        <strong>$${Math.round(data.monthlyPayment).toLocaleString('en-US')}/mo</strong>, which includes allocations for property tax, 
+        insurance, HOA fees, and PMI where applicable.
+      `;
+    }
+
+    // --- 2. AFFORDABILITY ASSESSMENT ---
+    const affordabilityEl = document.getElementById('report-affordability-assessment');
+    if (affordabilityEl) {
+      let ltvText = "";
+      if (ltv > 80) {
+        ltvText = `With a Loan-to-Value (LTV) ratio of <strong>${ltv.toFixed(1)}%</strong>, standard Private Mortgage Insurance (PMI) is required, adding <strong>$${Math.round(data.pmi).toLocaleString('en-US')}/mo</strong> to the carrying cost. Consider expanding the down payment to eliminate this fee and optimize carrying capacity.`;
+      } else {
+        ltvText = `With a conservative LTV ratio of <strong>${ltv.toFixed(1)}%</strong>, the transaction avoids PMI charges, protecting immediate cash flow and maximizing early equity retention.`;
+      }
+      affordabilityEl.innerHTML = `
+        The total monthly carrying cost is <strong>$${Math.round(data.monthlyPayment).toLocaleString('en-US')}/mo</strong>. 
+        ${ltvText} To manage this transaction safely, the borrower should maintain a post-closing liquid emergency reserve of at least 
+        <strong>$${Math.round(buffer).toLocaleString('en-US')}</strong> (equivalent to 6 months of housing payments) in addition to 
+        standard transaction closing costs of 2% to 5%.
+      `;
+    }
+
+    // --- 3. DEBT ANALYSIS ---
+    const debtEl = document.getElementById('report-debt-analysis');
+    if (debtEl) {
+      if (data.income && data.income > 0) {
+        let rating = "Comfortable";
+        let textClass = "text-emerald-500 font-bold";
+        if (backEndDti > 36) {
+          rating = "Danger / High Risk";
+          textClass = "text-rose-500 font-bold";
+        } else if (backEndDti > 28) {
+          rating = "Stretch / Moderate Risk";
+          textClass = "text-amber-500 font-bold";
+        }
+        
+        debtEl.innerHTML = `
+          Based on a household gross annual income of <strong>$${Math.round(data.income).toLocaleString('en-US')}</strong> 
+          ($${Math.round(monthlyGrossIncome).toLocaleString('en-US')}/mo) and recurring non-housing debts of 
+          <strong>$${Math.round(data.debts).toLocaleString('en-US')}/mo</strong>, the front-end housing ratio is 
+          <strong>${frontEndDti.toFixed(1)}%</strong> and the back-end Debt-to-Income (DTI) ratio is 
+          <span class="${textClass}">${backEndDti.toFixed(1)}%</span>. Underwriting standards cap conventional financing 
+          at a 36% back-end DTI cap. This profile falls in the <span class="${textClass}">${rating}</span> bracket, meaning 
+          ${backEndDti > 36 ? 'you may face strict underwriting hurdles unless non-housing debts are reduced' : 'lenders will view your debt capacity as acceptable'}.
+        `;
+      } else {
+        debtEl.innerHTML = `
+          Household income and existing non-mortgage debts were not provided. In standard mortgage underwriting, 
+          the 28/36 rule is applied, restricting housing costs to 28% of gross monthly earnings and total debt payments 
+          (including housing) to 36%. Without these metrics, a definitive debt serviceability assessment cannot be completed. 
+          We advise consulting an underwriter to review tax transcripts.
+        `;
+      }
+    }
+
+    // --- 4. MORTGAGE RISK ASSESSMENT ---
+    const risksEl = document.getElementById('report-risk-assessment');
+    if (risksEl) {
+      let riskText = "";
+      riskText += `The fixed interest rate of <strong>${data.interestRate}%</strong> protects the borrower from future market rate increases, but frontloads interest amortization in the early years of the term. `;
+      
+      if (ltv > 90) {
+        riskText += `Financing over 90% of the asset value leaves the borrower exposed to short-term negative equity if local home prices experience a 5-10% contraction. `;
+      }
+      if (data.income && data.income > 0 && backEndDti > 36) {
+        riskText += `The back-end DTI ratio of ${backEndDti.toFixed(1)}% leaves narrow discretionary cash flow, rendering the loan profile highly sensitive to temporary income disruptions. `;
+      }
+      if (ltv <= 90 && (!data.income || backEndDti <= 36)) {
+        riskText += `This profile displays low structural risk factors, with standard LTV positioning and housing obligations within conventional safety margins. `;
+      }
+      risksEl.innerHTML = riskText;
+    }
+
+    // --- 5. OPPORTUNITY ANALYSIS ---
+    const opportunitiesEl = document.getElementById('report-opportunity-analysis');
+    if (opportunitiesEl) {
+      let oppText = "";
+      if (data.totalInterestSaved && data.totalInterestSaved > 0) {
+        oppText = `Applying an accelerated prepayment of <strong>+$${Math.round(data.extraMonthly || 0).toLocaleString('en-US')}/mo</strong> reduces cumulative interest by <strong>$${Math.round(data.totalInterestSaved).toLocaleString('en-US')}</strong> and shortens the amortization schedule by approximately <strong>${data.yearsSaved?.toFixed(1)} years</strong>. This is the single highest-leverage optimization action available.`;
+      } else if (ltv > 80) {
+        oppText = `Reaching the 80% LTV threshold triggers automatic PMI cancellation under the Homeowners Protection Act, recovering <strong>$${Math.round(data.pmi).toLocaleString('en-US')}/mo</strong> in monthly cash flow. Directing surplus funds toward principal reduction will accelerate this milestone.`;
+      } else if (data.refiSavings && data.refiSavings > 0) {
+        oppText = `Refinancing at current terms yields an estimated <strong>$${Math.round(data.refiSavings).toLocaleString('en-US')}/mo</strong> in monthly cash flow improvement. The break-even period should be evaluated against your planned ownership horizon.`;
+      } else {
+        oppText = `Making one extra principal payment annually or a modest extra monthly payment of $100 to $200 can shave 3 to 5 years off the amortization schedule and save substantial interest. This remains the most cost-effective optimization for a standard fixed-rate mortgage.`;
+      }
+      opportunitiesEl.innerHTML = oppText;
+    }
+
+    // --- 6. ACTIONABLE RECOMMENDATIONS ---
+    const recommendationsEl = document.getElementById('report-recommendations');
+    if (recommendationsEl) {
+      let recs = "We recommend the following strategic actions: (1) Maintain a post-closing cash buffer of <strong>$" + Math.round(buffer).toLocaleString('en-US') + "</strong> in high-yield savings. (2) Set up bi-weekly automatic payments to organically accelerate principal reduction. ";
+      
+      if (ltv > 80) {
+        const diff = Math.max(0, data.homePrice * 0.2 - data.downPayment);
+        recs += `(3) Direct surplus cash toward principal reduction until LTV drops below 80% to eliminate PMI, saving <strong>$${Math.round(data.pmi).toLocaleString('en-US')}/mo</strong>. `;
+      }
+      if (data.income && data.income > 0 && backEndDti > 36) {
+        recs += `(4) Pay down revolving high-interest cards or auto loans to drop back-end DTI below 36% prior to formal application. `;
+      }
+      
+      recommendationsEl.innerHTML = recs;
+    }
+
+    // --- 7. NEXT STEPS ---
+    const stepsEl = document.getElementById('report-next-steps');
+    if (stepsEl) {
+      stepsEl.innerHTML = "";
+      
+      const li1 = document.createElement('li');
+      li1.innerHTML = `Obtain formal loan estimates from at least three underwriting lenders to compare origination fees and points.`;
+      stepsEl.appendChild(li1);
+
+      const li2 = document.createElement('li');
+      li2.innerHTML = `Lock in interest rates during market dips to secure the target fixed APR.`;
+      stepsEl.appendChild(li2);
+
+      const li3 = document.createElement('li');
+      li3.innerHTML = `Compile two years of tax returns, W-2s, and bank statements for the underwriting file.`;
+      stepsEl.appendChild(li3);
+
+      const li4 = document.createElement('li');
+      li4.innerHTML = `Avoid opening new credit lines or executing large bank transfers before closing.`;
+      stepsEl.appendChild(li4);
+    }
+  };
+</script>

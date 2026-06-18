@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Server Error (500) - Mortgage Intelligence" description="Something went wrong on our server. Please try again later or return home.">
+  <Header activeSlug="500" />
+
+  <main class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 flex flex-col justify-center items-center space-y-10 flex-grow">
+    <!-- Visual 500 Accent Card -->
+    <div class="text-center max-w-md mx-auto space-y-6">
+      <div class="inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-bg-card border border-border-subtle shadow-md shadow-brand-accent/5">
+        <svg class="h-10 w-10 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      </div>
+
+      <div class="space-y-2">
+        <span class="text-3xs font-bold uppercase tracking-widest text-brand-accent">Error Code: 500</span>
+        <h1 class="font-display text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl">
+          System Error
+        </h1>
+        <p class="text-sm text-text-muted leading-relaxed">
+          Our servers encountered an unexpected condition while processing this request. This issue has been logged, and we are working to resolve it.
+        </p>
+      </div>
+
+      <div class="pt-2 flex flex-wrap justify-center gap-4">
+        <a 
+          href="/" 
+          class="inline-flex items-center justify-center rounded-md bg-brand-accent px-4 py-2 text-xs font-semibold text-white hover:bg-brand-accent-hover transition-colors shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        >
+          Return Home
+        </a>
+        <button 
+          onclick="window.location.reload()" 
+          class="inline-flex items-center justify-center rounded-md border border-border-subtle bg-bg-card px-4 py-2 text-xs font-semibold text-text-main hover:bg-bg-card-hover transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        >
+          Retry Request
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

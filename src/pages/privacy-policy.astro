@@ -1,0 +1,69 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Privacy Policy - Mortgage Intelligence" description="Review the data privacy policies of the Mortgage Intelligence Platform. We do not store or track your calculations.">
+  <Header activeSlug="privacy" />
+
+  <main class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <div class="space-y-4 text-center max-w-2xl mx-auto">
+      <span class="text-4xs font-bold uppercase tracking-widest text-brand-accent">Data Protection</span>
+      <h1 class="font-display text-3xl font-extrabold tracking-tight text-text-main sm:text-4xl">
+        Privacy Policy
+      </h1>
+      <p class="text-sm text-text-muted leading-relaxed">
+        Last Updated: June 18, 2026. Your financial data belongs to you, not our servers.
+      </p>
+    </div>
+
+    <div class="space-y-8 text-xs sm:text-sm text-text-muted leading-relaxed">
+      <div class="space-y-3">
+        <h2 class="font-display text-lg font-bold text-text-main">1. Our Commitment to Privacy</h2>
+        <p>
+          Unlike traditional digital home financing products, we do not require you to create an account, register your email, or provide personal financial information to run calculations. Our core philosophy is built around complete financial transparency and data minimization.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <h2 class="font-display text-lg font-bold text-text-main">2. How Your Data is Processed</h2>
+        <p>
+          All calculations performed on the <strong>Mortgage Intelligence Platform</strong> are executed completely on the client-side within your browser. 
+        </p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>We do not transmit your inputs (like household income, outstanding debts, or loan principal values) to external servers.</li>
+          <li>All charting outputs, amortization schedules, and risk stress tests are computed locally by your device.</li>
+          <li>Scenario comparison profiles are saved to your browser's local sandbox storage (<code>localStorage</code>) and are never uploaded or synced to external cloud databases.</li>
+        </ul>
+      </div>
+
+      <div class="space-y-3">
+        <h2 class="font-display text-lg font-bold text-text-main">3. Client-Side PDF Exports &amp; Email Shares</h2>
+        <p>
+          When you request an advisory report PDF via our export interface:
+        </p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>Direct Download:</strong> The PDF compilation runs entirely within your browser's memory using local JavaScript libraries. No document data is sent to our servers.</li>
+          <li><strong>Email Dispatch:</strong> If you opt to simulated-share the PDF via email, your email address is saved locally (to prepopulate future forms) and the connection pipeline is simulated locally inside your browser client.</li>
+        </ul>
+      </div>
+
+      <div class="space-y-3 border-t border-border-subtle pt-6">
+        <h2 class="font-display text-lg font-bold text-text-main">4. Cookies and Analytical Tracking</h2>
+        <p>
+          We do not use advertising cookies, remarketing tracking scripts (like Facebook Pixel), or third-party behavioral profiling. We may utilize simple, cookieless, GDPR-compliant privacy-first analytics tools to monitor aggregated website traffic (e.g. counting total page views) without identifying individual visitors.
+        </p>
+      </div>
+
+      <div class="space-y-3">
+        <h2 class="font-display text-lg font-bold text-text-main">5. Contact Information</h2>
+        <p>
+          If you have any questions regarding our local data sandboxing or the privacy structures of our codebase, feel free to contact our compliance team using our <a href="/contact-us" class="text-brand-accent hover:underline">Contact Page</a>.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

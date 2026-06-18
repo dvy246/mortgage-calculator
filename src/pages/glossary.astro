@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const terms = [
+  {
+    name: "Amortization",
+    definition: "The schedule of systematic loan repayment over a set duration, where payments are divided into monthly interest charges and principal paydown."
+  },
+  {
+    name: "Closing Costs",
+    definition: "Processing and administrative fees paid to underwriters, title entities, assessors, and local recording registers to execute a mortgage. Typically 2% to 5% of home price."
+  },
+  {
+    name: "Debt-to-Income (DTI) Ratio",
+    definition: "A core underwriting metric dividing monthly recurring debts by gross monthly income. Capped traditionally at 36% for standard conventional financing."
+  },
+  {
+    name: "Escrow Account",
+    definition: "A holding account managed by the mortgage servicer that collects monthly property tax and homeowners insurance allocations, paying municipal invoices upon renewal."
+  },
+  {
+    name: "Loan-to-Value (LTV) Ratio",
+    definition: "A risk evaluation ratio dividing the outstanding mortgage balance by the assessed appraisal value of the property. Lenders require PMI on LTVs exceeding 80%."
+  },
+  {
+    name: "Origination Fee",
+    definition: "An upfront processing fee charged by lenders to underwrite, check, and establish a new mortgage loan. Usually expressed as points or percentages of principal."
+  },
+  {
+    name: "Points (Discount Points)",
+    definition: "Upfront fees paid directly to the mortgage lender at closing in exchange for an interest rate reduction. One point equals 1% of the total loan amount."
+  },
+  {
+    name: "Private Mortgage Insurance (PMI)",
+    definition: "A private insurance policy protecting the conventional lender against borrower default. Mandatory for conventional loans with down payments below 20%."
+  },
+  {
+    name: "Refinancing",
+    definition: "The process of replacing an active mortgage loan with a new debt agreement, typically deployed to capture lower interest rates, modify term durations, or cash-out home equity."
+  }
+];
+
+const glossarySchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "DefinedTermSet",
+  "@id": "https://mortgageintelligence.io/glossary",
+  "name": "Mortgage & Home Financing Glossary",
+  "description": "Alphabetical technical definitions of home loan and mortgage terminology.",
+  "hasDefinedTerm": terms.map(t => ({
+    "@type": "DefinedTerm",
+    "name": t.name,
+    "description": t.definition
+  }))
+});
+---
+
+<Layout 
+  title="Mortgage Glossary & Financing Definitions"
+  description="Explore the technical glossary of underwriting terminology, including DTI, LTV, PMI, and amortization."
+  canonicalUrl="/glossary"
+  schemaMarkup={glossarySchema}
+>
+  <Header activeSlug="" />
+
+  <main class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-text-muted flex items-center gap-2">
+      <a href="/" class="hover:text-text-main transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-text-muted">Glossary</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="space-y-4 border-b border-border-subtle pb-8">
+      <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
+        Mortgage Glossary & Financing Definitions
+      </h1>
+      <p class="text-sm text-text-muted leading-relaxed max-w-2xl">
+        Clear vocabulary is essential for financial navigation. Review standard terminology used by underwriters and loan originators.
+      </p>
+    </div>
+
+    <!-- Glossary Definitions Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {terms.map(t => (
+        <div class="bg-bg-card p-5 rounded-xl border border-border-subtle space-y-2 hover:border-border-focus transition-colors">
+          <h3 class="font-display font-semibold text-sm text-text-main">{t.name}</h3>
+          <p class="text-xs text-text-muted leading-relaxed">{t.definition}</p>
+        </div>
+      ))}
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

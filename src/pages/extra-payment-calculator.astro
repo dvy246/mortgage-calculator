@@ -1,0 +1,481 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SVGCharts from '../components/Calculator/SVGCharts.astro';
+import StressTest from '../components/Calculator/StressTest.astro';
+import AmortizationTable from '../components/Calculator/AmortizationTable.astro';
+import LeadGenCard from '../components/LeadGenCard.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+import PrintModal from '../components/Calculator/PrintModal.astro';
+import MortgageReport from '../components/Calculator/MortgageReport.astro';
+
+const faqs = [
+  {
+    question: "Will my standard monthly payment drop if I make extra payments?",
+    answer: "No, making extra principal payments will not lower your regular monthly payment for the following months. Instead, it shortens your overall loan term and reduces the total interest paid. To lower your monthly payment, you would need to ask your lender for a 'recast' or refinance the loan."
+  },
+  {
+    question: "Are there penalties for paying off my mortgage early?",
+    answer: "Most modern residential conventional mortgages do not have prepayment penalties. However, it is always wise to confirm with your lender or review your promissory note to ensure no prepayment penalty clause is present."
+  },
+  {
+    question: "What does it mean to mark a payment as 'Principal Only'?",
+    answer: "When sending extra funds to your loan servicer, you must explicitly specify that the extra amount should be applied to the 'Principal Only'. Otherwise, the servicer might apply it to your next scheduled monthly payment (paying interest early), which defeats the purpose of accelerating equity."
+  }
+];
+---
+
+<Layout 
+  title="Extra Payment Mortgage Calculator - Accelerate Your Payoff"
+  description="Calculate how much time and interest you save by making extra monthly, annual, or lump-sum prepayments toward your mortgage principal."
+  canonicalUrl="/extra-payment-calculator"
+>
+  <Header activeSlug="extra" />
+
+  <!-- PDF Print Report Header -->
+  <div id="print-header" class="border-b border-border-subtle pb-4 mb-6 hidden">
+    <div class="flex justify-between items-end">
+      <div>
+        <h1 class="text-xl font-bold font-display text-text-main">Mortgage Intelligence Report</h1>
+        <p class="text-2xs text-text-muted">Advisory Assessment: Prepayment Savings & Amortization Acceleration</p>
+      </div>
+      <div class="text-right text-text-muted text-2xs">
+        <span>Generated: {new Date().toLocaleDateString()}</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-2">
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Extra Payment Mortgage Calculator</h1>
+      <p class="text-xs text-text-muted">Calculate how much interest you save and how many years you shave off your term by making extra payments.</p>
+    </div>
+
+    <!-- 2-Column Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT: Controls Pane -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-6">
+          <h2 class="font-display text-sm font-semibold text-text-main border-b border-border-subtle pb-2">Mortgage & Extra Payments</h2>
+          
+          <!-- Home Price -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="price-input" class="font-medium text-text-muted">Home Price</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The purchase price of the home to establish base loan amounts.</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="price-display">$400,000</span>
+            </div>
+            <input 
+              type="range" 
+              id="price-slider" 
+              min="100000" 
+              max="1500000" 
+              step="10000" 
+              value="400000" 
+              aria-label="Home Price Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted/65 text-3xs">$100k</span>
+              <input type="number" id="price-input" value="400000" class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" aria-label="Home Price Input" />
+              <span class="text-text-muted/65 text-3xs">$1.5M</span>
+            </div>
+          </div>
+
+          <!-- Rate & Term -->
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="rate-input" class="font-medium text-text-muted">Interest Rate</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The APR on your mortgage. Higher interest rates make extra principal payments even more valuable.</span>
+                </span>
+              </span>
+              <input type="number" id="rate-input" value="6.50" step="0.1" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="term-select" class="font-medium text-text-muted">Loan Term</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The scheduled repayment years of the loan.</span>
+                </span>
+              </span>
+              <select id="term-select" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main focus:border-border-focus focus:outline-none">
+                <option value="30">30 Years</option>
+                <option value="20">20 Years</option>
+                <option value="15">15 Years</option>
+                <option value="10">10 Years</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Down Payment -->
+          <div class="space-y-1.5 text-xs">
+            <span class="flex items-center">
+              <label for="down-input" class="font-medium text-text-muted">Down Payment ($)</label>
+              <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span class="tooltip-text">Down payment reduces initial principal loan balance.</span>
+              </span>
+            </span>
+            <input type="number" id="down-input" value="80000" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+          </div>
+
+          <hr class="border-border-subtle" />
+
+          <!-- Extra Payment Inputs -->
+          <h3 class="font-display text-xs font-semibold text-text-muted">Prepayment Variables</h3>
+
+          <!-- Extra Monthly -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="extra-monthly-input" class="font-medium text-text-muted">Extra Monthly Payment</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">An additional principal paydown added to every monthly mortgage check.</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="extra-monthly-display">$200</span>
+            </div>
+            <input 
+              type="range" 
+              id="extra-monthly-slider" 
+              min="0" 
+              max="2000" 
+              step="50" 
+              value="200" 
+              aria-label="Extra Monthly Payment Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted/65 text-3xs">$0</span>
+              <input type="number" id="extra-monthly-input" value="200" class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" aria-label="Extra Monthly Payment Input" />
+              <span class="text-text-muted/65 text-3xs">$2k</span>
+            </div>
+          </div>
+
+          <!-- Extra Annual & One-Time -->
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="extra-annual-input" class="font-medium text-text-muted">Extra Annual ($)</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">Applied once every 12 months, e.g., using tax refunds or annual bonuses.</span>
+                </span>
+              </span>
+              <input type="number" id="extra-annual-input" value="0" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="extra-onetime-input" class="font-medium text-text-muted">Lump Sum ($)</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">A one-time principal paydown applied at a specific month of the loan term.</span>
+                </span>
+              </span>
+              <input type="number" id="extra-onetime-input" value="0" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+            </div>
+          </div>
+
+          <div class="space-y-1.5 text-xs" id="onetime-month-container" style="display: none;">
+            <label for="onetime-month-input" class="font-medium text-text-muted">Apply Lump Sum at Month</label>
+            <input type="number" id="onetime-month-input" value="12" min="1" max="360" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+          </div>
+
+        </div>
+
+        <LeadGenCard />
+      </div>
+      
+      <!-- RIGHT: Dashboard Outputs -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Prepayment Impact Summary Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 grid grid-cols-2 gap-6 relative">
+          <div>
+            <span class="text-text-muted text-xs font-semibold block">Total Interest Saved</span>
+            <span class="text-3xl font-extrabold text-emerald-400 font-display font-tabular tracking-tight mt-1" id="save-interest">$0</span>
+            <span class="text-3xs text-text-muted block mt-1" id="standard-interest">Standard interest: $0</span>
+          </div>
+          <div class="border-l border-border-subtle pl-6 flex justify-between items-start">
+            <div>
+              <span class="text-text-muted text-xs font-semibold block">Time Saved From Term</span>
+              <span class="text-3xl font-extrabold text-blue-500 font-display font-tabular tracking-tight mt-1" id="save-time">0 Years</span>
+              <span class="text-3xs text-text-muted block mt-1" id="new-term-months">New term: 0 months</span>
+            </div>
+            
+            <button 
+              class="absolute top-4 right-4 p-1.5 rounded-md border border-border-subtle bg-bg-main hover:bg-bg-card-hover text-text-muted hover:text-brand-accent transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              id="download-report-btn"
+              title="Download PDF Planning Report"
+              aria-label="Download PDF Planning Report"
+            >
+              <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <SVGCharts />
+        
+        <StressTest />
+        <MortgageReport />
+
+      </div>
+    </div>
+
+    <!-- Repayment Table -->
+    <AmortizationTable />
+
+    <!-- Educational Guide component -->
+    <MortgageGuide 
+      title="Extra Payment"
+      subtitle="Evaluating interest savings and amortization acceleration through prepayments"
+      whatItDoes="Models how making voluntary principal prepayments (monthly, annually, or one-time lump sum) decreases your remaining interest charges and shortens your mortgage term."
+      whenToUse="Use this calculator if you have excess monthly budget, expect annual bonuses, or have a lump sum, and want to evaluate whether to prepay the loan or invest elsewhere."
+      howItWorks="Runs two parallel amortization calculations: the baseline term schedule and the accelerated term schedule. It computes the difference in cumulative interest paid and the difference in payoff month to present your net savings."
+      mistakes="Failing to check if your lender enforces a pre-payment penalty (though rare in modern conventional loans). Prepaying a low-interest mortgage (e.g. 3%) when high-yield savings yield 5% represents a lost opportunity cost."
+      faqs={faqs}
+    />
+
+    <!-- Disclaimer card -->
+    <Disclaimer />
+  </main>
+
+  <!-- PDF Print Disclaimer -->
+  <div id="print-disclaimer" class="hidden">
+    <h4 class="font-bold mb-1">Mortgage Intelligence Report Disclaimer</h4>
+    <p>
+      This document constitutes an advisory summary compiled under user-input assumptions. Estimates are not guaranteed. Lenders will execute separate underwriting passes before issuing binding commitments. Consult certified financial planners.
+    </p>
+  </div>
+
+  <PrintModal />
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateMortgage } from '../utils/mortgage';
+
+  // Grab inputs
+  const priceSlider = document.getElementById('price-slider') as HTMLInputElement;
+  const priceInput = document.getElementById('price-input') as HTMLInputElement;
+  const priceDisplay = document.getElementById('price-display');
+
+  const downInput = document.getElementById('down-input') as HTMLInputElement;
+  const rateInput = document.getElementById('rate-input') as HTMLInputElement;
+  const termSelect = document.getElementById('term-select') as HTMLSelectElement;
+
+  const extraMonthlySlider = document.getElementById('extra-monthly-slider') as HTMLInputElement;
+  const extraMonthlyInput = document.getElementById('extra-monthly-input') as HTMLInputElement;
+  const extraMonthlyDisplay = document.getElementById('extra-monthly-display');
+
+  const extraAnnualInput = document.getElementById('extra-annual-input') as HTMLInputElement;
+  const extraOnetimeInput = document.getElementById('extra-onetime-input') as HTMLInputElement;
+  const onetimeMonthInput = document.getElementById('onetime-month-input') as HTMLInputElement;
+  const onetimeMonthContainer = document.getElementById('onetime-month-container');
+
+  // Lump sum visibility trigger
+  extraOnetimeInput.addEventListener('input', () => {
+    const val = parseFloat(extraOnetimeInput.value) || 0;
+    if (onetimeMonthContainer) {
+      onetimeMonthContainer.style.display = val > 0 ? 'block' : 'none';
+    }
+  });
+
+  function syncInputs(slider: HTMLInputElement, input: HTMLInputElement, display: HTMLElement | null) {
+    const update = () => {
+      input.value = slider.value;
+      if (display) display.textContent = `$${parseInt(slider.value).toLocaleString('en-US')}`;
+      recalculate();
+    };
+    slider.addEventListener('input', update);
+    input.addEventListener('input', () => {
+      let val = parseFloat(input.value) || 0;
+      val = Math.min(parseFloat(slider.max), Math.max(parseFloat(slider.min), val));
+      slider.value = String(val);
+      if (display) display.textContent = `$${Math.round(val).toLocaleString('en-US')}`;
+      recalculate();
+    });
+  }
+
+  syncInputs(priceSlider, priceInput, priceDisplay);
+  syncInputs(extraMonthlySlider, extraMonthlyInput, extraMonthlyDisplay);
+
+  [downInput, rateInput, termSelect, extraAnnualInput, extraOnetimeInput, onetimeMonthInput].forEach(ctrl => {
+    ctrl.addEventListener('input', recalculate);
+  });
+
+  function recalculate() {
+    const homePrice = parseFloat(priceInput.value) || 0;
+    const downPayment = parseFloat(downInput.value) || 0;
+    const interestRate = parseFloat(rateInput.value) || 0;
+    const loanTermYears = parseInt(termSelect.value) || 30;
+
+    const extraMonthly = parseFloat(extraMonthlyInput.value) || 0;
+    const extraAnnual = parseFloat(extraAnnualInput.value) || 0;
+    const extraOneTimeVal = parseFloat(extraOnetimeInput.value) || 0;
+    const oneTimeMonth = parseInt(onetimeMonthInput.value) || 12;
+
+    const extraOneTime = extraOneTimeVal > 0 ? [{ month: oneTimeMonth, amount: extraOneTimeVal }] : [];
+
+    // Run Standard Schedule (No Extra Payments)
+    const baseResult = calculateMortgage({
+      homePrice,
+      downPayment,
+      interestRate,
+      loanTermYears,
+      propertyTaxRate: 1.1, // Fixed defaults for payoff calculations
+      insuranceRate: 0.5,
+      pmiRate: 0.75,
+      hoaFee: 0,
+      extraMonthly: 0,
+      extraAnnual: 0,
+      extraOneTime: []
+    });
+
+    // Run Accelerated Schedule (With Extra Payments)
+    const accResult = calculateMortgage({
+      homePrice,
+      downPayment,
+      interestRate,
+      loanTermYears,
+      propertyTaxRate: 1.1,
+      insuranceRate: 0.5,
+      pmiRate: 0.75,
+      hoaFee: 0,
+      extraMonthly,
+      extraAnnual,
+      extraOneTime
+    });
+
+    const interestSaved = Math.max(0, baseResult.totalInterestPaid - accResult.totalInterestPaid);
+    const monthsSaved = Math.max(0, baseResult.payoffTermMonths - accResult.payoffTermMonths);
+    const yearsSaved = (monthsSaved / 12).toFixed(1);
+
+    // Update displays
+    const saveInterestEl = document.getElementById('save-interest');
+    const stdInterestEl = document.getElementById('standard-interest');
+    if (saveInterestEl) saveInterestEl.textContent = `$${Math.round(interestSaved).toLocaleString('en-US')}`;
+    if (stdInterestEl) stdInterestEl.textContent = `Standard interest: $${Math.round(baseResult.totalInterestPaid).toLocaleString('en-US')}`;
+
+    const saveTimeEl = document.getElementById('save-time');
+    const newTermEl = document.getElementById('new-term-months');
+    if (saveTimeEl) {
+      saveTimeEl.textContent = parseFloat(yearsSaved) > 0 ? `${yearsSaved} Years` : "0 Years";
+    }
+    if (newTermEl) {
+      const remainingYrs = (accResult.payoffTermMonths / 12).toFixed(1);
+      newTermEl.textContent = `Accelerated term: ${accResult.payoffTermMonths} months (~${remainingYrs} Years)`;
+    }
+
+    // Donut and chart updates
+    if (window.drawDonutChart) {
+      window.drawDonutChart(
+        accResult.monthlyPrincipalAndInterest,
+        accResult.monthlyPropertyTax,
+        accResult.monthlyInsurance,
+        accResult.monthlyPMI,
+        accResult.monthlyHOA
+      );
+    }
+
+    if (window.drawAmortizationChart) {
+      window.drawAmortizationChart(accResult.amortizationSchedule, baseResult.amortizationSchedule);
+    }
+
+    if ((window as any).generateMortgageReport) {
+      (window as any).generateMortgageReport({
+        homePrice,
+        downPayment,
+        interestRate,
+        termYears: loanTermYears,
+        monthlyPayment: accResult.totalMonthlyPayment,
+        monthlyPI: accResult.monthlyPrincipalAndInterest,
+        income: 0, // Not gathered
+        debts: 0,
+        pmi: accResult.monthlyPMI,
+        hoa: accResult.monthlyHOA,
+        extraMonthly: extraMonthly,
+        totalInterestSaved: interestSaved,
+        yearsSaved: parseFloat(yearsSaved)
+      });
+    }
+
+    if ((window as any).updateChartInsights) {
+      (window as any).updateChartInsights([
+        {
+          label: "Total Interest Saved",
+          value: `$${Math.round(interestSaved).toLocaleString('en-US')}`,
+          badge: `Standard: $${Math.round(baseResult.totalInterestPaid).toLocaleString('en-US')}`,
+          badgeColor: "emerald"
+        },
+        {
+          label: "Time Saved From Term",
+          value: parseFloat(yearsSaved) > 0 ? `${yearsSaved} Years` : "0 Years",
+          badge: `New term: ${(accResult.payoffTermMonths / 12).toFixed(1)} yrs`,
+          badgeColor: "blue"
+        },
+        {
+          label: "Accelerated Payoff",
+          value: `Yr ${(accResult.payoffTermMonths / 12).toFixed(1)}`,
+          badge: `Standard: ${(baseResult.payoffTermMonths / 12).toFixed(1)} yrs`,
+          badgeColor: "amber"
+        },
+        {
+          label: "Optimal Strategy",
+          value: extraMonthly > 0 ? "Extra Payments Active" : "Standard Payoff",
+          badge: extraMonthly > 0 ? `+$${Math.round(extraMonthly)}/mo` : "Enter prepayments",
+          badgeColor: extraMonthly > 0 ? "emerald" : "muted"
+        }
+      ]);
+    }
+
+    if (window.renderAmortizationTable) {
+      window.renderAmortizationTable(accResult.amortizationSchedule);
+    }
+
+    if (window.updateStressTest) {
+      const originalPrincipal = Math.max(0, homePrice - downPayment);
+      window.updateStressTest(originalPrincipal, interestRate, loanTermYears, accResult.monthlyPropertyTax + accResult.monthlyInsurance + accResult.monthlyPMI + accResult.monthlyHOA);
+    }
+
+    // Register data for comparative save
+    if (window.registerCurrentRunData) {
+      window.registerCurrentRunData({
+        homePrice,
+        downPayment,
+        interestRate,
+        termYears: loanTermYears,
+        monthlyPayment: accResult.totalMonthlyPayment,
+        totalInterest: accResult.totalInterestPaid
+      });
+    }
+  }
+
+  // Bind PDF Download report trigger
+  const printBtn = document.getElementById('download-report-btn');
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      if ((window as any).openPrintModal) {
+        (window as any).openPrintModal();
+      } else {
+        window.print();
+      }
+    });
+  }
+
+  recalculate();
+</script>

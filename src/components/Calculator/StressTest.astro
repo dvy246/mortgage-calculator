@@ -1,0 +1,104 @@
+---
+---
+<div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6">
+  <div>
+    <h3 class="font-display text-sm font-semibold text-text-main">Rate Shock Simulator</h3>
+    <p class="text-xs text-text-muted mt-1">Stress-test your finances against future interest rate hikes.</p>
+  </div>
+
+  <div class="space-y-3">
+    <!-- Base payment baseline -->
+    <div class="flex items-center justify-between p-3 rounded-lg bg-bg-main border border-border-subtle">
+      <div class="flex items-center gap-2">
+        <span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
+        <span class="text-xs text-text-muted font-medium">Selected Rate</span>
+      </div>
+      <div class="text-right">
+        <span class="text-sm font-bold text-text-main font-tabular" id="stress-base-val">$0</span>
+        <span class="text-3xs font-mono text-text-muted block" id="stress-base-rate">0.00%</span>
+      </div>
+    </div>
+
+    <!-- +1% Hike -->
+    <div class="flex items-center justify-between p-3 rounded-lg bg-bg-main border border-border-subtle">
+      <div class="flex items-center gap-2">
+        <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+        <span class="text-xs text-text-muted font-medium">+1.0% Rate Shock</span>
+      </div>
+      <div class="text-right">
+        <span class="text-sm font-bold text-amber-600 dark:text-amber-400 font-tabular animate-pulse" id="stress-1-val">$0</span>
+        <span class="text-3xs font-mono text-amber-600 dark:text-amber-500 block" id="stress-1-rate">+1.0%</span>
+      </div>
+    </div>
+
+    <!-- +2% Hike -->
+    <div class="flex items-center justify-between p-3 rounded-lg bg-bg-main border border-border-subtle">
+      <div class="flex items-center gap-2">
+        <span class="h-2.5 w-2.5 rounded-full bg-orange-500"></span>
+        <span class="text-xs text-text-muted font-medium">+2.0% Rate Shock</span>
+      </div>
+      <div class="text-right">
+        <span class="text-sm font-bold text-orange-600 dark:text-orange-400 font-tabular" id="stress-2-val">$0</span>
+        <span class="text-3xs font-mono text-orange-600 dark:text-orange-500 block" id="stress-2-rate">+2.0%</span>
+      </div>
+    </div>
+
+    <!-- +3% Hike -->
+    <div class="flex items-center justify-between p-3 rounded-lg bg-bg-main border border-border-subtle">
+      <div class="flex items-center gap-2">
+        <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
+        <span class="text-xs text-text-muted font-medium">+3.0% Rate Shock</span>
+      </div>
+      <div class="text-right">
+        <span class="text-sm font-bold text-rose-600 dark:text-rose-400 font-tabular" id="stress-3-val">$0</span>
+        <span class="text-3xs font-mono text-rose-600 dark:text-rose-500 block" id="stress-3-rate">+3.0%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-3xs text-text-muted leading-relaxed bg-bg-main p-2.5 rounded border border-border-subtle">
+    💡 <strong>Advisory Risk Assessment:</strong> If market interest rates increase by 2.0% prior to executing a rate lock agreement, your monthly obligations and total borrowing costs will scale significantly. We recommend planning purchase budgets with an appropriate risk margin.
+  </div>
+</div>
+
+<script>
+  import { calculateMonthlyPI } from '../../utils/mortgage';
+
+  window.updateStressTest = function(principal: number, baseRate: number, termYears: number, otherCosts: number) {
+    const calcMonthlyTotal = (rate: number) => {
+      const pi = calculateMonthlyPI(principal, rate, termYears);
+      return pi + otherCosts;
+    };
+
+    const baseVal = calcMonthlyTotal(baseRate);
+    const stress1Val = calcMonthlyTotal(baseRate + 1);
+    const stress2Val = calcMonthlyTotal(baseRate + 2);
+    const stress3Val = calcMonthlyTotal(baseRate + 3);
+
+    const formatVal = (val: number, diff: number) => {
+      const valStr = Math.round(val).toLocaleString('en-US');
+      const diffStr = diff > 0 ? ` (+${Math.round(diff).toLocaleString('en-US')}/mo)` : '';
+      return `$${valStr}${diffStr}`;
+    };
+
+    const baseEl = document.getElementById('stress-base-val');
+    const baseRateEl = document.getElementById('stress-base-rate');
+    if (baseEl) baseEl.textContent = formatVal(baseVal, 0);
+    if (baseRateEl) baseRateEl.textContent = `${baseRate.toFixed(2)}% APR`;
+
+    const el1 = document.getElementById('stress-1-val');
+    const rateEl1 = document.getElementById('stress-1-rate');
+    if (el1) el1.textContent = formatVal(stress1Val, stress1Val - baseVal);
+    if (rateEl1) rateEl1.textContent = `${(baseRate + 1).toFixed(2)}% APR`;
+
+    const el2 = document.getElementById('stress-2-val');
+    const rateEl2 = document.getElementById('stress-2-rate');
+    if (el2) el2.textContent = formatVal(stress2Val, stress2Val - baseVal);
+    if (rateEl2) rateEl2.textContent = `${(baseRate + 2).toFixed(2)}% APR`;
+
+    const el3 = document.getElementById('stress-3-val');
+    const rateEl3 = document.getElementById('stress-3-rate');
+    if (el3) el3.textContent = formatVal(stress3Val, stress3Val - baseVal);
+    if (rateEl3) rateEl3.textContent = `${(baseRate + 3).toFixed(2)}% APR`;
+  };
+</script>

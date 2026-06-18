@@ -1,0 +1,145 @@
+---
+---
+<div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h3 class="font-display text-sm font-semibold text-text-main">Amortization Schedule</h3>
+      <p class="text-xs text-text-muted mt-1">Detailed payment-by-payment breakdown over the loan duration.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button 
+        class="inline-flex h-8 items-center justify-center rounded-md border border-border-input bg-bg-input px-3 text-2xs font-semibold text-text-muted hover:bg-bg-card-hover transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        id="amort-export-btn"
+      >
+        Export CSV
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-xs border-collapse">
+      <thead>
+        <tr class="border-b border-border-subtle text-text-muted font-medium pb-2">
+          <th class="py-2">Pmt #</th>
+          <th class="py-2">Principal</th>
+          <th class="py-2">Interest</th>
+          <th class="py-2">Tax/Ins/PMI</th>
+          <th class="py-2" id="th-extra">Extra</th>
+          <th class="py-2 text-right">Ending Balance</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-border-subtle text-text-main font-medium font-tabular" id="amort-tbody">
+        <!-- Rendered reactively via client script -->
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="flex justify-center pt-2">
+    <button 
+      class="inline-flex h-9 items-center justify-center rounded-md border border-border-input bg-bg-input px-4 text-xs font-semibold text-text-muted hover:bg-bg-card-hover transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+      id="amort-show-more-btn"
+    >
+      Show Full Schedule (360 Months)
+    </button>
+  </div>
+</div>
+
+<script>
+  import type { AmortizationEntry } from '../../utils/mortgage';
+
+  let fullSchedule: AmortizationEntry[] = [];
+  let displayLimit = 12; // Start by showing 1 year of payments
+
+  window.renderAmortizationTable = function(schedule: AmortizationEntry[]) {
+    fullSchedule = schedule || [];
+    displayLimit = 12; // Reset limit
+    
+    updateTableDOM();
+  };
+
+  function updateTableDOM() {
+    const tbody = document.getElementById('amort-tbody');
+    const showMoreBtn = document.getElementById('amort-show-more-btn');
+    
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    const slice = fullSchedule.slice(0, displayLimit);
+    
+    slice.forEach(entry => {
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-bg-card-hover transition-colors border-b border-border-subtle';
+      
+      const taxesAndFees = entry.taxPaid + entry.insurancePaid + entry.pmiPaid + entry.hoaPaid;
+      
+      tr.innerHTML = `
+        <td class="py-2.5 text-text-muted font-mono">#${entry.month}</td>
+        <td class="py-2.5 text-emerald-600 dark:text-emerald-400 font-semibold">$${Math.round(entry.principalPaid).toLocaleString('en-US')}</td>
+        <td class="py-2.5 text-rose-600 dark:text-rose-400">$${Math.round(entry.interestPaid).toLocaleString('en-US')}</td>
+        <td class="py-2.5 text-text-muted">$${Math.round(taxesAndFees).toLocaleString('en-US')}</td>
+        <td class="py-2.5 text-blue-600 dark:text-blue-400">$${Math.round(entry.extraPaid).toLocaleString('en-US')}</td>
+        <td class="py-2.5 text-right text-text-main font-semibold">$${Math.round(entry.remainingBalance).toLocaleString('en-US')}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    if (showMoreBtn) {
+      if (displayLimit < fullSchedule.length) {
+        showMoreBtn.style.display = 'inline-flex';
+        showMoreBtn.textContent = `Show More Payments (showing ${displayLimit} of ${fullSchedule.length})`;
+      } else {
+        showMoreBtn.style.display = 'none';
+      }
+    }
+  }
+
+  // Bind expand button
+  const expandBtn = document.getElementById('amort-show-more-btn');
+  if (expandBtn) {
+    expandBtn.addEventListener('click', () => {
+      // Expand by 36 months at a time, or show all if close
+      if (displayLimit + 36 >= fullSchedule.length) {
+        displayLimit = fullSchedule.length;
+      } else {
+        displayLimit += 36;
+      }
+      updateTableDOM();
+    });
+  }
+
+  // Bind Export CSV button
+  const exportBtn = document.getElementById('amort-export-btn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      if (fullSchedule.length === 0) return;
+      
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Payment #,Principal Paid,Interest Paid,Tax Paid,Insurance Paid,PMI Paid,HOA Paid,Extra Paid,Total Payment,Remaining Balance\n";
+      
+      fullSchedule.forEach(entry => {
+        const row = [
+          entry.month,
+          entry.principalPaid.toFixed(2),
+          entry.interestPaid.toFixed(2),
+          entry.taxPaid.toFixed(2),
+          entry.insurancePaid.toFixed(2),
+          entry.pmiPaid.toFixed(2),
+          entry.hoaPaid.toFixed(2),
+          entry.extraPaid.toFixed(2),
+          entry.totalPayment.toFixed(2),
+          entry.remainingBalance.toFixed(2)
+        ].join(",");
+        csvContent += row + "\n";
+      });
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "mortgage_amortization_schedule.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  }
+</script>

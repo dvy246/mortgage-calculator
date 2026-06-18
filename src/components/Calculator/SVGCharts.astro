@@ -1,0 +1,1142 @@
+---
+---
+<div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6 select-none" id="platform-visualizer">
+  <!-- Key Insight Cards Container (Decision Support System) -->
+  <div id="chart-insight-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 hidden border-b border-border-subtle pb-6 transition-all duration-300">
+    <!-- Dynamic cards injected via JS -->
+  </div>
+
+  <!-- Interactive Tabs Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border-subtle pb-4">
+    <h3 class="font-display text-sm font-semibold text-text-main">Interactive Visualization</h3>
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Compare Checkbox Switch -->
+      <label class="flex items-center gap-2 text-xs font-semibold text-text-muted cursor-pointer select-none mr-2 hidden" id="compare-checkbox-container">
+        <input 
+          type="checkbox" 
+          id="compare-checkbox" 
+          class="h-3.5 w-3.5 rounded border-border-input bg-bg-input text-brand-primary focus:ring-brand-accent focus:outline-none cursor-pointer" 
+        />
+        <span>Compare Baseline</span>
+      </label>
+
+      <nav class="flex flex-wrap gap-1 bg-bg-main p-1 rounded-lg border border-border-subtle text-xs" role="tablist" aria-label="Chart type selectors">
+        <button 
+          class="chart-tab px-3 py-1.5 rounded-md font-semibold text-text-muted hover:text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-all cursor-pointer active-tab bg-bg-card border border-border-subtle text-text-main"
+          data-type="donut"
+          role="tab"
+          aria-selected="true"
+          id="tab-donut"
+        >
+          Breakdown
+        </button>
+        <button 
+          class="chart-tab px-3 py-1.5 rounded-md font-semibold text-text-muted hover:text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-all cursor-pointer"
+          data-type="area"
+          role="tab"
+          aria-selected="false"
+          id="tab-area"
+        >
+          Equity Stack
+        </button>
+        <button 
+          class="chart-tab px-3 py-1.5 rounded-md font-semibold text-text-muted hover:text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-all cursor-pointer"
+          data-type="line"
+          role="tab"
+          aria-selected="false"
+          id="tab-line"
+        >
+          Balance Curve
+        </button>
+        <button 
+          class="chart-tab px-3 py-1.5 rounded-md font-semibold text-text-muted hover:text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-all cursor-pointer"
+          data-type="bar"
+          role="tab"
+          aria-selected="false"
+          id="tab-bar"
+        >
+          Yearly Split
+        </button>
+        <button 
+          class="chart-tab px-3 py-1.5 rounded-md font-semibold text-text-muted hover:text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-all cursor-pointer"
+          data-type="timeline"
+          role="tab"
+          aria-selected="false"
+          id="tab-timeline"
+        >
+          Milestones
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Screen reader accessible live region -->
+  <div id="chart-accessibility-desc" class="sr-only" aria-live="polite" aria-atomic="true">
+    Cost breakdown chart: Principal and interest.
+  </div>
+
+  <!-- Chart Shapes -->
+  <div class="relative min-h-[220px] flex items-center justify-center">
+    
+    <!-- 1. Donut Cost Breakdown -->
+    <div id="chart-panel-donut" class="chart-panel w-full">
+      <div class="flex flex-col sm:flex-row items-center justify-around gap-6">
+        <div class="relative w-40 h-40">
+          <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90" id="donut-svg" aria-hidden="true">
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--border-subtle)" stroke-width="12" />
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3b82f6" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" id="donut-segment-pi" />
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#10b981" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" id="donut-segment-tax" />
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f59e0b" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" id="donut-segment-ins" />
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#ec4899" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" id="donut-segment-pmi" />
+            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#8b5cf6" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" id="donut-segment-hoa" />
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span class="text-3xs text-text-muted font-medium font-sans uppercase tracking-wider">Est. Monthly</span>
+            <span class="text-lg font-extrabold font-display text-text-main font-tabular" id="donut-total">$0</span>
+          </div>
+        </div>
+        
+        <div class="flex-1 space-y-2.5 w-full sm:w-auto text-xs font-semibold">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
+              <span class="text-text-muted">Principal & Interest</span>
+            </div>
+            <span class="text-text-main font-tabular" id="legend-pi-val">$0</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+              <span class="text-text-muted">Property Taxes</span>
+            </div>
+            <span class="text-text-main font-tabular" id="legend-tax-val">$0</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+              <span class="text-text-muted">Home Insurance</span>
+            </div>
+            <span class="text-text-main font-tabular" id="legend-ins-val">$0</span>
+          </div>
+          <div class="flex items-center justify-between" id="legend-pmi-row">
+            <div class="flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-pink-500"></span>
+              <span class="text-text-muted">PMI Fees</span>
+            </div>
+            <span class="text-text-main font-tabular" id="legend-pmi-val">$0</span>
+          </div>
+          <div class="flex items-center justify-between" id="legend-hoa-row">
+            <div class="flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+              <span class="text-text-muted">HOA Dues</span>
+            </div>
+            <span class="text-text-main font-tabular" id="legend-hoa-val">$0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Stacked Area Chart (Equity Accumulation) -->
+    <div id="chart-panel-area" class="chart-panel w-full hidden">
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs font-semibold text-text-muted gap-2">
+          <span>Cumulative Payments made over time</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-emerald-500"></span><span>Principal Equity</span></div>
+            <div class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-amber-500"></span><span>Interest Paid</span></div>
+            <div id="area-legend-baseline" class="hidden flex items-center gap-1"><span class="h-2 w-2 rounded-full border border-dashed border-text-muted"></span><span>Baseline Track</span></div>
+          </div>
+        </div>
+        <div class="h-48 w-full relative">
+          <svg viewBox="0 0 400 200" preserveAspectRatio="none" class="w-full h-full" id="area-svg" aria-hidden="true">
+            <!-- Grid Lines & Ticks (Rendered Dynamically) -->
+            <g id="area-grid-lines"></g>
+            
+            <!-- Baseline Curves (Dashed) -->
+            <path d="" fill="none" stroke="var(--text-muted)" stroke-width="1.2" stroke-dasharray="3 3" id="area-line-baseline-interest" class="hidden opacity-60" />
+            <path d="" fill="none" stroke="#64748b" stroke-width="1.2" stroke-dasharray="3 3" id="area-line-baseline-principal" class="hidden opacity-60" />
+            
+            <!-- Primary Fills -->
+            <path d="" fill="rgba(245, 158, 11, 0.12)" id="area-path-interest" />
+            <path d="" fill="rgba(16, 185, 129, 0.12)" id="area-path-principal" />
+            
+            <!-- Primary Lines -->
+            <path d="" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 2" id="area-line-interest" />
+            <path d="" fill="none" stroke="#10b981" stroke-width="2" id="area-line-principal" />
+            
+            <!-- Axis Border line -->
+            <line x1="0" y1="175" x2="400" y2="175" stroke="var(--border-subtle)" stroke-width="1" />
+            
+            <!-- Axis Text Labels -->
+            <g id="area-axis-labels"></g>
+            
+            <line id="area-svg-tooltip-line" x1="0" y1="0" x2="0" y2="175" stroke="var(--border-focus)" stroke-width="1" stroke-dasharray="2 2" class="hidden" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Line Chart (Remaining Balance) -->
+    <div id="chart-panel-line" class="chart-panel w-full hidden">
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs font-semibold text-text-muted gap-2">
+          <span>Loan balance reduction timeline</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-indigo-500"></span><span>Proposed Balance</span></div>
+            <div id="line-legend-baseline" class="hidden flex items-center gap-1"><span class="h-2 w-2 rounded-full border border-dashed border-text-muted"></span><span>Baseline Balance</span></div>
+          </div>
+        </div>
+        <div class="h-48 w-full relative">
+          <svg viewBox="0 0 400 200" preserveAspectRatio="none" class="w-full h-full" id="line-svg" aria-hidden="true">
+            <!-- Grid Lines & Ticks (Rendered Dynamically) -->
+            <g id="line-grid-lines"></g>
+
+            <!-- Baseline Line (Dashed) -->
+            <path d="" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="6 4" id="line-path-baseline" class="hidden opacity-60" />
+            
+            <!-- Primary Curve -->
+            <path d="" fill="rgba(99, 102, 241, 0.08)" id="line-path-area" />
+            <path d="" fill="none" stroke="#6366f1" stroke-width="2.5" id="line-path-curve" />
+            
+            <!-- Axis Border line -->
+            <line x1="0" y1="175" x2="400" y2="175" stroke="var(--border-subtle)" stroke-width="1" />
+            
+            <!-- Axis Text Labels -->
+            <g id="line-axis-labels"></g>
+            
+            <line id="line-svg-tooltip-line" x1="0" y1="0" x2="0" y2="175" stroke="var(--border-focus)" stroke-width="1" stroke-dasharray="2 2" class="hidden" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Bar Chart (Yearly Payment Split) -->
+    <div id="chart-panel-bar" class="chart-panel w-full hidden">
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs font-semibold text-text-muted gap-2">
+          <span>Yearly split of Principal & Interest payments</span>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex items-center gap-1"><span class="h-2.5 w-2.5 rounded bg-emerald-500"></span><span>Principal</span></div>
+            <div class="flex items-center gap-1"><span class="h-2.5 w-2.5 rounded bg-amber-500"></span><span>Interest</span></div>
+            <div id="bar-legend-baseline" class="hidden flex items-center gap-1"><span class="h-2.5 w-2.5 border border-dashed border-text-muted rounded"></span><span>Baseline Total</span></div>
+          </div>
+        </div>
+        <div class="h-48 w-full relative">
+          <svg viewBox="0 0 400 200" preserveAspectRatio="none" class="w-full h-full" id="bar-svg" aria-hidden="true">
+            <!-- Rendered reactively as SVG rects inside JS -->
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Milestones (Repayment Timeline Track) -->
+    <div id="chart-panel-timeline" class="chart-panel w-full hidden">
+      <div class="space-y-4">
+        <h4 class="text-xs font-semibold text-text-muted">Key repayments and equity milestones</h4>
+        
+        <div class="relative py-4">
+          <!-- Horizontal track bar -->
+          <div class="absolute top-[28px] left-2 right-2 h-1 bg-border-subtle rounded"></div>
+          
+          <div class="grid grid-cols-4 gap-2 text-center relative z-10">
+            <!-- Node 1: Start -->
+            <div class="space-y-2">
+              <div class="h-4 w-4 rounded-full bg-blue-500 border-2 border-bg-card mx-auto"></div>
+              <div>
+                <span class="block text-2xs font-bold text-text-main">Year 0</span>
+                <span class="block text-3xs text-text-muted">Origination</span>
+              </div>
+            </div>
+            
+            <!-- Node 2: PMI Cancel -->
+            <div class="space-y-2" id="milestone-pmi-node">
+              <div class="h-4 w-4 rounded-full bg-pink-500 border-2 border-bg-card mx-auto"></div>
+              <div>
+                <span class="block text-2xs font-bold text-text-main" id="timeline-pmi-time">Month --</span>
+                <span class="block text-3xs text-pink-500">PMI Terminated</span>
+              </div>
+            </div>
+
+            <!-- Node 3: 50% Equity -->
+            <div class="space-y-2">
+              <div class="h-4 w-4 rounded-full bg-emerald-500 border-2 border-bg-card mx-auto"></div>
+              <div>
+                <span class="block text-2xs font-bold text-text-main" id="timeline-half-time">Month --</span>
+                <span class="block text-3xs text-emerald-500">50% Principal Paid</span>
+              </div>
+            </div>
+
+            <!-- Node 4: Payoff -->
+            <div class="space-y-2">
+              <div class="h-4 w-4 rounded-full bg-purple-500 border-2 border-bg-card mx-auto"></div>
+              <div>
+                <span class="block text-2xs font-bold text-text-main" id="timeline-payoff-time">Year 30</span>
+                <span class="block text-3xs text-purple-400">100% Debt Free</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center bg-bg-main p-3 rounded-lg border border-border-subtle text-3xs text-text-muted leading-relaxed" id="timeline-insights-desc">
+          Calculating milestones projection...
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+  <!-- Floating Tooltip Container -->
+  <div id="chart-tooltip" class="absolute hidden bg-bg-card border border-border-subtle p-2.5 rounded-lg shadow-xl text-3xs font-semibold pointer-events-none z-20 text-text-main max-w-[220px] space-y-1">
+  </div>
+</div>
+
+<script>
+  import type { AmortizationEntry } from '../../utils/mortgage';
+
+  // Global references to inputs
+  let globalBreakdownData = { pi: 0, tax: 0, ins: 0, pmi: 0, hoa: 0 };
+  let globalSchedule: AmortizationEntry[] = [];
+  let globalBaselineSchedule: AmortizationEntry[] = [];
+  let currentChartType = 'donut';
+
+  const tooltip = document.getElementById('chart-tooltip');
+  const liveRegion = document.getElementById('chart-accessibility-desc');
+  const compareCheckbox = document.getElementById('compare-checkbox') as HTMLInputElement;
+
+  function updateLiveRegion(text: string) {
+    if (liveRegion) liveRegion.textContent = text;
+  }
+
+  // Bind change event to comparison checkbox
+  if (compareCheckbox) {
+    compareCheckbox.addEventListener('change', () => {
+      // Toggle baseline legends
+      const areaLeg = document.getElementById('area-legend-baseline');
+      const lineLeg = document.getElementById('line-legend-baseline');
+      const barLeg = document.getElementById('bar-legend-baseline');
+      
+      const showBase = compareCheckbox.checked && globalBaselineSchedule.length > 0;
+      
+      if (areaLeg) showBase ? areaLeg.classList.remove('hidden') : areaLeg.classList.add('hidden');
+      if (lineLeg) showBase ? lineLeg.classList.remove('hidden') : lineLeg.classList.add('hidden');
+      if (barLeg) showBase ? barLeg.classList.remove('hidden') : barLeg.classList.add('hidden');
+      
+      redrawActiveChart();
+    });
+  }
+
+  // Tab controller binding
+  const tabs = document.querySelectorAll('.chart-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      const target = e.currentTarget as HTMLButtonElement;
+      const type = target.getAttribute('data-type') || 'donut';
+      
+      // Update UI active styling
+      tabs.forEach(t => {
+        t.className = "chart-tab px-3 py-1.5 rounded-md font-semibold text-text-muted hover:text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-all cursor-pointer";
+        t.setAttribute('aria-selected', 'false');
+      });
+      target.className = "chart-tab px-3 py-1.5 rounded-md font-semibold bg-bg-card border border-border-subtle text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-all cursor-pointer";
+      target.setAttribute('aria-selected', 'true');
+      
+      currentChartType = type;
+      
+      // Hide all panels
+      document.querySelectorAll('.chart-panel').forEach(p => p.classList.add('hidden'));
+      // Show active panel
+      const activePanel = document.getElementById(`chart-panel-${type}`);
+      if (activePanel) activePanel.classList.remove('hidden');
+      
+      redrawActiveChart();
+    });
+  });
+
+  // Listener for global theme changes to redraw SVGs in new contrast values
+  window.addEventListener('themechange', () => {
+    redrawActiveChart();
+  });
+
+  function redrawActiveChart() {
+    if (currentChartType === 'donut') {
+      const { pi, tax, ins, pmi, hoa } = globalBreakdownData;
+      renderDonutSVG(pi, tax, ins, pmi, hoa);
+    } else if (currentChartType === 'area') {
+      renderAreaSVG();
+    } else if (currentChartType === 'line') {
+      renderLineSVG();
+    } else if (currentChartType === 'bar') {
+      renderBarSVG();
+    } else if (currentChartType === 'timeline') {
+      renderTimelineData();
+    }
+  }
+
+  // Exposed hook to build dynamic Decision Support cards
+  (window as any).updateChartInsights = function(cards: { label: string; value: string; badge?: string; badgeColor?: 'emerald' | 'blue' | 'rose' | 'amber' | 'muted' }[]) {
+    const container = document.getElementById('chart-insight-cards');
+    if (!container) return;
+    
+    if (!cards || cards.length === 0) {
+      container.classList.add('hidden');
+      return;
+    }
+    
+    container.innerHTML = "";
+    container.classList.remove('hidden');
+    
+    cards.forEach(card => {
+      const cardEl = document.createElement('div');
+      cardEl.className = "flex flex-col justify-between bg-bg-main/50 border border-border-subtle/80 p-4 rounded-xl hover:border-border-focus hover:scale-[1.02] transition-all duration-300 cursor-default hover:shadow-xs min-h-[110px] h-full break-words overflow-hidden gap-2";
+      
+      let badgeHtml = "";
+      if (card.badge) {
+        let colorClasses = "bg-border-subtle text-text-muted";
+        if (card.badgeColor === 'emerald') colorClasses = "bg-emerald-500/10 text-emerald-500";
+        if (card.badgeColor === 'blue') colorClasses = "bg-blue-500/10 text-blue-500";
+        if (card.badgeColor === 'rose') colorClasses = "bg-rose-500/10 text-rose-500";
+        if (card.badgeColor === 'amber') colorClasses = "bg-amber-500/10 text-amber-500";
+        
+        badgeHtml = `<div class="mt-auto"><span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-4xs font-bold ${colorClasses} max-w-full whitespace-normal break-words leading-normal text-left overflow-hidden">${card.badge}</span></div>`;
+      }
+      
+      cardEl.innerHTML = `
+        <div class="space-y-1 min-w-0">
+          <span class="text-3xs text-text-muted font-bold uppercase tracking-wider block whitespace-normal break-words leading-tight">${card.label}</span>
+          <span class="text-base sm:text-lg lg:text-xl font-extrabold text-text-main font-tabular block leading-tight break-words">${card.value}</span>
+        </div>
+        ${badgeHtml}
+      `;
+      container.appendChild(cardEl);
+    });
+  };
+
+  // Exposed hook called by calculator script pages
+  window.drawDonutChart = function(pi: number, tax: number, ins: number, pmi: number, hoa: number) {
+    globalBreakdownData = { pi, tax, ins, pmi, hoa };
+    if (currentChartType === 'donut') {
+      renderDonutSVG(pi, tax, ins, pmi, hoa);
+    }
+  };
+
+  window.drawAmortizationChart = function(schedule: AmortizationEntry[], baselineSchedule?: AmortizationEntry[]) {
+    globalSchedule = schedule || [];
+    globalBaselineSchedule = baselineSchedule || [];
+    
+    // Toggle comparison checkbox visibility
+    const compareContainer = document.getElementById('compare-checkbox-container');
+    if (compareContainer) {
+      if (globalBaselineSchedule && globalBaselineSchedule.length > 0) {
+        compareContainer.classList.remove('hidden');
+      } else {
+        compareContainer.classList.add('hidden');
+      }
+    }
+
+    // Set end year label text
+    const years = (globalSchedule.length / 12).toFixed(0);
+    const endLabels = ['area-end-year', 'line-end-year', 'bar-end-year'];
+    endLabels.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = `Year ${years}`;
+    });
+
+    redrawActiveChart();
+  };
+
+  // SVG grid renderer helper
+  function drawGridAndLabels(svgId: string, totalYears: number) {
+    const gridG = document.getElementById(`${svgId}-grid-lines`);
+    const labelsG = document.getElementById(`${svgId}-axis-labels`);
+    if (!gridG || !labelsG) return;
+    
+    gridG.innerHTML = "";
+    labelsG.innerHTML = "";
+    
+    const isMobile = window.innerWidth < 640;
+    const interval = isMobile ? 10 : 5;
+    
+    // Always render Year 0
+    const text0 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text0.setAttribute("x", "4");
+    text0.setAttribute("y", "192");
+    text0.setAttribute("text-anchor", "start");
+    text0.setAttribute("fill", "var(--text-muted)");
+    text0.setAttribute("font-size", "8px");
+    text0.setAttribute("font-family", "var(--font-sans)");
+    text0.setAttribute("font-weight", "500");
+    text0.textContent = "Yr 0";
+    labelsG.appendChild(text0);
+    
+    for (let y = interval; y <= totalYears; y += interval) {
+      const x = (y / totalYears) * 400;
+      
+      // Vertical grid line
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", String(x));
+      line.setAttribute("y1", "10");
+      line.setAttribute("x2", String(x));
+      line.setAttribute("y2", "175");
+      line.setAttribute("stroke", "var(--border-subtle)");
+      line.setAttribute("stroke-width", "0.5");
+      line.setAttribute("stroke-dasharray", "2 2");
+      gridG.appendChild(line);
+      
+      // Text label
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", String(x));
+      text.setAttribute("y", "192");
+      if (y === totalYears) {
+        text.setAttribute("x", "396");
+        text.setAttribute("text-anchor", "end");
+      } else {
+        text.setAttribute("text-anchor", "middle");
+      }
+      text.setAttribute("fill", "var(--text-muted)");
+      text.setAttribute("font-size", "8px");
+      text.setAttribute("font-family", "var(--font-sans)");
+      text.setAttribute("font-weight", "500");
+      text.textContent = `Yr ${y}`;
+      labelsG.appendChild(text);
+    }
+  }
+
+  // Tooltip tracking logic for SVGs with touch scrub support
+  function bindSVGTooltip(svgId: string, getTooltipContent: (entry: AmortizationEntry, index: number) => string) {
+    const svg = document.getElementById(svgId);
+    if (!svg) return;
+
+    const tooltipLine = document.getElementById(`${svgId}-tooltip-line`);
+
+    const handleHover = (clientX: number) => {
+      if (globalSchedule.length === 0) return;
+
+      const rect = svg.getBoundingClientRect();
+      const mouseX = clientX - rect.left;
+      const pct = Math.max(0, Math.min(1, mouseX / rect.width));
+
+      const monthIdx = Math.round(pct * (globalSchedule.length - 1));
+      const entry = globalSchedule[monthIdx];
+      if (!entry) return;
+
+      const x = pct * 400; // viewBox width is 400
+
+      if (tooltipLine) {
+        tooltipLine.setAttribute('x1', String(x));
+        tooltipLine.setAttribute('x2', String(x));
+        tooltipLine.classList.remove('hidden');
+      }
+
+      if (tooltip) {
+        tooltip.innerHTML = getTooltipContent(entry, monthIdx);
+        tooltip.classList.remove('hidden');
+
+        const container = document.getElementById('platform-visualizer');
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          const parentLeft = clientX - containerRect.left;
+          
+          // Place tooltip above the chart canvas for mobile readability
+          const rectSvg = svg.getBoundingClientRect();
+          const parentTop = rectSvg.top - containerRect.top - 10;
+          
+          // Constrain left boundaries to avoid window overflow
+          const constrainedLeft = Math.max(12, Math.min(parentLeft + 12, containerRect.width - 210));
+          
+          tooltip.style.left = `${constrainedLeft}px`;
+          tooltip.style.top = `${parentTop}px`;
+        }
+      }
+    };
+
+    svg.addEventListener('mousemove', (e: MouseEvent) => {
+      handleHover(e.clientX);
+    });
+
+    svg.addEventListener('touchmove', (e: TouchEvent) => {
+      if (e.touches[0]) {
+        // Prevent screen scrolling when scrubbing chart
+        e.preventDefault();
+        handleHover(e.touches[0].clientX);
+      }
+    }, { passive: false });
+
+    svg.addEventListener('touchstart', (e: TouchEvent) => {
+      if (e.touches[0]) {
+        handleHover(e.touches[0].clientX);
+      }
+    });
+
+    const hideTooltip = () => {
+      if (tooltipLine) tooltipLine.classList.add('hidden');
+      if (tooltip) tooltip.classList.add('hidden');
+    };
+
+    svg.addEventListener('mouseleave', hideTooltip);
+    svg.addEventListener('touchend', hideTooltip);
+  }
+
+  // Bind Area and Line tooltips
+  bindSVGTooltip('area-svg', (entry, index) => {
+    const year = (entry.month / 12).toFixed(1);
+    const total = entry.cumulativePrincipal + entry.cumulativeInterest;
+    
+    let compareHtml = "";
+    const showBase = compareCheckbox?.checked && globalBaselineSchedule.length > 0;
+    if (showBase) {
+      const baseEntry = globalBaselineSchedule[index];
+      if (baseEntry) {
+        const baseTotal = baseEntry.cumulativePrincipal + baseEntry.cumulativeInterest;
+        compareHtml = `
+          <div class="border-t border-border-subtle pt-1 mt-1 space-y-0.5 opacity-80">
+            <div class="text-text-muted font-bold">Baseline Track</div>
+            <div>Principal: <span class="text-text-main font-semibold">$${Math.round(baseEntry.cumulativePrincipal).toLocaleString('en-US')}</span></div>
+            <div>Interest: <span class="text-text-main font-semibold">$${Math.round(baseEntry.cumulativeInterest).toLocaleString('en-US')}</span></div>
+            <div>Total Paid: <span class="text-text-main font-semibold">$${Math.round(baseTotal).toLocaleString('en-US')}</span></div>
+          </div>
+        `;
+      }
+    }
+    
+    return `
+      <div class="space-y-0.5">
+        <div class="text-text-muted font-bold">Year ${year} (Month ${entry.month})</div>
+        <div class="text-brand-accent font-bold">Proposed Track</div>
+        <div>Principal Equity: <span class="text-emerald-500 font-semibold">$${Math.round(entry.cumulativePrincipal).toLocaleString('en-US')}</span></div>
+        <div>Interest Paid: <span class="text-amber-500 font-semibold">$${Math.round(entry.cumulativeInterest).toLocaleString('en-US')}</span></div>
+        <div class="border-t border-border-subtle pt-0.5">Total Paid: <span class="text-text-main font-bold">$${Math.round(total).toLocaleString('en-US')}</span></div>
+        ${compareHtml}
+      </div>
+    `;
+  });
+
+  bindSVGTooltip('line-svg', (entry, index) => {
+    const year = (entry.month / 12).toFixed(1);
+    
+    let compareHtml = "";
+    const showBase = compareCheckbox?.checked && globalBaselineSchedule.length > 0;
+    if (showBase) {
+      const baseEntry = globalBaselineSchedule[index];
+      if (baseEntry) {
+        compareHtml = `
+          <div class="border-t border-border-subtle pt-1 mt-1 opacity-80">
+            <div>Baseline Balance: <span class="text-text-muted font-bold">$${Math.round(baseEntry.remainingBalance).toLocaleString('en-US')}</span></div>
+          </div>
+        `;
+      }
+    }
+    
+    return `
+      <div class="space-y-0.5">
+        <div class="text-text-muted font-bold">Year ${year} (Month ${entry.month})</div>
+        <div>Proposed Balance: <span class="text-indigo-500 font-bold">$${Math.round(entry.remainingBalance).toLocaleString('en-US')}</span></div>
+        ${compareHtml}
+      </div>
+    `;
+  });
+
+  // 1. Donut Renderer
+  function renderDonutSVG(pi: number, tax: number, ins: number, pmi: number, hoa: number) {
+    const total = pi + tax + ins + pmi + hoa;
+    const donutTotalEl = document.getElementById('donut-total');
+    if (donutTotalEl) donutTotalEl.textContent = `$${Math.round(total).toLocaleString('en-US')}`;
+
+    const setLegend = (id: string, val: number) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = `$${Math.round(val).toLocaleString('en-US')}`;
+    };
+    setLegend('legend-pi-val', pi);
+    setLegend('legend-tax-val', tax);
+    setLegend('legend-ins-val', ins);
+
+    const pmiRow = document.getElementById('legend-pmi-row');
+    if (pmiRow) {
+      if (pmi > 0) {
+        pmiRow.style.display = 'flex';
+        setLegend('legend-pmi-val', pmi);
+      } else {
+        pmiRow.style.display = 'none';
+      }
+    }
+
+    const hoaRow = document.getElementById('legend-hoa-row');
+    if (hoaRow) {
+      if (hoa > 0) {
+        hoaRow.style.display = 'flex';
+        setLegend('legend-hoa-val', hoa);
+      } else {
+        hoaRow.style.display = 'none';
+      }
+    }
+
+    const circ = 251.2;
+    const segments = [
+      { id: 'donut-segment-pi', val: pi },
+      { id: 'donut-segment-tax', val: tax },
+      { id: 'donut-segment-ins', val: ins },
+      { id: 'donut-segment-pmi', val: pmi },
+      { id: 'donut-segment-hoa', val: hoa }
+    ];
+
+    let currentOffset = 0;
+    segments.forEach(seg => {
+      const el = document.getElementById(seg.id);
+      if (el) {
+        if (total === 0) {
+          el.setAttribute('stroke-dashoffset', String(circ));
+        } else {
+          const ratio = seg.val / total;
+          const strokeLength = ratio * circ;
+          el.setAttribute('stroke-dasharray', `${strokeLength} ${circ}`);
+          el.setAttribute('stroke-dashoffset', String(-currentOffset));
+          currentOffset += strokeLength;
+        }
+      }
+    });
+
+    updateLiveRegion(`Monthly cost breakdown donut chart. Total estimated monthly payment is $${Math.round(total).toLocaleString('en-US')}. Principal and interest is $${Math.round(pi).toLocaleString('en-US')}, property taxes is $${Math.round(tax).toLocaleString('en-US')}, insurance is $${Math.round(ins).toLocaleString('en-US')}, PMI is $${Math.round(pmi).toLocaleString('en-US')}, HOA is $${Math.round(hoa).toLocaleString('en-US')}.`);
+  }
+
+  // 2. Area Renderer
+  function renderAreaSVG() {
+    if (globalSchedule.length === 0) return;
+    const svg = document.getElementById('area-svg');
+    if (!svg) return;
+
+    const width = 400;
+    const totalMonths = globalSchedule.length;
+    const totalYears = Math.ceil(totalMonths / 12);
+    
+    // Draw vertical grids and labels
+    drawGridAndLabels('area', totalYears);
+
+    const lastEntry = globalSchedule[totalMonths - 1];
+    
+    // Scale max value according to baseline if visible
+    const showBase = compareCheckbox?.checked && globalBaselineSchedule.length > 0;
+    const lastBaseEntry = showBase ? globalBaselineSchedule[globalBaselineSchedule.length - 1] : null;
+    const maxVal = Math.max(
+      lastEntry.cumulativePrincipal + lastEntry.cumulativeInterest,
+      lastBaseEntry ? lastBaseEntry.cumulativePrincipal + lastBaseEntry.cumulativeInterest : 0
+    );
+
+    let prinPoints = "";
+    let intPoints = "";
+    const step = Math.max(1, Math.floor(totalMonths / 60));
+    
+    // 175 is the axis baseline, 10 is top offset, total usable height is 165
+    for (let i = 0; i < totalMonths; i += step) {
+      const entry = globalSchedule[i];
+      const x = (i / (totalMonths - 1)) * width;
+      const yPrin = 175 - (entry.cumulativePrincipal / maxVal) * 165;
+      const yInt = 175 - ((entry.cumulativePrincipal + entry.cumulativeInterest) / maxVal) * 165;
+
+      const prefix = i === 0 ? "M" : "L";
+      prinPoints += `${prefix} ${x.toFixed(1)} ${yPrin.toFixed(1)} `;
+      intPoints += `${prefix} ${x.toFixed(1)} ${yInt.toFixed(1)} `;
+    }
+
+    // Append last point exactly
+    const xLast = width;
+    const yPrinLast = 175 - (lastEntry.cumulativePrincipal / maxVal) * 165;
+    const yIntLast = 175 - ((lastEntry.cumulativePrincipal + lastEntry.cumulativeInterest) / maxVal) * 165;
+    prinPoints += `L ${xLast} ${yPrinLast.toFixed(1)}`;
+    intPoints += `L ${xLast} ${yIntLast.toFixed(1)}`;
+
+    document.getElementById('area-line-principal')?.setAttribute('d', prinPoints);
+    document.getElementById('area-line-interest')?.setAttribute('d', intPoints);
+
+    document.getElementById('area-path-principal')?.setAttribute('d', `${prinPoints} L ${width} 175 L 0 175 Z`);
+    document.getElementById('area-path-interest')?.setAttribute('d', `${intPoints} L ${width} 175 L 0 175 Z`);
+
+    // Render baseline comparison lines if toggled
+    const baseInterestPath = document.getElementById('area-line-baseline-interest');
+    const basePrincipalPath = document.getElementById('area-line-baseline-principal');
+
+    if (showBase && globalBaselineSchedule.length > 0) {
+      let basePrinPoints = "";
+      let baseIntPoints = "";
+      const baseMonths = globalBaselineSchedule.length;
+      const baseStep = Math.max(1, Math.floor(baseMonths / 60));
+
+      for (let i = 0; i < baseMonths; i += baseStep) {
+        const entry = globalBaselineSchedule[i];
+        const x = (i / (baseMonths - 1)) * width;
+        const yPrin = 175 - (entry.cumulativePrincipal / maxVal) * 165;
+        const yInt = 175 - ((entry.cumulativePrincipal + entry.cumulativeInterest) / maxVal) * 165;
+
+        const prefix = i === 0 ? "M" : "L";
+        basePrinPoints += `${prefix} ${x.toFixed(1)} ${yPrin.toFixed(1)} `;
+        baseIntPoints += `${prefix} ${x.toFixed(1)} ${yInt.toFixed(1)} `;
+      }
+
+      // Append baseline final points
+      const baseLast = globalBaselineSchedule[baseMonths - 1];
+      const basePrinLast = 175 - (baseLast.cumulativePrincipal / maxVal) * 165;
+      const baseIntLast = 175 - ((baseLast.cumulativePrincipal + baseLast.cumulativeInterest) / maxVal) * 165;
+      basePrinPoints += `L ${width} ${basePrinLast.toFixed(1)}`;
+      baseIntPoints += `L ${width} ${baseIntLast.toFixed(1)}`;
+
+      baseInterestPath?.setAttribute('d', baseIntPoints);
+      basePrincipalPath?.setAttribute('d', basePrinPoints);
+      baseInterestPath?.classList.remove('hidden');
+      basePrincipalPath?.classList.remove('hidden');
+    } else {
+      baseInterestPath?.classList.add('hidden');
+      basePrincipalPath?.classList.add('hidden');
+    }
+
+    updateLiveRegion(`Equity accumulation area chart. Cumulative payments reach a total of $${Math.round(maxVal).toLocaleString('en-US')} over the duration of the loan. Principal paid is $${Math.round(lastEntry.cumulativePrincipal).toLocaleString('en-US')}, and interest paid is $${Math.round(lastEntry.cumulativeInterest).toLocaleString('en-US')}.`);
+  }
+
+  // 3. Line Renderer
+  function renderLineSVG() {
+    if (globalSchedule.length === 0) return;
+    const svg = document.getElementById('line-svg');
+    if (!svg) return;
+
+    const width = 400;
+    const totalMonths = globalSchedule.length;
+    const totalYears = Math.ceil(totalMonths / 12);
+    
+    // Draw vertical grids and labels
+    drawGridAndLabels('line', totalYears);
+
+    const showBase = compareCheckbox?.checked && globalBaselineSchedule.length > 0;
+    const maxVal = Math.max(
+      globalSchedule[0].remainingBalance,
+      showBase ? globalBaselineSchedule[0].remainingBalance : 0
+    );
+
+    let points = "";
+    const step = Math.max(1, Math.floor(totalMonths / 60));
+
+    for (let i = 0; i < totalMonths; i += step) {
+      const entry = globalSchedule[i];
+      const x = (i / (totalMonths - 1)) * width;
+      const y = 175 - (entry.remainingBalance / maxVal) * 165;
+      points += `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)} `;
+    }
+    
+    // Add final point exactly
+    const lastX = width;
+    const lastY = 175 - (globalSchedule[totalMonths - 1].remainingBalance / maxVal) * 165;
+    points += `L ${lastX} ${lastY.toFixed(1)}`;
+
+    document.getElementById('line-path-curve')?.setAttribute('d', points);
+    document.getElementById('line-path-area')?.setAttribute('d', `${points} L ${width} 175 L 0 175 Z`);
+
+    // Render baseline curve overlay
+    const baseCurvePath = document.getElementById('line-path-baseline');
+    if (showBase && globalBaselineSchedule.length > 0) {
+      let basePoints = "";
+      const baseMonths = globalBaselineSchedule.length;
+      const baseStep = Math.max(1, Math.floor(baseMonths / 60));
+
+      for (let i = 0; i < baseMonths; i += baseStep) {
+        const entry = globalBaselineSchedule[i];
+        const x = (i / (baseMonths - 1)) * width;
+        const y = 175 - (entry.remainingBalance / maxVal) * 165;
+        basePoints += `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)} `;
+      }
+      const baseLastY = 175 - (globalBaselineSchedule[baseMonths - 1].remainingBalance / maxVal) * 165;
+      basePoints += `L ${width} ${baseLastY.toFixed(1)}`;
+
+      baseCurvePath?.setAttribute('d', basePoints);
+      baseCurvePath?.classList.remove('hidden');
+    } else {
+      baseCurvePath?.classList.add('hidden');
+    }
+
+    updateLiveRegion(`Outstanding loan balance reduction line chart. Starting loan balance of $${Math.round(maxVal).toLocaleString('en-US')} declines over the amortization term of the mortgage to zero.`);
+  }
+
+  // 4. Bar Renderer (Yearly Split)
+  function renderBarSVG() {
+    const barSvg = document.getElementById('bar-svg');
+    if (!barSvg || globalSchedule.length === 0) return;
+
+    barSvg.innerHTML = ""; // Clear existing bars
+    const totalMonths = globalSchedule.length;
+    const totalYears = Math.ceil(totalMonths / 12);
+    
+    // Aggregate by year
+    const yearlyData: { principal: number; interest: number }[] = [];
+    for (let y = 0; y < totalYears; y++) {
+      let annualPrin = 0;
+      let annualInt = 0;
+      for (let m = 0; m < 12; m++) {
+        const idx = y * 12 + m;
+        if (idx < totalMonths) {
+          annualPrin += globalSchedule[idx].principalPaid + globalSchedule[idx].extraPaid;
+          annualInt += globalSchedule[idx].interestPaid;
+        }
+      }
+      yearlyData.push({ principal: annualPrin, interest: annualInt });
+    }
+
+    // Baseline aggregation if toggled
+    const showBase = compareCheckbox?.checked && globalBaselineSchedule.length > 0;
+    const baseYearlyData: { total: number }[] = [];
+    if (showBase) {
+      const baseMonths = globalBaselineSchedule.length;
+      const baseYears = Math.ceil(baseMonths / 12);
+      for (let y = 0; y < baseYears; y++) {
+        let annualTotal = 0;
+        for (let m = 0; m < 12; m++) {
+          const idx = y * 12 + m;
+          if (idx < baseMonths) {
+            annualTotal += globalBaselineSchedule[idx].principalPaid + globalBaselineSchedule[idx].interestPaid;
+          }
+        }
+        baseYearlyData.push({ total: annualTotal });
+      }
+    }
+
+    const maxYearPI = Math.max(
+      ...yearlyData.map(d => d.principal + d.interest),
+      showBase ? Math.max(...baseYearlyData.map(d => d.total), 0) : 0
+    );
+    if (maxYearPI <= 0) return;
+
+    // Draw baseline grid lines and X-axis border
+    const isMobile = window.innerWidth < 640;
+    const interval = isMobile ? 10 : 5;
+
+    // Draw Axis line
+    const axisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    axisLine.setAttribute("x1", "0");
+    axisLine.setAttribute("y1", "175");
+    axisLine.setAttribute("x2", "400");
+    axisLine.setAttribute("y2", "175");
+    axisLine.setAttribute("stroke", "var(--border-subtle)");
+    axisLine.setAttribute("stroke-width", "1");
+    barSvg.appendChild(axisLine);
+
+    // Draw grid lines and ticks
+    const maxYearLabels = Math.max(totalYears, showBase ? baseYearlyData.length : 0);
+    
+    // Always render Year 0 label
+    const text0 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text0.setAttribute("x", "4");
+    text0.setAttribute("y", "192");
+    text0.setAttribute("text-anchor", "start");
+    text0.setAttribute("fill", "var(--text-muted)");
+    text0.setAttribute("font-size", "8px");
+    text0.setAttribute("font-family", "var(--font-sans)");
+    text0.setAttribute("font-weight", "500");
+    text0.textContent = "Yr 0";
+    barSvg.appendChild(text0);
+
+    for (let y = interval; y <= maxYearLabels; y += interval) {
+      const x = (y / maxYearLabels) * 400;
+
+      const gridL = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      gridL.setAttribute("x1", String(x));
+      gridL.setAttribute("y1", "10");
+      gridL.setAttribute("x2", String(x));
+      gridL.setAttribute("y2", "175");
+      gridL.setAttribute("stroke", "var(--border-subtle)");
+      gridL.setAttribute("stroke-width", "0.5");
+      gridL.setAttribute("stroke-dasharray", "2 2");
+      barSvg.appendChild(gridL);
+
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", String(x));
+      text.setAttribute("y", "192");
+      if (y === maxYearLabels) {
+        text.setAttribute("x", "396");
+        text.setAttribute("text-anchor", "end");
+      } else {
+        text.setAttribute("text-anchor", "middle");
+      }
+      text.setAttribute("fill", "var(--text-muted)");
+      text.setAttribute("font-size", "8px");
+      text.setAttribute("font-family", "var(--font-sans)");
+      text.setAttribute("font-weight", "500");
+      text.textContent = `Yr ${y}`;
+      barSvg.appendChild(text);
+    }
+
+    const width = 400;
+    const height = 175; // baseline y-axis position
+    const barWidth = Math.max(2, (width / maxYearLabels) - 2);
+
+    yearlyData.forEach((data, index) => {
+      const x = (index / maxYearLabels) * width + 1;
+      
+      const totalH = ((data.principal + data.interest) / maxYearPI) * 165;
+      const prinH = (data.principal / maxYearPI) * 165;
+      const intH = (data.interest / maxYearPI) * 165;
+
+      // Draw interest bar (bottom segment)
+      const rectInt = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rectInt.setAttribute("x", String(x));
+      rectInt.setAttribute("y", String(height - intH));
+      rectInt.setAttribute("width", String(barWidth));
+      rectInt.setAttribute("height", String(intH));
+      rectInt.setAttribute("fill", "#f59e0b");
+      rectInt.setAttribute("opacity", "0.85");
+      barSvg.appendChild(rectInt);
+
+      // Draw principal bar (stacked segment on top of interest)
+      const rectPrin = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rectPrin.setAttribute("x", String(x));
+      rectPrin.setAttribute("y", String(height - intH - prinH));
+      rectPrin.setAttribute("width", String(barWidth));
+      rectPrin.setAttribute("height", String(prinH));
+      rectPrin.setAttribute("fill", "#10b981");
+      rectPrin.setAttribute("opacity", "0.85");
+      barSvg.appendChild(rectPrin);
+
+      // Draw baseline overlay outline if comparison is toggled
+      if (showBase && baseYearlyData[index]) {
+        const baseH = (baseYearlyData[index].total / maxYearPI) * 165;
+        const rectBase = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rectBase.setAttribute("x", String(x));
+        rectBase.setAttribute("y", String(height - baseH));
+        rectBase.setAttribute("width", String(barWidth));
+        rectBase.setAttribute("height", String(baseH));
+        rectBase.setAttribute("fill", "transparent");
+        rectBase.setAttribute("stroke", "var(--text-muted)");
+        rectBase.setAttribute("stroke-width", "1");
+        rectBase.setAttribute("stroke-dasharray", "2 2");
+        rectBase.setAttribute("opacity", "0.65");
+        barSvg.appendChild(rectBase);
+      }
+
+      // Bind tooltip events to rect bars
+      const showTooltip = (e: MouseEvent) => {
+        const year = index + 1;
+        const total = data.principal + data.interest;
+        
+        let baseHtml = "";
+        if (showBase && baseYearlyData[index]) {
+          baseHtml = `
+            <div class="border-t border-border-subtle pt-1 mt-1 opacity-85">
+              <div class="text-text-muted font-bold">Baseline Track</div>
+              <div>Total Payment: <span class="text-text-main font-semibold">$${Math.round(baseYearlyData[index].total).toLocaleString('en-US')}</span></div>
+            </div>
+          `;
+        }
+
+        if (tooltip) {
+          tooltip.innerHTML = `
+            <div class="space-y-0.5">
+              <div class="text-text-muted font-bold">Year ${year}</div>
+              <div class="text-brand-accent font-bold">Proposed Track</div>
+              <div>Principal: <span class="text-emerald-500 font-semibold">$${Math.round(data.principal).toLocaleString('en-US')}</span></div>
+              <div>Interest: <span class="text-amber-500 font-semibold">$${Math.round(data.interest).toLocaleString('en-US')}</span></div>
+              <div class="border-t border-border-subtle pt-0.5">Total: <span class="text-text-main font-bold">$${Math.round(total).toLocaleString('en-US')}</span></div>
+              ${baseHtml}
+            </div>
+          `;
+          tooltip.classList.remove('hidden');
+          
+          const container = document.getElementById('platform-visualizer');
+          if (container) {
+            const containerRect = container.getBoundingClientRect();
+            const parentLeft = e.clientX - containerRect.left;
+            const parentTop = height - totalH - 25; // Align stable above bar
+            
+            const constrainedLeft = Math.max(12, Math.min(parentLeft + 12, containerRect.width - 210));
+            tooltip.style.left = `${constrainedLeft}px`;
+            tooltip.style.top = `${parentTop}px`;
+          }
+        }
+      };
+
+      const hideTooltip = () => {
+        if (tooltip) tooltip.classList.add('hidden');
+      };
+
+      rectInt.addEventListener('mousemove', showTooltip);
+      rectInt.addEventListener('mouseleave', hideTooltip);
+      rectPrin.addEventListener('mousemove', showTooltip);
+      rectPrin.addEventListener('mouseleave', hideTooltip);
+    });
+
+    updateLiveRegion(`Yearly split of mortgage payments bar chart. Principal and interest splits are calculated and drawn for each year of the ${maxYearLabels} year mortgage term.`);
+  }
+
+  // 5. Timeline Renderer (Milestones)
+  function renderTimelineData() {
+    if (globalSchedule.length === 0) return;
+    
+    const totalMonths = globalSchedule.length;
+    const origPrincipal = globalSchedule[0].remainingBalance + globalSchedule[0].principalPaid;
+    
+    // Find half principal paid month
+    let halfPaidMonth = -1;
+    for (let i = 0; i < totalMonths; i++) {
+      if (globalSchedule[i].remainingBalance <= origPrincipal * 0.5) {
+        halfPaidMonth = i + 1;
+        break;
+      }
+    }
+
+    // Find PMI Cancel Month
+    let pmiCancelMonth = -1;
+    for (let i = 0; i < totalMonths; i++) {
+      if (globalSchedule[i].pmiPaid === 0 && i > 0 && globalSchedule[i-1].pmiPaid > 0) {
+        pmiCancelMonth = i;
+        break;
+      }
+    }
+
+    // Update nodes labels
+    const pmiNode = document.getElementById('milestone-pmi-node');
+    const pmiTime = document.getElementById('timeline-pmi-time');
+    if (pmiTime) {
+      if (pmiCancelMonth > 0) {
+        if (pmiNode) pmiNode.style.display = 'block';
+        const yrs = (pmiCancelMonth / 12).toFixed(1);
+        pmiTime.textContent = `Month ${pmiCancelMonth} (~${yrs} yrs)`;
+      } else {
+        // Hide PMI node if no PMI was charged
+        if (pmiNode) pmiNode.style.display = 'none';
+      }
+    }
+
+    const halfTime = document.getElementById('timeline-half-time');
+    if (halfTime && halfPaidMonth > 0) {
+      const yrs = (halfPaidMonth / 12).toFixed(1);
+      halfTime.textContent = `Month ${halfPaidMonth} (~${yrs} yrs)`;
+    }
+
+    const payoffTime = document.getElementById('timeline-payoff-time');
+    if (payoffTime) {
+      const yrs = (totalMonths / 12).toFixed(1);
+      payoffTime.textContent = `Month ${totalMonths} (${yrs} yrs)`;
+    }
+
+    // Update Timeline Description with Comparison insights
+    const desc = document.getElementById('timeline-insights-desc');
+    if (desc) {
+      let insightHtml = `You will reach <strong>50% principal equity</strong> in Month ${halfPaidMonth} (~${(halfPaidMonth / 12).toFixed(1)} years).`;
+      if (pmiCancelMonth > 0) {
+        insightHtml += ` Private Mortgage Insurance (PMI) is scheduled to terminate at <strong>Month ${pmiCancelMonth}</strong>, reducing your housing expenses instantly.`;
+      }
+      insightHtml += ` Total debt freedom is achieved in <strong>${(totalMonths / 12).toFixed(1)} years</strong>.`;
+      
+      const showBase = compareCheckbox?.checked && globalBaselineSchedule.length > 0;
+      if (showBase) {
+        const baseMonths = globalBaselineSchedule.length;
+        const diffMonths = baseMonths - totalMonths;
+        if (diffMonths > 0) {
+          const diffYrs = (diffMonths / 12).toFixed(1);
+          insightHtml += ` <span class="text-emerald-500 font-semibold block mt-1">Comparison Insight: This proposed plan pays off the loan ${diffMonths} months (~${diffYrs} years) faster than remaining on the baseline path.</span>`;
+        }
+      }
+      desc.innerHTML = insightHtml;
+    }
+  }
+</script>
+
+<style>
+  .active-tab {
+    background-color: var(--bg-card);
+    border-color: var(--border-subtle);
+    color: var(--text-main);
+  }
+</style>

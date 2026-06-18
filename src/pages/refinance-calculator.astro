@@ -1,0 +1,449 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SVGCharts from '../components/Calculator/SVGCharts.astro';
+import StressTest from '../components/Calculator/StressTest.astro';
+import AmortizationTable from '../components/Calculator/AmortizationTable.astro';
+import LeadGenCard from '../components/LeadGenCard.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+import PrintModal from '../components/Calculator/PrintModal.astro';
+import MortgageReport from '../components/Calculator/MortgageReport.astro';
+
+const faqs = [
+  {
+    question: "When is refinancing worth it?",
+    answer: "Refinancing is typically worth it if today's interest rate is at least 0.5% to 1% lower than your current rate, and you plan to stay in the home long enough to pass the break-even point."
+  },
+  {
+    question: "What closing costs are associated with refinancing?",
+    answer: "Refinancing closing costs generally range from 2% to 5% of the new loan amount. These include loan application, appraisal, origination, underwriting, title search, and recording fees."
+  },
+  {
+    question: "Can I refinance if I have a prepayment penalty?",
+    answer: "Most conventional loans do not have prepayment penalties. If your current loan does, you must factor that cost into your closing expenses when calculating the break-even month."
+  }
+];
+---
+
+<Layout 
+  title="Refinance Calculator - Find Your Break-Even Month"
+  description="Compare your current mortgage terms against today's refinance rates. Calculate closing cost recovery and monthly savings."
+  canonicalUrl="/refinance-calculator"
+>
+  <Header activeSlug="refinance" />
+
+  <!-- PDF Print Report Header -->
+  <div id="print-header" class="border-b border-border-subtle pb-4 mb-6 hidden">
+    <div class="flex justify-between items-end">
+      <div>
+        <h1 class="text-xl font-bold font-display text-text-main">Mortgage Intelligence Report</h1>
+        <p class="text-2xs text-text-muted">Advisory Assessment: Refinance Break-Even & Financial Restructuring</p>
+      </div>
+      <div class="text-right text-text-muted text-2xs">
+        <span>Generated: {new Date().toLocaleDateString()}</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-2">
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Refinance Break-Even Calculator</h1>
+      <p class="text-xs text-text-muted">Determine whether refinancing saves you money, factoring in upfront closing costs and term lengths.</p>
+    </div>
+
+    <!-- 2-Column Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT: Controls Pane -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-6">
+          <h2 class="font-display text-sm font-semibold text-text-main border-b border-border-subtle pb-2">Refinance Parameters</h2>
+          
+          <!-- Current Balance -->
+          <div class="space-y-1.5 text-xs">
+            <span class="flex items-center">
+              <label for="curr-balance" class="font-medium text-text-muted">Remaining Principal Balance ($)</label>
+              <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span class="tooltip-text">The outstanding principal balance remaining on your existing mortgage loan.</span>
+              </span>
+            </span>
+            <input type="number" id="curr-balance" value="300000" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+          </div>
+
+          <!-- Current Rate & Remaining Term -->
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="curr-rate" class="font-medium text-text-muted">Current Rate (%)</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The interest rate you currently pay on your mortgage.</span>
+                </span>
+              </span>
+              <input type="number" id="curr-rate" value="7.25" step="0.1" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="curr-term" class="font-medium text-text-muted">Remaining Term (Yrs)</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The number of years remaining until your current mortgage is scheduled to be fully paid off.</span>
+                </span>
+              </span>
+              <input type="number" id="curr-term" value="28" min="1" max="30" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+            </div>
+          </div>
+
+          <!-- Current P&I -->
+          <div class="space-y-1.5 text-xs">
+            <span class="flex items-center">
+              <label for="curr-payment" class="font-medium text-text-muted">Current Monthly P&I ($)</label>
+              <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span class="tooltip-text">Your standard monthly Principal and Interest payment. Do not include escrow taxes or insurance.</span>
+              </span>
+            </span>
+            <input type="number" id="curr-payment" value="2046" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+          </div>
+
+          <h2 class="font-display text-sm font-semibold text-text-main border-b border-border-subtle pb-2 pt-2">New Refinance Details</h2>
+
+          <!-- New Rate & Term -->
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="new-rate" class="font-medium text-text-muted">New Rate (%)</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The estimated annual interest rate on the new refinance loan.</span>
+                </span>
+              </span>
+              <input type="number" id="new-rate" value="5.85" step="0.1" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="new-term" class="font-medium text-text-muted">New Term (Yrs)</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The repayment length of the new mortgage loan.</span>
+                </span>
+              </span>
+              <select id="new-term" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main focus:border-border-focus focus:outline-none">
+                <option value="30">30 Years</option>
+                <option value="20">20 Years</option>
+                <option value="15">15 Years</option>
+                <option value="10">10 Years</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Closing Costs -->
+          <div class="space-y-1.5 text-xs">
+            <span class="flex items-center">
+              <label for="closing-costs" class="font-medium text-text-muted">Refi Closing Costs ($)</label>
+              <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span class="tooltip-text">Total upfront lender fees, appraisal costs, escrow fees, and closing costs.</span>
+              </span>
+            </span>
+            <input type="number" id="closing-costs" value="6000" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+          </div>
+
+          <!-- Roll Costs Toggle -->
+          <div class="flex items-center gap-2 text-xs">
+            <input type="checkbox" id="roll-costs" class="h-4 w-4 rounded border-border-input bg-bg-input text-blue-500 focus:ring-0 focus:outline-none" />
+            <label for="roll-costs" class="font-medium text-text-muted cursor-pointer select-none">Roll closing costs into loan principal</label>
+          </div>
+        </div>
+
+        <LeadGenCard />
+      </div>
+      
+      <!-- RIGHT: Dashboard Outputs -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Summary Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 grid grid-cols-2 gap-6 relative">
+          <div>
+            <span class="text-text-muted text-xs font-semibold block">Monthly P&I Savings</span>
+            <span class="text-3xl font-extrabold text-emerald-500 font-display font-tabular tracking-tight mt-1" id="refi-savings">$0</span>
+            <span class="text-3xs text-text-muted block mt-1" id="refi-new-pi">New payment: $0/mo</span>
+          </div>
+          <div class="border-l border-border-subtle pl-6 flex justify-between items-start">
+            <div>
+              <span class="text-text-muted text-xs font-semibold block">Break-Even Point</span>
+              <span class="text-3xl font-extrabold text-blue-500 font-display font-tabular tracking-tight mt-1" id="refi-breakeven">0 Months</span>
+              <span class="text-3xs text-text-muted block mt-1" id="refi-lifetime-savings">Lifetime savings: $0</span>
+            </div>
+            
+            <button 
+              class="absolute top-4 right-4 p-1.5 rounded-md border border-border-subtle bg-bg-main hover:bg-bg-card-hover text-text-muted hover:text-brand-accent transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              id="download-report-btn"
+              title="Download PDF Planning Report"
+              aria-label="Download PDF Planning Report"
+            >
+              <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Warning Panel if Break-Even is bad -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 hidden" id="refi-alert-panel">
+          <div class="flex items-start gap-3 text-xs leading-normal">
+            <div class="h-5 w-5 text-amber-500 mt-0.5 shrink-0">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-text-main" id="refi-alert-title">Refinance Warning</h4>
+              <p class="text-text-muted mt-1" id="refi-alert-desc">Your break-even month exceeds your target term or refinance yields negative savings. Please verify values.</p>
+            </div>
+          </div>
+        </div>
+        
+        <SVGCharts />
+        
+        <StressTest />
+        <MortgageReport />
+
+      </div>
+    </div>
+
+    <!-- Repayment Table -->
+    <AmortizationTable />
+
+    <!-- Editorial E-E-A-T Content -->
+    <MortgageGuide 
+      title="Refinance Break-Even"
+      subtitle="Evaluating closing cost recovery timeline and lifetime interest adjustments"
+      whatItDoes="Compares your current mortgage schedule against the terms of a new refinance mortgage, calculating monthly savings, upfront expenses, and the exact month where your savings offset closing costs."
+      whenToUse="Deploy this calculator when rates are declining or when you want to explore shifting from an adjustable-rate mortgage (ARM) to a fixed-rate loan."
+      howItWorks="Runs parallel amortization schedules based on the remaining balance. Monthly P&I differences are divided into total refinance costs to identify the break-even month. Life-of-loan interest summation yields the true long-term benefit."
+      mistakes="Failing to plan for your actual tenure in the home. If your break-even point is 40 months and you plan to sell the house in 3 years (36 months), refinancing actually costs you more cash than keeping the higher rate."
+      faqs={faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <!-- PDF Print Disclaimer -->
+  <div id="print-disclaimer" class="hidden">
+    <h4 class="font-bold mb-1">Mortgage Intelligence Report Disclaimer</h4>
+    <p>
+      This document constitutes an advisory summary compiled under user-input assumptions. Estimates are not guaranteed. Lenders will execute separate underwriting passes before issuing binding commitments. Consult certified financial planners.
+    </p>
+  </div>
+
+  <PrintModal />
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateRefinance, calculateMortgage } from '../utils/mortgage';
+
+  // Grab controls
+  const currBalanceInput = document.getElementById('curr-balance') as HTMLInputElement;
+  const currRateInput = document.getElementById('curr-rate') as HTMLInputElement;
+  const currTermInput = document.getElementById('curr-term') as HTMLInputElement;
+  const currPaymentInput = document.getElementById('curr-payment') as HTMLInputElement;
+
+  const newRateInput = document.getElementById('new-rate') as HTMLInputElement;
+  const newTermSelect = document.getElementById('new-term') as HTMLSelectElement;
+  const closingCostsInput = document.getElementById('closing-costs') as HTMLInputElement;
+  const rollCostsCheckbox = document.getElementById('roll-costs') as HTMLInputElement;
+
+  [currBalanceInput, currRateInput, currTermInput, currPaymentInput, newRateInput, newTermSelect, closingCostsInput, rollCostsCheckbox].forEach(ctrl => {
+    ctrl.addEventListener('input', recalculate);
+  });
+
+  function recalculate() {
+    const currentBalance = parseFloat(currBalanceInput.value) || 0;
+    const currentRate = parseFloat(currRateInput.value) || 0;
+    const currentRemainingYears = parseFloat(currTermInput.value) || 0;
+    const currentMonthlyPI = parseFloat(currPaymentInput.value) || 0;
+
+    const newRate = parseFloat(newRateInput.value) || 0;
+    const newTermYears = parseInt(newTermSelect.value) || 30;
+    const refiClosingCosts = parseFloat(closingCostsInput.value) || 0;
+    const rollCostsIntoLoan = rollCostsCheckbox.checked;
+
+    const refi = calculateRefinance({
+      currentBalance,
+      currentRate,
+      currentRemainingYears,
+      currentMonthlyPI,
+      newRate,
+      newTermYears,
+      refiClosingCosts,
+      rollCostsIntoLoan
+    });
+
+    // Run mortgage schedule for the new refinance loan to generate amortization metrics
+    const result = calculateMortgage({
+      homePrice: refi.newPrincipal,
+      downPayment: 0, // already factored into balance
+      interestRate: newRate,
+      loanTermYears: newTermYears,
+      propertyTaxRate: 0, // ignore escrow taxes to focus on refi P&I comparisons
+      insuranceRate: 0,
+      pmiRate: 0,
+      hoaFee: 0,
+      extraMonthly: 0,
+      extraAnnual: 0,
+      extraOneTime: []
+    });
+
+    const baselineResult = calculateMortgage({
+      homePrice: currentBalance,
+      downPayment: 0,
+      interestRate: currentRate,
+      loanTermYears: currentRemainingYears,
+      propertyTaxRate: 0,
+      insuranceRate: 0,
+      pmiRate: 0,
+      hoaFee: 0,
+      extraMonthly: 0,
+      extraAnnual: 0,
+      extraOneTime: []
+    });
+
+    // Update displays
+    const outSavings = document.getElementById('refi-savings');
+    const outNewPI = document.getElementById('refi-new-pi');
+    if (outSavings) outSavings.textContent = refi.monthlySavings > 0 ? `$${Math.round(refi.monthlySavings).toLocaleString('en-US')}/mo` : "$0/mo";
+    if (outNewPI) outNewPI.textContent = `New payment: $${Math.round(refi.newMonthlyPI).toLocaleString('en-US')}/mo`;
+
+    const outBreakeven = document.getElementById('refi-breakeven');
+    const outLifetime = document.getElementById('refi-lifetime-savings');
+    
+    if (outBreakeven) {
+      if (refi.breakEvenMonths > 0) {
+        const yrs = (refi.breakEvenMonths / 12).toFixed(1);
+        outBreakeven.textContent = `${refi.breakEvenMonths} Months (~${yrs} Yrs)`;
+        outBreakeven.className = "text-3xl font-extrabold text-blue-500 font-display font-tabular tracking-tight mt-1";
+      } else {
+        outBreakeven.textContent = "No Break-Even";
+        outBreakeven.className = "text-3xl font-extrabold text-rose-500 font-display font-tabular tracking-tight mt-1";
+      }
+    }
+
+    if (outLifetime) {
+      outLifetime.textContent = refi.lifetimeSavings > 0 
+        ? `Lifetime net savings: $${Math.round(refi.lifetimeSavings).toLocaleString('en-US')}` 
+        : `Lifetime loss: $${Math.abs(Math.round(refi.lifetimeSavings)).toLocaleString('en-US')}`;
+    }
+
+    // Toggle Alert Panel
+    const alertPanel = document.getElementById('refi-alert-panel');
+    const alertTitle = document.getElementById('refi-alert-title');
+    const alertDesc = document.getElementById('refi-alert-desc');
+    
+    if (alertPanel && alertTitle && alertDesc) {
+      if (refi.monthlySavings <= 0) {
+        alertPanel.classList.remove('hidden');
+        alertTitle.textContent = "Higher Monthly Payment";
+        alertDesc.textContent = "The new refinance rate or term length increases your monthly payment. This will result in immediate cash flow reduction.";
+      } else if (refi.lifetimeSavings <= 0) {
+        alertPanel.classList.remove('hidden');
+        alertTitle.textContent = "Negative Lifetime Savings";
+        alertDesc.textContent = "Even though your monthly payment drops, the extended loan duration means you will pay more total interest over the life of the loan than remaining on your current loan.";
+      } else {
+        alertPanel.classList.add('hidden');
+      }
+    }
+
+    // Donut and chart updates
+    if (window.drawDonutChart) {
+      // Focus on P&I and Closing Cost variables
+      window.drawDonutChart(refi.newMonthlyPI, 0, 0, 0, 0);
+    }
+
+    if (window.drawAmortizationChart) {
+      window.drawAmortizationChart(result.amortizationSchedule, baselineResult.amortizationSchedule);
+    }
+
+    if ((window as any).generateMortgageReport) {
+      (window as any).generateMortgageReport({
+        homePrice: refi.newPrincipal,
+        downPayment: 0,
+        interestRate: newRate,
+        termYears: newTermYears,
+        monthlyPayment: refi.newMonthlyPI,
+        monthlyPI: refi.newMonthlyPI,
+        income: 0,
+        debts: 0,
+        pmi: 0,
+        hoa: 0,
+        refiSavings: refi.monthlySavings
+      });
+    }
+
+    if ((window as any).updateChartInsights) {
+      (window as any).updateChartInsights([
+        {
+          label: "Monthly Cash Flow",
+          value: refi.monthlySavings > 0 ? `+$${Math.round(refi.monthlySavings).toLocaleString('en-US')}/mo` : "$0/mo",
+          badge: refi.monthlySavings > 0 ? "Savings realized" : "No monthly gain",
+          badgeColor: refi.monthlySavings > 0 ? "emerald" : "rose"
+        },
+        {
+          label: "Lifetime Savings",
+          value: refi.lifetimeSavings > 0 ? `$${Math.round(refi.lifetimeSavings).toLocaleString('en-US')}` : `-$${Math.round(Math.abs(refi.lifetimeSavings)).toLocaleString('en-US')}`,
+          badge: refi.lifetimeSavings > 0 ? "Net positive" : "Net lifetime loss",
+          badgeColor: refi.lifetimeSavings > 0 ? "emerald" : "rose"
+        },
+        {
+          label: "Break-Even Point",
+          value: refi.breakEvenMonths > 0 ? `${refi.breakEvenMonths} Mos` : "No Break-Even",
+          badge: refi.breakEvenMonths > 0 ? `~${(refi.breakEvenMonths / 12).toFixed(1)} years` : "Costs exceed savings",
+          badgeColor: refi.breakEvenMonths > 0 ? "blue" : "rose"
+        },
+        {
+          label: "Refi Strategy",
+          value: refi.newMonthlyPI < currentMonthlyPI ? "Lower Payment" : "Rate / Term shift",
+          badge: `Rate: ${newRate}% vs ${currentRate}%`,
+          badgeColor: newRate < currentRate ? "emerald" : "amber"
+        }
+      ]);
+    }
+
+    if (window.renderAmortizationTable) {
+      window.renderAmortizationTable(result.amortizationSchedule);
+    }
+
+    if (window.updateStressTest) {
+      window.updateStressTest(refi.newPrincipal, newRate, newTermYears, 0);
+    }
+
+    // Register data for comparative save
+    if (window.registerCurrentRunData) {
+      window.registerCurrentRunData({
+        homePrice: refi.newPrincipal,
+        downPayment: 0,
+        interestRate: newRate,
+        termYears: newTermYears,
+        monthlyPayment: refi.newMonthlyPI,
+        totalInterest: result.totalInterestPaid
+      });
+    }
+  }
+
+  // Bind PDF Download report trigger
+  const printBtn = document.getElementById('download-report-btn');
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      if ((window as any).openPrintModal) {
+        (window as any).openPrintModal();
+      } else {
+        window.print();
+      }
+    });
+  }
+
+  recalculate();
+</script>

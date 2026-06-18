@@ -1,0 +1,80 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-border-subtle bg-bg-card/45 text-text-muted">
+  <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+      <!-- Calculators Column -->
+      <div>
+        <h3 class="text-sm font-semibold text-text-main tracking-wider mb-4 font-display">Calculators</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/house-affordability-calculator" class="hover:text-text-main transition-colors">Affordability Calculator</a></li>
+          <li><a href="/mortgage-payoff-calculator" class="hover:text-text-main transition-colors">Mortgage Payoff Calculator</a></li>
+          <li><a href="/extra-payment-calculator" class="hover:text-text-main transition-colors">Extra Payment Calculator</a></li>
+          <li><a href="/refinance-calculator" class="hover:text-text-main transition-colors">Refinance Calculator</a></li>
+          <li><a href="/mortgage-calculator-with-pmi" class="hover:text-text-main transition-colors">PMI Calculator</a></li>
+        </ul>
+      </div>
+
+      <!-- State Calculators Column -->
+      <div>
+        <h3 class="text-sm font-semibold text-text-main tracking-wider mb-4 font-display">Regional Tools</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/california-mortgage-calculator" class="hover:text-text-main transition-colors">California Mortgage Calculator</a></li>
+          <li><a href="/texas-mortgage-calculator" class="hover:text-text-main transition-colors">Texas Mortgage Calculator</a></li>
+          <li><a href="/florida-mortgage-calculator" class="hover:text-text-main transition-colors">Florida Mortgage Calculator</a></li>
+          <li><a href="/new-york-mortgage-calculator" class="hover:text-text-main transition-colors">New York Mortgage Calculator</a></li>
+          <li><a href="/illinois-mortgage-calculator" class="hover:text-text-main transition-colors">Illinois Mortgage Calculator</a></li>
+        </ul>
+      </div>
+
+      <!-- SEO Guides Column -->
+      <div>
+        <h3 class="text-sm font-semibold text-text-main tracking-wider mb-4 font-display">Resources</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/guides/first-time-home-buyer-guide" class="hover:text-text-main transition-colors">First-Time Buyer Guide</a></li>
+          <li><a href="/guides/pmi-removal-guide" class="hover:text-text-main transition-colors">PMI Removal Guide</a></li>
+          <li><a href="/guides/fha-vs-conventional-loans" class="hover:text-text-main transition-colors">FHA vs Conventional</a></li>
+          <li><a href="/guides/mortgage-closing-costs-explained" class="hover:text-text-main transition-colors">Closing Costs Explained</a></li>
+          <li><a href="/guides/average-mortgage-rates-by-state" class="hover:text-text-main transition-colors">Average Rates by State</a></li>
+        </ul>
+      </div>
+
+      <!-- Platform Column -->
+      <div>
+        <h3 class="text-sm font-semibold text-text-main tracking-wider mb-4 font-display">Platform</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/methodology" class="hover:text-text-main transition-colors">Methodology</a></li>
+          <li><a href="/assumptions" class="hover:text-text-main transition-colors">Assumptions Directory</a></li>
+          <li><a href="/data-sources" class="hover:text-text-main transition-colors">Data Sources</a></li>
+          <li><a href="/glossary" class="hover:text-text-main transition-colors">Mortgage Glossary</a></li>
+          <li><a href="/about-us" class="hover:text-text-main transition-colors">About Us</a></li>
+          <li><a href="/contact-us" class="hover:text-text-main transition-colors">Contact Us</a></li>
+          <li><a href="/privacy-policy" class="hover:text-text-main transition-colors">Privacy Policy</a></li>
+          <li><a href="/terms-and-conditions" class="hover:text-text-main transition-colors">Terms &amp; Conditions</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- E-E-A-T and Disclosures -->
+    <div class="border-t border-border-subtle pt-8 text-xs leading-relaxed text-text-muted space-y-4">
+      <div>
+        <h4 class="font-semibold text-text-main mb-1">Financial Methodology & Assumptions</h4>
+        <p>
+          Calculations are provided for illustrative purposes only and do not constitute financial advice or lending offers. Monthly payments are calculated using standard amortization formulas. Local property taxes and homeowners insurance rates represent estimated state-level averages sourced from public databases (2026). Private Mortgage Insurance (PMI) charges are modeled at 0.75% of the initial loan principal annually for LTV ratios exceeding 80%, automatically terminating in calculations when the outstanding loan balance drops to or below 80% of the initial purchase price.
+        </p>
+      </div>
+      <div>
+        <h4 class="font-semibold text-text-main mb-1">Information Sources</h4>
+        <p>
+          State-specific median pricing and property tax averages are compiled from national census datasets, public county tax records, and macroeconomic reporting channels. Interest rate averages represent estimated national market trends and are updated periodically.
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 text-text-muted/65">
+        <p>&copy; {year} Mortgage Intelligence Platform. All rights reserved.</p>
+        <p>Designed with ❤️ for financial clarity.</p>
+      </div>
+    </div>
+  </div>
+</footer>

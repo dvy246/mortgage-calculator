@@ -1,0 +1,120 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout 
+  title="Financial Methodology & Formulas"
+  description="Explore the mathematical framework, equations, and underwriting assumptions governing our mortgage decision tools."
+  canonicalUrl="/methodology"
+>
+  <Header activeSlug="" />
+
+  <main class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-text-muted flex items-center gap-2">
+      <a href="/" class="hover:text-text-main transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-text-muted">Methodology</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="space-y-4 border-b border-border-subtle pb-8">
+      <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
+        Financial Methodology & Formulas
+      </h1>
+      <p class="text-sm text-text-muted leading-relaxed max-w-2xl">
+        Transparency is the foundation of advisor-grade financial planning. Below is the complete mathematical framework, variables, and formulas used by our decision engines.
+      </p>
+    </div>
+
+    <!-- Methodology Content -->
+    <div class="space-y-10 text-sm text-text-muted leading-relaxed">
+      
+      <!-- 1. Standard Mortgage Amortization -->
+      <section class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">
+          1. Standard Mortgage Amortization
+        </h2>
+        <p>
+          Our calculators model standard monthly amortizing loans using the fixed-rate payment equation. Interest is calculated on the outstanding balance monthly rather than daily.
+        </p>
+        <div class="bg-bg-card border border-border-subtle rounded-xl p-6 text-center space-y-3">
+          <span class="block text-xs font-semibold text-text-muted">The Amortization Payment Formula</span>
+          <code class="block text-base sm:text-lg font-mono text-brand-accent select-all">
+            M = P &times; [ r(1 + r)ⁿ ] / [ (1 + r)ⁿ - 1 ]
+          </code>
+          <div class="text-2xs text-text-muted text-left max-w-lg mx-auto pt-2 grid grid-cols-2 gap-2 font-medium">
+            <div><strong>M</strong>: Total monthly Principal & Interest</div>
+            <div><strong>P</strong>: Loan Principal Amount</div>
+            <div><strong>r</strong>: Monthly Interest Rate (Annual Rate / 12 / 100)</div>
+            <div><strong>n</strong>: Total Months (Term in Years &times; 12)</div>
+          </div>
+        </div>
+        <p>
+          Each monthly payment is broken down into interest (outstanding balance times the monthly interest rate) and principal (the remaining payment amount). The balance decreases iteratively month by month.
+        </p>
+      </section>
+
+      <!-- 2. Refinance Break-Even Point -->
+      <section class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">
+          2. Refinance Break-Even Analysis
+        </h2>
+        <p>
+          Refinancing is modeled by comparing the monthly payment of the existing loan against the proposed new loan. The break-even point is defined as the number of months required for cumulative monthly savings to offset the closing costs.
+        </p>
+        <div class="bg-bg-card border border-border-subtle rounded-xl p-6 text-center space-y-3">
+          <span class="block text-xs font-semibold text-text-muted">Break-Even Formula</span>
+          <code class="block text-base sm:text-lg font-mono text-brand-accent select-all">
+            Break-Even Month = &lceil; Upfront Closing Costs / Monthly Savings &rceil;
+          </code>
+        </div>
+        <p>
+          If closing costs are rolled into the new loan amount, they are added to the principal ($P$), increasing the new monthly payment and reducing the actual monthly savings.
+        </p>
+      </section>
+
+      <!-- 3. Private Mortgage Insurance (PMI) -->
+      <section class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">
+          3. Private Mortgage Insurance (PMI) Scheduling
+        </h2>
+        <p>
+          Under the <strong>Homeowners Protection Act of 1998</strong>, conventional mortgage lenders must automatically terminate PMI once the loan-to-value (LTV) ratio reaches 78% of the original purchase value, assuming payments are current. Borrowers may request manual cancellation once the loan reaches 80% LTV.
+        </p>
+        <p>
+          We calculate the PMI drop month by tracing the amortization table month-by-month. Once the outstanding balance declines below 80% of the original home price, the platform records the milestone date and subtracts the PMI cost from subsequent monthly totals.
+        </p>
+      </section>
+
+      <!-- 4. Debt-to-Income (DTI) Qualifications -->
+      <section class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">
+          4. Debt-to-Income (DTI) lending criteria
+        </h2>
+        <p>
+          Lenders evaluate risk using two primary DTI ratios:
+        </p>
+        <ul class="list-disc pl-5 space-y-2 text-xs">
+          <li><strong>Front-End DTI (Housing Ratio):</strong> Monthly housing expenses (Principal, Interest, Property Taxes, Insurance, HOA) divided by gross monthly income. Traditionally capped at <strong>28%</strong>.</li>
+          <li><strong>Back-End DTI (Total Debt Ratio):</strong> Total recurring monthly debts (Housing costs plus credit cards, auto loans, student loans, and child support) divided by gross monthly income. Capped at <strong>36%</strong> for conventional qualification.</li>
+        </ul>
+        <p>
+          Our DTI gauge models these limits, categorizing risk as Comfortable (&le; 28%), Stretch (28.1% - 36%), and Danger (&gt; 36%).
+        </p>
+      </section>
+
+      <!-- Institutional Oversight -->
+      <section class="border-t border-border-subtle pt-8 text-2xs text-text-muted space-y-2">
+        <h4 class="font-bold text-text-main">Underwriting Review & Compliance</h4>
+        <p>
+          Our math engine is modeled on guidelines published by the Federal National Mortgage Association (Fannie Mae) and Federal Home Loan Mortgage Corporation (Freddie Mac). Calculations are reviewed periodically by compliance officers.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

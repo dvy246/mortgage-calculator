@@ -1,0 +1,129 @@
+---
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  title: string;
+  subtitle: string;
+  whatItDoes: string;
+  whenToUse: string;
+  howItWorks: string;
+  mistakes: string;
+  faqs: FAQItem[];
+}
+
+const { title, subtitle, whatItDoes, whenToUse, howItWorks, mistakes, faqs } = Astro.props;
+
+// Construct FAQ JSON-LD Schema
+const faqSchema = faqs && faqs.length > 0 ? JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+}) : null;
+---
+
+{faqSchema && <script type="application/ld+json" set:html={faqSchema}></script>}
+
+<section class="max-w-4xl mx-auto space-y-8 text-sm text-text-muted leading-relaxed border-t border-border-subtle pt-12" id="mortgage-guide">
+  <div class="space-y-2">
+    <h2 class="font-display text-xl font-bold text-text-main tracking-tight">{title} Handbook</h2>
+    <p class="text-xs text-text-muted">{subtitle}</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-bg-card p-5 rounded-xl border border-border-subtle space-y-2">
+      <h3 class="font-display font-semibold text-text-main flex items-center gap-2">
+        <svg class="h-4 w-4 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>What this engine does</span>
+      </h3>
+      <p class="text-xs">{whatItDoes}</p>
+    </div>
+
+    <div class="bg-bg-card p-5 rounded-xl border border-border-subtle space-y-2">
+      <h3 class="font-display font-semibold text-text-main flex items-center gap-2">
+        <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>When to deploy this tool</span>
+      </h3>
+      <p class="text-xs">{whenToUse}</p>
+    </div>
+  </div>
+
+  <!-- How Calculations Work Section -->
+  <div class="space-y-4">
+    <h3 class="font-display text-base font-bold text-text-main tracking-tight">How Calculations Work</h3>
+    <div class="bg-bg-card border border-border-subtle rounded-xl p-5 space-y-3 font-sans">
+      <p class="text-xs">{howItWorks}</p>
+    </div>
+  </div>
+
+  <!-- Common Strategic Pitfalls -->
+  <div class="space-y-4">
+    <h3 class="font-display text-base font-bold text-text-main tracking-tight">Common Strategic Pitfalls</h3>
+    <div class="bg-bg-card border border-border-subtle rounded-xl p-5 space-y-3 text-xs">
+      <p>{mistakes}</p>
+    </div>
+  </div>
+
+  <!-- Standardized Sources & Assumptions Panel -->
+  <div class="space-y-4">
+    <h3 class="font-display text-base font-bold text-text-main tracking-tight">Sources & Assumptions</h3>
+    <div class="bg-bg-card border border-border-subtle rounded-xl p-5 space-y-4 text-xs">
+      <p>
+        Calculations are based on industry-standard financial models. To review the mathematical formulas and verification reports in detail, visit our dedicated <a href="/methodology" class="text-brand-accent hover:underline font-semibold">Financial Methodology</a> page.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-2xs text-text-muted">
+        <div class="space-y-1">
+          <span class="block font-semibold text-text-main">Property Taxes & Homeowners Insurance</span>
+          <p>Pre-populated data reflects estimated national averages sourced from county tax agencies and regional insurance reports. Homeowners can customize these percentages inside advanced settings cards.</p>
+        </div>
+        <div class="space-y-1">
+          <span class="block font-semibold text-text-main">Private Mortgage Insurance (PMI)</span>
+          <p>PMI is modeled at 0.75% of the initial loan principal annually for LTV ratios exceeding 80%, automatically terminating in calculations when the outstanding loan balance drops to or below 80% of the initial purchase price.</p>
+        </div>
+      </div>
+      <div class="border-t border-border-subtle pt-3 flex items-center justify-between text-2xs text-text-muted">
+        <span>Detailed disclosures, limits, and sources:</span>
+        <div class="flex gap-3">
+          <a href="/assumptions" class="text-brand-accent hover:underline font-semibold">Assumptions Directory</a>
+          <span>&bull;</span>
+          <a href="/data-sources" class="text-brand-accent hover:underline font-semibold">Data Sources</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQs Section -->
+  {faqs && faqs.length > 0 && (
+    <div class="space-y-4">
+      <h3 class="font-display text-base font-bold text-text-main tracking-tight">Frequently Asked Questions</h3>
+      <div class="space-y-3">
+        {faqs.map((faq, index) => (
+          <details class="group border border-border-subtle bg-bg-card rounded-lg p-4 cursor-pointer" id={`faq-${index}`}>
+            <summary class="flex justify-between items-center text-xs font-semibold text-text-main list-none focus:outline-none focus-visible:text-brand-accent">
+              <span>{faq.question}</span>
+              <span class="text-text-muted group-open:rotate-180 transition-transform">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </span>
+            </summary>
+            <p class="text-xs text-text-muted mt-3 leading-relaxed border-t border-border-subtle pt-3">{faq.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  )}
+</section>

@@ -1,0 +1,512 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SVGCharts from '../components/Calculator/SVGCharts.astro';
+import StressTest from '../components/Calculator/StressTest.astro';
+import AmortizationTable from '../components/Calculator/AmortizationTable.astro';
+import LeadGenCard from '../components/LeadGenCard.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+import PrintModal from '../components/Calculator/PrintModal.astro';
+import MortgageReport from '../components/Calculator/MortgageReport.astro';
+
+const faqs = [
+  {
+    question: "When can I request PMI removal?",
+    answer: "You can write to your servicer to request PMI cancellation once your balance reaches 80% of the original purchase price. Under the Homeowners Protection Act, it must terminate automatically when your balance drops to 78% LTV."
+  },
+  {
+    question: "How does my credit score affect PMI?",
+    answer: "PMI premium rates are highly dependent on credit scores. A borrower with a 760+ credit score might pay 0.3% to 0.5% annually, whereas someone with a 620 score could pay 1.5% or more for the exact same loan."
+  },
+  {
+    question: "Do FHA loans have PMI?",
+    answer: "FHA loans do not have Private Mortgage Insurance; instead, they require a Mortgage Insurance Premium (MIP). Unlike conventional PMI, FHA MIP typically cannot be removed and is paid for the life of the loan unless you refinance."
+  }
+];
+---
+
+<Layout 
+  title="Mortgage Calculator with PMI - Project Private Mortgage Insurance Costs"
+  description="Estimate monthly Private Mortgage Insurance fees for down payments under 20%. Calculate loan-to-value thresholds and PMI cancellation dates."
+  canonicalUrl="/mortgage-calculator-with-pmi"
+>
+  <Header activeSlug="pmi" />
+
+  <!-- PDF Print Report Header -->
+  <div id="print-header" class="border-b border-border-subtle pb-4 mb-6 hidden">
+    <div class="flex justify-between items-end">
+      <div>
+        <h1 class="text-xl font-bold font-display text-text-main">Mortgage Intelligence Report</h1>
+        <p class="text-2xs text-text-muted">Advisory Assessment: Private Mortgage Insurance & Down Payment Optimization</p>
+      </div>
+      <div class="text-right text-text-muted text-2xs">
+        <span>Generated: {new Date().toLocaleDateString()}</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-2">
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Mortgage Calculator with PMI</h1>
+      <p class="text-xs text-text-muted">Project Private Mortgage Insurance (PMI) costs, determine LTV targets, and plan your payoff to cancel PMI early.</p>
+    </div>
+
+    <!-- 2-Column Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT: Controls Pane -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-6">
+          <h2 class="font-display text-sm font-semibold text-text-main border-b border-border-subtle pb-2">Mortgage Details</h2>
+          
+          <!-- Home Price -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="price-input" class="font-medium text-text-muted">Home Price</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The total contract price of the home you plan to purchase.</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="price-display">$400,000</span>
+            </div>
+            <input 
+              type="range" 
+              id="price-slider" 
+              min="100000" 
+              max="1500000" 
+              step="10000" 
+              value="400000" 
+              aria-label="Home Price Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted/65 text-3xs">$100k</span>
+              <input type="number" id="price-input" value="400000" class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" aria-label="Home Price Input" />
+              <span class="text-text-muted/65 text-3xs">$1.5M</span>
+            </div>
+          </div>
+
+          <!-- Down Payment -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs">
+              <span class="flex items-center">
+                <label for="down-input" class="font-medium text-text-muted">Down Payment</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">Your initial upfront equity. PMI is required if your down payment is less than 20% of the price.</span>
+                </span>
+              </span>
+              <span class="font-bold text-text-main font-tabular" id="down-display">$40,000 (10%)</span>
+            </div>
+            <input 
+              type="range" 
+              id="down-slider" 
+              min="0" 
+              max="300000" 
+              step="5000" 
+              value="40000" 
+              aria-label="Down Payment Slider"
+            />
+            <div class="flex gap-2">
+              <span class="text-text-muted/65 text-3xs">$0</span>
+              <input type="number" id="down-input" value="40000" class="h-7 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" aria-label="Down Payment Input" />
+              <span class="text-text-muted/65 text-3xs">$300k</span>
+            </div>
+          </div>
+
+          <!-- Rate & Term -->
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="rate-input" class="font-medium text-text-muted">Interest Rate</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The annual interest rate of the mortgage.</span>
+                </span>
+              </span>
+              <input type="number" id="rate-input" value="6.50" step="0.1" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+            </div>
+            <div class="space-y-1.5">
+              <span class="flex items-center">
+                <label for="term-select" class="font-medium text-text-muted">Term</label>
+                <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  <span class="tooltip-text">The scheduled loan duration in years.</span>
+                </span>
+              </span>
+              <select id="term-select" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main focus:border-border-focus focus:outline-none">
+                <option value="30">30 Years</option>
+                <option value="20">20 Years</option>
+                <option value="15">15 Years</option>
+                <option value="10">10 Years</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- PMI Estimates -->
+          <div class="space-y-1.5 text-xs">
+            <span class="flex items-center">
+              <label for="pmi-rate-input" class="font-medium text-text-muted">Annual PMI Rate (%)</label>
+              <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span class="tooltip-text">Typical conventional PMI rates range from 0.3% to 1.5% annually, depending on credit score and down payment size.</span>
+              </span>
+            </span>
+            <input type="number" id="pmi-rate-input" value="0.75" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+          </div>
+
+          <!-- Advanced Estimates -->
+          <details class="group text-xs">
+            <summary class="flex justify-between items-center cursor-pointer text-text-muted font-semibold hover:text-text-main py-2">
+              <span>Escrow (Taxes, Insurance)</span>
+              <svg class="h-4 w-4 transform group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </summary>
+            <div class="space-y-4 pt-3 border-t border-border-subtle mt-2">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                  <label for="tax-input" class="font-medium text-text-muted">Property Tax (%)</label>
+                  <input type="number" id="tax-input" value="1.1" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+                </div>
+                <div class="space-y-1.5">
+                  <label for="ins-input" class="font-medium text-text-muted">Home Insurance (%)</label>
+                  <input type="number" id="ins-input" value="0.5" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+                </div>
+              </div>
+              <div class="space-y-1.5">
+                <label for="hoa-input" class="font-medium text-text-muted">Monthly HOA ($)</label>
+                <input type="number" id="hoa-input" value="0" step="10" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <LeadGenCard />
+      </div>
+      
+      <!-- RIGHT: Dashboard Outputs -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Summary Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 grid grid-cols-2 gap-6 relative">
+          <div>
+            <span class="text-text-muted text-xs font-semibold block">Monthly PMI Cost</span>
+            <span class="text-3xl font-extrabold text-pink-500 font-display font-tabular tracking-tight mt-1" id="pmi-monthly">$0</span>
+            <span class="text-3xs text-text-muted block mt-1" id="pmi-total-monthly">Total monthly: $0</span>
+          </div>
+          <div class="border-l border-border-subtle pl-6 flex justify-between items-start">
+            <div>
+              <span class="text-text-muted text-xs font-semibold block">PMI Cancellation Milestone</span>
+              <span class="text-3xl font-extrabold text-blue-500 font-display font-tabular tracking-tight mt-1" id="pmi-months-display">0 Months</span>
+              <span class="text-3xs text-text-muted block mt-1" id="pmi-lifetime-cost">Cumulative PMI: $0</span>
+            </div>
+            
+            <button 
+              class="absolute top-4 right-4 p-1.5 rounded-md border border-border-subtle bg-bg-main hover:bg-bg-card-hover text-text-muted hover:text-brand-accent transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              id="download-report-btn"
+              title="Download PDF Planning Report"
+              aria-label="Download PDF Planning Report"
+            >
+              <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Avoid PMI Action Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-4" id="pmi-avoid-card">
+          <div class="flex items-start gap-3 text-xs leading-normal">
+            <div class="h-5 w-5 text-emerald-500 mt-0.5 shrink-0">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <div>
+              <h4 class="font-semibold text-text-main">How to Avoid PMI Completely</h4>
+              <p class="text-text-muted mt-1" id="pmi-avoid-desc">Add another $40,000 to your down payment to reach the 20% LTV threshold and save $225/mo immediately.</p>
+            </div>
+          </div>
+        </div>
+        
+        <SVGCharts />
+        
+        <StressTest />
+        <MortgageReport />
+
+      </div>
+    </div>
+
+    <!-- Repayment Table -->
+    <AmortizationTable />
+
+    <!-- Editorial E-E-A-T Content -->
+    <MortgageGuide 
+      title="Mortgage PMI"
+      subtitle="Understanding private mortgage insurance thresholds, cancellation dates, and optimization"
+      whatItDoes="Models monthly mortgage insurance premiums, maps loan equity growth, and projects the exact month and year when your Loan-to-Value (LTV) ratio reaches the 80% mark required for PMI cancellation."
+      whenToUse="Deploy this tool when planning to purchase a home with a down payment under 20% to examine how interest rate, down payment size, and PMI rate interact to affect monthly cash flow."
+      howItWorks="Runs standard amortization schedules tracking cumulative payments. Monthly insurance charges are added to the total output based on the annual PMI rate. Once principal paydown reaches 80% LTV, PMI is removed from subsequent payments."
+      mistakes="Treating PMI as a permanent loan fixture. Unlike FHA loans, conventional loans allow you to request PMI removal. In an escalating housing market, you can request an appraisal to prove your equity is over 20% and drop PMI ahead of schedule."
+      faqs={faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <!-- PDF Print Disclaimer -->
+  <div id="print-disclaimer" class="hidden">
+    <h4 class="font-bold mb-1">Mortgage Intelligence Report Disclaimer</h4>
+    <p>
+      This document constitutes an advisory summary compiled under user-input assumptions. Estimates are not guaranteed. Lenders will execute separate underwriting passes before issuing binding commitments. Consult certified financial planners.
+    </p>
+  </div>
+
+  <PrintModal />
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateMortgage } from '../utils/mortgage';
+
+  // Grab controls
+  const priceSlider = document.getElementById('price-slider') as HTMLInputElement;
+  const priceInput = document.getElementById('price-input') as HTMLInputElement;
+  const priceDisplay = document.getElementById('price-display');
+
+  const downSlider = document.getElementById('down-slider') as HTMLInputElement;
+  const downInput = document.getElementById('down-input') as HTMLInputElement;
+  const downDisplay = document.getElementById('down-display');
+
+  const rateInput = document.getElementById('rate-input') as HTMLInputElement;
+  const termSelect = document.getElementById('term-select') as HTMLSelectElement;
+  const pmiRateInput = document.getElementById('pmi-rate-input') as HTMLInputElement;
+
+  const taxInput = document.getElementById('tax-input') as HTMLInputElement;
+  const insInput = document.getElementById('ins-input') as HTMLInputElement;
+  const hoaInput = document.getElementById('hoa-input') as HTMLInputElement;
+
+  function syncInputs(slider: HTMLInputElement, input: HTMLInputElement, display: HTMLElement | null, isPrice = true) {
+    const update = () => {
+      input.value = slider.value;
+      updateDisplay();
+      recalculate();
+    };
+    slider.addEventListener('input', update);
+    input.addEventListener('input', () => {
+      let val = parseFloat(input.value) || 0;
+      val = Math.min(parseFloat(slider.max), Math.max(parseFloat(slider.min), val));
+      slider.value = String(val);
+      updateDisplay();
+      recalculate();
+    });
+
+    function updateDisplay() {
+      if (!display) return;
+      if (isPrice) {
+        display.textContent = `$${parseInt(slider.value).toLocaleString('en-US')}`;
+      } else {
+        const price = parseFloat(priceSlider.value) || 1;
+        const down = parseFloat(slider.value) || 0;
+        const percent = Math.round((down / price) * 100);
+        display.textContent = `$${down.toLocaleString('en-US')} (${percent}%)`;
+      }
+    }
+  }
+
+  syncInputs(priceSlider, priceInput, priceDisplay, true);
+  syncInputs(downSlider, downInput, downDisplay, false);
+
+  priceSlider.addEventListener('input', () => {
+    const maxDown = Math.floor(parseFloat(priceSlider.value) * 0.8);
+    downSlider.max = String(maxDown);
+    if (parseFloat(downSlider.value) > maxDown) {
+      downSlider.value = String(maxDown);
+      downInput.value = String(maxDown);
+    }
+  });
+
+  [rateInput, termSelect, pmiRateInput, taxInput, insInput, hoaInput].forEach(ctrl => {
+    ctrl.addEventListener('input', recalculate);
+  });
+
+  function recalculate() {
+    const homePrice = parseFloat(priceInput.value) || 0;
+    const downPayment = parseFloat(downInput.value) || 0;
+    const interestRate = parseFloat(rateInput.value) || 0;
+    const loanTermYears = parseInt(termSelect.value) || 30;
+    const pmiRate = parseFloat(pmiRateInput.value) || 0;
+
+    const propertyTaxRate = parseFloat(taxInput.value) || 0;
+    const insuranceRate = parseFloat(insInput.value) || 0;
+    const hoaFee = parseFloat(hoaInput.value) || 0;
+
+    const result = calculateMortgage({
+      homePrice,
+      downPayment,
+      interestRate,
+      loanTermYears,
+      propertyTaxRate,
+      insuranceRate,
+      pmiRate,
+      hoaFee,
+      extraMonthly: 0,
+      extraAnnual: 0,
+      extraOneTime: []
+    });
+
+    const originalPrincipal = Math.max(0, homePrice - downPayment);
+    const ltv = homePrice > 0 ? (originalPrincipal / homePrice) * 100 : 0;
+
+    // PMI split displays
+    const pmiMonthlyEl = document.getElementById('pmi-monthly');
+    const pmiTotalEl = document.getElementById('pmi-total-monthly');
+    if (pmiMonthlyEl) pmiMonthlyEl.textContent = `$${Math.round(result.monthlyPMI).toLocaleString('en-US')}/mo`;
+    if (pmiTotalEl) pmiTotalEl.textContent = `Total monthly: $${Math.round(result.totalMonthlyPayment).toLocaleString('en-US')}/mo`;
+
+    // PMI Terminations
+    const monthsEl = document.getElementById('pmi-months-display');
+    const lifetimeEl = document.getElementById('pmi-lifetime-cost');
+
+    const totalPMI = result.amortizationSchedule.reduce((sum, entry) => sum + entry.pmiPaid, 0);
+
+    if (monthsEl) {
+      if (ltv <= 80) {
+        monthsEl.textContent = "No PMI";
+        monthsEl.className = "text-3xl font-extrabold text-emerald-500 font-display font-tabular tracking-tight mt-1";
+      } else {
+        monthsEl.textContent = result.pmiCancellationMonth > 0 ? `${result.pmiCancellationMonth} Months` : "Never Drops";
+        monthsEl.className = "text-3xl font-extrabold text-blue-500 font-display font-tabular tracking-tight mt-1";
+      }
+    }
+
+    if (lifetimeEl) {
+      lifetimeEl.textContent = `Total cumulative PMI: $${Math.round(totalPMI).toLocaleString('en-US')}`;
+    }
+
+    // Avoid PMI Card Calculations
+    const avoidCard = document.getElementById('pmi-avoid-card');
+    const avoidDesc = document.getElementById('pmi-avoid-desc');
+
+    if (avoidCard && avoidDesc) {
+      if (ltv <= 80) {
+        avoidCard.style.display = 'none';
+      } else {
+        avoidCard.style.display = 'block';
+        const targetDown = homePrice * 0.2;
+        const shortAmt = Math.max(0, targetDown - downPayment);
+        avoidDesc.innerHTML = `Add another <strong>$${Math.round(shortAmt).toLocaleString('en-US')}</strong> to your down payment to reach the 20% LTV threshold ($${Math.round(targetDown).toLocaleString('en-US')} down payment) and save <strong>$${Math.round(result.monthlyPMI).toLocaleString('en-US')}/mo</strong> in PMI fees immediately.`;
+      }
+    }
+
+    // Donut and chart updates
+    if (window.drawDonutChart) {
+      window.drawDonutChart(
+        result.monthlyPrincipalAndInterest,
+        result.monthlyPropertyTax,
+        result.monthlyInsurance,
+        result.monthlyPMI,
+        result.monthlyHOA
+      );
+    }
+
+    const targetDownPayment = homePrice * 0.20;
+    const baselineResult = calculateMortgage({
+      homePrice,
+      downPayment: targetDownPayment,
+      interestRate,
+      loanTermYears,
+      propertyTaxRate,
+      insuranceRate,
+      pmiRate: 0, // No PMI
+      hoaFee,
+      extraMonthly: 0,
+      extraAnnual: 0,
+      extraOneTime: []
+    });
+
+    if (window.drawAmortizationChart) {
+      window.drawAmortizationChart(result.amortizationSchedule, baselineResult.amortizationSchedule);
+    }
+
+    if ((window as any).generateMortgageReport) {
+      (window as any).generateMortgageReport({
+        homePrice,
+        downPayment,
+        interestRate,
+        termYears: loanTermYears,
+        monthlyPayment: result.totalMonthlyPayment,
+        monthlyPI: result.monthlyPrincipalAndInterest,
+        income: 0, // Not gathered
+        debts: 0,
+        pmi: result.monthlyPMI,
+        hoa: result.monthlyHOA
+      });
+    }
+
+    if ((window as any).updateChartInsights) {
+      const pmiShort = Math.max(0, homePrice * 0.2 - downPayment);
+      (window as any).updateChartInsights([
+        {
+          label: "Monthly PMI Cost",
+          value: result.monthlyPMI > 0 ? `$${Math.round(result.monthlyPMI).toLocaleString('en-US')}/mo` : "$0/mo",
+          badge: result.monthlyPMI > 0 ? "Underwriting rate: 0.75%" : "No PMI required",
+          badgeColor: result.monthlyPMI > 0 ? "rose" : "emerald"
+        },
+        {
+          label: "PMI Cancel Month",
+          value: result.pmiCancellationMonth > 0 ? `Month ${result.pmiCancellationMonth}` : (ltv <= 80 ? "No PMI" : "Life of Loan"),
+          badge: result.pmiCancellationMonth > 0 ? `~${(result.pmiCancellationMonth / 12).toFixed(1)} years` : "Down payment < 20%",
+          badgeColor: ltv <= 80 ? "emerald" : "amber"
+        },
+        {
+          label: "Lifetime PMI Cost",
+          value: `$${Math.round(totalPMI).toLocaleString('en-US')}`,
+          badge: "Fades at 80% LTV",
+          badgeColor: totalPMI > 0 ? "rose" : "emerald"
+        },
+        {
+          label: "20% Down Shortfall",
+          value: pmiShort > 0 ? `$${Math.round(pmiShort).toLocaleString('en-US')}` : "$0 (Goal Met)",
+          badge: pmiShort > 0 ? "Amount to avoid PMI" : "PMI fully avoided",
+          badgeColor: pmiShort > 0 ? "amber" : "emerald"
+        }
+      ]);
+    }
+
+    if (window.renderAmortizationTable) {
+      window.renderAmortizationTable(result.amortizationSchedule);
+    }
+
+    if (window.updateStressTest) {
+      window.updateStressTest(originalPrincipal, interestRate, loanTermYears, result.monthlyPropertyTax + result.monthlyInsurance + result.monthlyPMI + result.monthlyHOA);
+    }
+
+    // Register data for comparative save
+    if (window.registerCurrentRunData) {
+      window.registerCurrentRunData({
+        homePrice,
+        downPayment,
+        interestRate,
+        termYears: loanTermYears,
+        monthlyPayment: result.totalMonthlyPayment,
+        totalInterest: result.totalInterestPaid
+      });
+    }
+  }
+
+  // Bind PDF Download report trigger
+  const printBtn = document.getElementById('download-report-btn');
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      if ((window as any).openPrintModal) {
+        (window as any).openPrintModal();
+      } else {
+        window.print();
+      }
+    });
+  }
+
+  recalculate();
+</script>

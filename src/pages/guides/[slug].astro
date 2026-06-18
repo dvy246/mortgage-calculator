@@ -1,0 +1,291 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  return [
+    { params: { slug: "first-time-home-buyer-guide" }, props: { guideKey: "first-time" } },
+    { params: { slug: "pmi-removal-guide" }, props: { guideKey: "pmi-removal" } },
+    { params: { slug: "fha-vs-conventional-loans" }, props: { guideKey: "fha-vs-conv" } },
+    { params: { slug: "mortgage-closing-costs-explained" }, props: { guideKey: "closing-costs" } },
+    { params: { slug: "average-mortgage-rates-by-state" }, props: { guideKey: "state-rates" } },
+    { params: { slug: "mortgage-rates-guide" }, props: { guideKey: "mortgage-rates" } }
+  ];
+}
+
+interface Props {
+  guideKey: string;
+}
+
+const { guideKey } = Astro.props;
+const { slug } = Astro.params;
+
+interface GuideData {
+  title: string;
+  description: string;
+  category: string;
+  lastUpdated: string;
+  ctaText: string;
+  ctaHref: string;
+  sections: { heading: string; content: string }[];
+}
+
+const guidesDatabase: Record<string, GuideData> = {
+  "first-time": {
+    title: "First-Time Home Buyer Guide",
+    description: "Navigate credit checks, down payments, and debt requirements to buy your first home.",
+    category: "Home Buying",
+    lastUpdated: "June 2026",
+    ctaText: "Check What You Can Afford",
+    ctaHref: "/house-affordability-calculator",
+    sections: [
+      {
+        heading: "1. Credit Score Preparation & Tier Limits",
+        content: "Your credit score is the single most important factor determining your interest rate. Lenders generally require a minimum score of 580 for FHA loans and 620 for conventional loans. Scores above 740 receive the premier interest rate adjustments, saving you thousands over the loan duration. Underwriters evaluate your credit report for loan-level price adjustments (LLPAs). Paying down credit card balances below 30% utilization at least three months prior to loan application is recommended to secure the best rates."
+      },
+      {
+        heading: "2. The True Down Payment Minimums",
+        content: "While 20% down eliminates private mortgage insurance (PMI), you do not need that much to purchase a home. Conventional loans allow down payments as low as 3% for qualified first-time buyers through programs like Fannie Mae HomeReady and Freddie Mac Home Possible. FHA loans require 3.5%, while VA and USDA loans offer 0% down options for military personnel and rural properties. Be sure to calculate how lower down payments increase your monthly principal and interest charges."
+      },
+      {
+        heading: "3. Understanding DTI Limits",
+        content: "Underwriters calculate your Debt-to-Income (DTI) ratio to gauge risk. Your housing expenses should not exceed 28% of gross monthly income, and total debt payments (including car loans, student loans, and credit cards) should not exceed 36%. Keeping your debts low prior to application increases purchasing leverage. If your ratios exceed these limits, you may require a larger down payment or a co-signer to qualify."
+      },
+      {
+        heading: "4. Closing Reserves and Post-Closing Liquidity",
+        content: "Beyond the down payment, first-time buyers must budget for closing fees (usually 2% to 5% of purchase price) and maintain post-closing cash reserves. Lenders typically verify that you have two to six months of mortgage payments in liquid accounts after closing to buffer against employment disruption."
+      }
+    ]
+  },
+  "pmi-removal": {
+    title: "Private Mortgage Insurance (PMI) Removal Guide",
+    description: "Learn when and how to request PMI removal to save hundreds of dollars every month.",
+    category: "Mortgage Management",
+    lastUpdated: "June 2026",
+    ctaText: "Calculate Your PMI Cancellation Date",
+    ctaHref: "/mortgage-calculator-with-pmi",
+    sections: [
+      {
+        heading: "1. The Homeowners Protection Act of 1998",
+        content: "Federal law mandates that lenders automatically cancel PMI on conventional loans once your principal balance is scheduled to reach 78% of the original purchase value of the home, provided your payments are current. The termination date is based on the original amortization schedule, regardless of whether your property value has increased."
+      },
+      {
+        heading: "2. Requesting PMI Cancellation at 80% LTV",
+        content: "You do not have to wait for the automatic 78% threshold. Once your balance reaches 80% of the original home price, you can submit a written request to your lender to cancel PMI. You must have a good payment history (no payments 30 days late within the last year) and no second liens on the property."
+      },
+      {
+        heading: "3. Re-appraising due to Home Appreciation",
+        content: "If property values in your neighborhood have risen significantly, your current loan-to-value ratio might already be below 80% even if you haven't paid down the principal. You can contact your lender to request a new appraisal. If the appraisal confirms LTV is below 80% (or 75% if you've owned the home for less than five years), PMI can be legally removed early."
+      },
+      {
+        heading: "4. Refinancing to Eliminate PMI",
+        content: "If you have a high interest rate, refinancing into a new conventional mortgage with a balance below 80% LTV can remove PMI while simultaneously lowering your interest rate. Model this transition using our refinance break-even engine to check if closing costs offset the monthly insurance savings."
+      }
+    ]
+  },
+  "fha-vs-conv": {
+    title: "FHA vs. Conventional Mortgage Loans",
+    description: "Understand the core differences in guidelines, rates, and mortgage insurance.",
+    category: "Loan Comparison",
+    lastUpdated: "June 2026",
+    ctaText: "Model Principal Amortization",
+    ctaHref: "/mortgage-payoff-calculator",
+    sections: [
+      {
+        heading: "1. Qualification Guidelines and Credit Limits",
+        content: "FHA loans are backed by the Federal Housing Administration and are designed for borrowers with lower credit scores or smaller down payments. Conventional loans are not government-insured and carry stricter credit guidelines but offer more flexibility once equity is established. FHA allows scores down to 500 with 10% down, and 580 with 3.5% down."
+      },
+      {
+        heading: "2. Mortgage Insurance Structural Differences",
+        content: "Conventional loans charge PMI if down payment is under 20%, which can be cancelled once LTV drops to 80%. FHA loans charge both an upfront MIP fee (1.75% of the loan amount) and an annual MIP fee (typically 0.85%) that lasts for the entire loan life if your down payment was less than 10%, requiring a future refinance to remove it."
+      },
+      {
+        heading: "3. Loan Limits and Property Standards",
+        content: "Conventional loans adhere to loan limits set by Fannie Mae and Freddie Mac. FHA loans have regional limits that are generally lower than conventional limits, varying by county based on local housing markets. Additionally, FHA appraisals enforce strict safety, security, and habitability guidelines that the home must satisfy."
+      },
+      {
+        heading: "4. Long-Term Cost Analysis",
+        content: "While FHA loans often carry slightly lower nominal interest rates, their overall APR is typically higher due to the lifetime mortgage insurance premium. Conventional loans are generally more cost-effective over a 30-year period if you have the credit and down payment to qualify."
+      }
+    ]
+  },
+  "closing-costs": {
+    title: "Mortgage Closing Costs Explained",
+    description: "Budget for the upfront fees and transaction costs required to close your loan.",
+    category: "Home Buying",
+    lastUpdated: "June 2026",
+    ctaText: "Analyze Refinance Savings",
+    ctaHref: "/refinance-calculator",
+    sections: [
+      {
+        heading: "1. What are Closing Costs?",
+        content: "Closing costs are processing fees paid to lenders, title companies, and municipalities to close your mortgage. They typically range from 2% to 5% of the total purchase price of the home. On a $400,000 purchase, expect $8,000 to $20,000 in closing costs. Lenders are required to provide a Loan Estimate (LE) within three days of application outlining these fees."
+      },
+      {
+        heading: "2. Common Fee Breakdowns",
+        content: "Lender fees include origination charges, discount points, underwriting fees, and credit report fees. Third-party fees cover home appraisals, surveys, title searches, and title insurance. Government fees include recording taxes, transfer fees, and local deed recording stamps."
+      },
+      {
+        heading: "3. Prepaids and Escrow Accounts",
+        content: "At closing, lenders require prepaying property taxes and homeowners insurance premiums to establish an escrow account. This ensures funds are available when county tax bills and insurance policies renew. Typically, lenders collect two to three months of taxes and insurance up front as reserves."
+      },
+      {
+        heading: "4. How to Minimize Closing Expenses",
+        content: "You can request a seller concession (where the seller pays a portion of closing fees, capped at 3% to 9% depending on loan type and down payment). Alternatively, you can opt for a 'no-closing-cost' loan where the lender covers fees in exchange for a slightly higher interest rate."
+      }
+    ]
+  },
+  "state-rates": {
+    title: "Average Mortgage Rates by State",
+    description: "Analyze how regional property taxes, insurance averages, and local credit dynamics affect rates.",
+    category: "Research & Data",
+    lastUpdated: "June 2026",
+    ctaText: "Launch Regional Mortgage Calculator",
+    ctaHref: "/texas-mortgage-calculator",
+    sections: [
+      {
+        heading: "1. Why Mortgage Rates Differ Regionally",
+        content: "While baseline mortgage rates are dictated by national bond markets (specifically the 10-Year Treasury yield), local market competition, state foreclosure laws, and credit profiles cause interest rates to vary by region. States with fast foreclosure timelines often carry lower lender risk offsets than states with judicial foreclosure rules."
+      },
+      {
+        heading: "2. Real Estate Friction: Taxes and Insurance",
+        content: "Escrow charges have a massive impact on your total monthly payment. For example, Texas averages a high property tax rate of 1.60%, while California property taxes are capped under Prop 13, but California median purchase prices are significantly higher. In Florida, home insurance premiums are twice the national average due to weather risk."
+      },
+      {
+        heading: "3. State-Specific Conforming Loan Limits",
+        content: "Conforming loan limits are adjusted annually by the FHFA based on regional housing appreciation. High-cost counties in California, New York, and Hawaii have conforming limits that exceed standard limits, allowing buyers to secure lower conforming rates rather than higher jumbo rates."
+      },
+      {
+        heading: "4. Shopping Local vs. National Lenders",
+        content: "Check local credit unions, regional banks, and national online mortgage brokers. State-specific housing authorities (such as CalHFA in California or TDHCA in Texas) offer down payment assistance programs that can lower your effective borrowing rate."
+      }
+    ]
+  },
+  "mortgage-rates": {
+    title: "Mortgage Rates Guide: Primary Market Drivers",
+    description: "Analyze the macroeconomic variables, bond yields, and credit spreads that dictate interest rates.",
+    category: "Research & Data",
+    lastUpdated: "June 2026",
+    ctaText: "Check Extra Payment Acceleration",
+    ctaHref: "/extra-payment-calculator",
+    sections: [
+      {
+        heading: "1. Macroeconomic Drivers: Treasury Yields and Inflation",
+        content: "Mortgage rates are not set by the Federal Reserve directly. Instead, they track the yield on the 10-Year U.S. Treasury Bond. Because mortgages represent long-term debts, investors demand higher yields to protect against inflation. When inflation expectations rise, bond yields and mortgage rates climb."
+      },
+      {
+        heading: "2. Conforming vs. Jumbo Loan Interest Spreads",
+        content: "Loans that fit within FHFA guidelines are conforming and can be securitized into agency mortgage-backed securities (MBS). Jumbo loans exceed these limits and must be held on bank balance sheets or securitized privately, resulting in different risk pricing spreads that can cause jumbo rates to fluctuate independently."
+      },
+      {
+        heading: "3. How Credit Tiers Shift Interest Costs",
+        content: "Lenders adjust rates based on credit score tiers (under FICO model brackets). A score drop from 740 to 670 can add 0.50% or more to your interest rate through Loan-Level Price Adjustments (LLPAs). Over a 30-year term, this single adjustment accumulates to tens of thousands of dollars in interest."
+      },
+      {
+        heading: "4. Rate Locks and Float-Down Agreements",
+        content: "Mortgage rates fluctuate daily. A rate lock agreement guarantees your interest rate for a specific window (typically 30 to 60 days) during loan processing. A float-down agreement allows you to capture a lower rate if market interest rates decline before closing."
+      }
+    ]
+  }
+};
+
+const guide: GuideData = guidesDatabase[guideKey];
+
+// Construct TechArticle JSON-LD Schema
+const articleSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": guide.title,
+  "description": guide.description,
+  "image": "https://mortgageintelligence.io/assets/og-guide.png",
+  "author": {
+    "@type": "Organization",
+    "name": "Mortgage Intelligence Underwriting Editorial"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Mortgage Intelligence Platform",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://mortgageintelligence.io/favicon.svg"
+    }
+  },
+  "datePublished": "2026-01-15T08:00:00+08:00",
+  "dateModified": "2026-06-18T08:00:00+08:00",
+  "mainEntityOfPage": `https://mortgageintelligence.io/guides/${slug}`
+});
+---
+
+<Layout 
+  title={`${guide.title} - Mortgage Intelligence Guides`}
+  description={guide.description}
+  canonicalUrl={`/guides/${Astro.params.slug}`}
+  schemaMarkup={articleSchema}
+>
+  <Header activeSlug="" />
+
+  <main class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-text-muted flex items-center gap-2">
+      <a href="/" class="hover:text-text-main transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-text-muted">{guide.category}</span>
+      <span>/</span>
+      <span class="text-text-muted">{guide.title}</span>
+    </nav>
+
+    <!-- Guide Header -->
+    <div class="space-y-4 border-b border-border-subtle pb-8">
+      <div class="inline-flex items-center rounded-full bg-blue-500/10 px-2.5 py-0.5 text-2xs font-medium text-blue-400 border border-blue-500/20">
+        {guide.category}
+      </div>
+      <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
+        {guide.title}
+      </h1>
+      <div class="flex items-center gap-4 text-2xs text-text-muted">
+        <span>Published by <strong>Mortgage Intelligence Editorial</strong></span>
+        <span>&bull;</span>
+        <span>Last Updated: {guide.lastUpdated}</span>
+      </div>
+      <p class="text-sm text-text-muted leading-relaxed max-w-2xl pt-2">
+        {guide.description}
+      </p>
+    </div>
+
+    <!-- Guide Content -->
+    <article class="space-y-8 text-text-main leading-relaxed text-sm">
+      {guide.sections.map(section => (
+        <div class="space-y-3">
+          <h2 class="font-display text-base font-bold text-text-main tracking-tight pt-2">
+            {section.heading}
+          </h2>
+          <p class="text-text-muted">
+            {section.content}
+          </p>
+        </div>
+      ))}
+    </article>
+
+    <!-- Internal Link CTA Card -->
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mt-12">
+      <div class="space-y-1">
+        <h3 class="font-display text-sm font-semibold text-text-main">Apply These Insights</h3>
+        <p class="text-xs text-text-muted">Run your specific numbers using our specialized decision tools.</p>
+      </div>
+      <a 
+        href={guide.ctaHref} 
+        class="inline-flex h-9 items-center justify-center rounded-md bg-brand-primary px-5 text-xs font-semibold text-bg-card hover:opacity-90 active:scale-[0.98] transition-all whitespace-nowrap border border-border-subtle"
+      >
+        {guide.ctaText}
+      </a>
+    </div>
+
+    <!-- Editorial Disclaimer -->
+    <div class="border-t border-border-subtle pt-8 text-3xs text-text-muted leading-relaxed">
+      <strong>Editorial Policy:</strong> Mortgage Intelligence is committed to objective financial reporting. Our content is thoroughly researched by our technical underwriting analysts. Content is provided for educational purposes and should not be treated as professional financial or legal counsel.
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,177 @@
+---
+---
+<div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6" id="compare-anchor">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h3 class="font-display text-sm font-semibold text-text-main">Compare Saved Scenarios</h3>
+      <p class="text-xs text-text-muted mt-1">Add your current calculation to compare side-by-side options.</p>
+    </div>
+    <div class="flex flex-col sm:flex-row gap-2">
+      <input 
+        type="text" 
+        placeholder="Scenario Name (e.g. 15-Yr Fixed)..." 
+        class="h-8 rounded-md border border-border-input bg-bg-input px-3 text-xs text-text-main placeholder-text-muted focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent" 
+        id="scenario-name-input"
+        autocomplete="off"
+      />
+      <button 
+        class="inline-flex h-8 items-center justify-center rounded-md bg-blue-600 px-4 text-xs font-semibold text-white hover:bg-blue-500 active:scale-[0.98] transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        id="save-scenario-btn"
+      >
+        Save Current
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-xs border-collapse">
+      <thead>
+        <tr class="border-b border-border-subtle text-text-muted font-medium pb-2">
+          <th class="py-2 pr-4">Scenario Name</th>
+          <th class="py-2">Purchase Price</th>
+          <th class="py-2">Down Pmt</th>
+          <th class="py-2">APR</th>
+          <th class="py-2">Term</th>
+          <th class="py-2">Monthly Est.</th>
+          <th class="py-2">Total Interest</th>
+          <th class="py-2 text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-border-subtle text-text-main font-medium font-tabular" id="scenarios-tbody">
+        <!-- Rendered dynamically -->
+      </tbody>
+    </table>
+    <div class="text-center py-6 text-text-muted border border-dashed border-border-subtle rounded-lg mt-2 hidden" id="no-scenarios-msg">
+      No scenarios saved yet. Use the input above to lock in options and compare.
+    </div>
+  </div>
+</div>
+
+<script>
+  interface SavedScenario {
+    id: string;
+    name: string;
+    homePrice: number;
+    downPayment: number;
+    interestRate: number;
+    termYears: number;
+    monthlyPayment: number;
+    totalInterest: number;
+  }
+
+  // Load scenarios from localStorage
+  function getScenarios(): SavedScenario[] {
+    try {
+      const data = localStorage.getItem('mi_saved_scenarios');
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // Save scenarios to localStorage
+  function saveScenarios(scenarios: SavedScenario[]) {
+    try {
+      localStorage.setItem('mi_saved_scenarios', JSON.stringify(scenarios));
+    } catch (e) {
+      // Fail silently
+    }
+  }
+
+  window.renderScenariosTable = function() {
+    const tbody = document.getElementById('scenarios-tbody');
+    const noMsg = document.getElementById('no-scenarios-msg');
+    const scenarios = getScenarios();
+    
+    if (!tbody || !noMsg) return;
+    
+    tbody.innerHTML = '';
+    
+    if (scenarios.length === 0) {
+      noMsg.classList.remove('hidden');
+      return;
+    } else {
+      noMsg.classList.add('hidden');
+    }
+
+    scenarios.forEach(sc => {
+      const tr = document.createElement('tr');
+      tr.className = 'hover:bg-bg-card-hover transition-colors border-b border-border-subtle';
+      tr.innerHTML = `
+        <td class="py-3 pr-4 font-display font-medium text-text-main">${sc.name}</td>
+        <td class="py-3 font-semibold text-text-main">$${Math.round(sc.homePrice).toLocaleString('en-US')}</td>
+        <td class="py-3 text-text-muted">$${Math.round(sc.downPayment).toLocaleString('en-US')} (${Math.round((sc.downPayment / sc.homePrice) * 100)}%)</td>
+        <td class="py-3 text-text-muted">${sc.interestRate.toFixed(2)}%</td>
+        <td class="py-3 text-text-muted">${sc.termYears} yrs</td>
+        <td class="py-3 text-blue-600 dark:text-blue-400 font-semibold">$${Math.round(sc.monthlyPayment).toLocaleString('en-US')}</td>
+        <td class="py-3 text-rose-600 dark:text-rose-400 font-semibold">$${Math.round(sc.totalInterest).toLocaleString('en-US')}</td>
+        <td class="py-3 text-right">
+          <button 
+            class="text-2xs text-rose-500 hover:text-rose-400 font-semibold transition-colors delete-scenario-btn cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded px-1" 
+            data-id="${sc.id}"
+            aria-label="Delete Scenario ${sc.name}"
+          >
+            Remove
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Bind delete buttons
+    document.querySelectorAll('.delete-scenario-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLButtonElement;
+        const id = target.getAttribute('data-id');
+        if (id) {
+          const list = getScenarios().filter(sc => sc.id !== id);
+          saveScenarios(list);
+          window.renderScenariosTable();
+        }
+      });
+    });
+  };
+
+  // Expose current run registration
+  let currentRunData: Omit<SavedScenario, 'id' | 'name'> | null = null;
+  window.registerCurrentRunData = function(data: Omit<SavedScenario, 'id' | 'name'>) {
+    currentRunData = data;
+  };
+
+  // Handle Save Scenario Action
+  const nameInput = document.getElementById('scenario-name-input') as HTMLInputElement;
+  const saveBtn = document.getElementById('save-scenario-btn');
+
+  if (saveBtn && nameInput) {
+    saveBtn.addEventListener('click', () => {
+      const name = nameInput.value.trim();
+      if (!name) {
+        alert("Please enter a name for this scenario.");
+        return;
+      }
+      
+      if (!currentRunData) {
+        alert("Please calculate a mortgage first by adjusting inputs.");
+        return;
+      }
+
+      const list = getScenarios();
+      const newScenario: SavedScenario = {
+        id: Math.random().toString(36).substr(2, 9),
+        name,
+        ...currentRunData
+      };
+
+      list.push(newScenario);
+      saveScenarios(list);
+      
+      nameInput.value = '';
+      window.renderScenariosTable();
+    });
+  }
+
+  // Initial load
+  document.addEventListener('DOMContentLoaded', () => {
+    window.renderScenariosTable();
+  });
+</script>

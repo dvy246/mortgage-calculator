@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout 
+  title="Information Sources & Data References"
+  description="Review the federal databases, interest rate surveys, and tax boards that provide our baseline figures."
+  canonicalUrl="/data-sources"
+>
+  <Header activeSlug="" />
+
+  <main class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-text-muted flex items-center gap-2">
+      <a href="/" class="hover:text-text-main transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-text-muted">Data Sources</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="space-y-4 border-b border-border-subtle pb-8">
+      <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
+        Information Sources & Data References
+      </h1>
+      <p class="text-sm text-text-muted leading-relaxed max-w-2xl">
+        To maintain accuracy, our financial models use data points published by federal agencies, national mortgage surveys, and credit bureaus.
+      </p>
+    </div>
+
+    <!-- Data Sources Content -->
+    <div class="space-y-8 text-sm text-text-muted leading-relaxed">
+      
+      <!-- Freddie Mac PMMS -->
+      <section class="bg-bg-card border border-border-subtle rounded-xl p-5 space-y-2">
+        <h3 class="font-display font-semibold text-text-main flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-blue-500"></span>
+          <span>Freddie Mac Primary Mortgage Market Survey (PMMS)</span>
+        </h3>
+        <p class="text-xs">
+          National interest rate baselines are modeled on weekly surveys published by Freddie Mac. This survey tracks average conforming interest rates and points offered by lenders to prime borrowers across the country.
+        </p>
+        <span class="block text-3xs font-semibold text-text-muted">Target Metric: conforming fixed interest rates</span>
+      </section>
+
+      <!-- US Census Bureau ACS -->
+      <section class="bg-bg-card border border-border-subtle rounded-xl p-5 space-y-2">
+        <h3 class="font-display font-semibold text-text-main flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+          <span>U.S. Census Bureau American Community Survey (ACS)</span>
+        </h3>
+        <p class="text-xs">
+          Median property tax rates and home valuations are derived from historical census data. We cross-reference ACS county tax records to pre-populate property tax averages.
+        </p>
+        <span class="block text-3xs font-semibold text-text-muted">Target Metric: county-level property tax median ratios</span>
+      </section>
+
+      <!-- FHFA Index -->
+      <section class="bg-bg-card border border-border-subtle rounded-xl p-5 space-y-2">
+        <h3 class="font-display font-semibold text-text-main flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+          <span>Federal Housing Finance Agency (FHFA) House Price Index</span>
+        </h3>
+        <p class="text-xs">
+          State-specific median home prices are estimated based on quarterly residential purchase price surveys compiled by the FHFA, tracking home value movements over time.
+        </p>
+        <span class="block text-3xs font-semibold text-text-muted">Target Metric: purchase price index and loan conforming limits</span>
+      </section>
+
+      <!-- CFPB Underwriting Guidelines -->
+      <section class="bg-bg-card border border-border-subtle rounded-xl p-5 space-y-2">
+        <h3 class="font-display font-semibold text-text-main flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-purple-500"></span>
+          <span>Consumer Financial Protection Bureau (CFPB)</span>
+        </h3>
+        <p class="text-xs">
+          Qualified mortgage underwriting criteria, Debt-to-Income brackets, and homeowners disclosures comply with lending rules defined by the CFPB.
+        </p>
+        <span class="block text-3xs font-semibold text-text-muted">Target Metric: Qualified Mortgage lending thresholds</span>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

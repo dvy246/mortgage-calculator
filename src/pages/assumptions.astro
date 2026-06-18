@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout 
+  title="Calculation Assumptions & Regional Defaults"
+  description="Explore the preloaded defaults, state-level tax rates, insurance estimates, and financial rules of thumb used in our models."
+  canonicalUrl="/assumptions"
+>
+  <Header activeSlug="" />
+
+  <main class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-text-muted flex items-center gap-2">
+      <a href="/" class="hover:text-text-main transition-colors">Home</a>
+      <span>/</span>
+      <span class="text-text-muted">Assumptions</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="space-y-4 border-b border-border-subtle pb-8">
+      <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
+        Calculation Assumptions & Regional Defaults
+      </h1>
+      <p class="text-sm text-text-muted leading-relaxed max-w-2xl">
+        Calculators pre-populate local tax rates and escrow estimates based on public county records and regional real estate databases.
+      </p>
+    </div>
+
+    <!-- Assumptions Content -->
+    <div class="space-y-10 text-sm text-text-muted leading-relaxed">
+      
+      <!-- 1. Regional Escrow Averages (Taxes and Insurance) -->
+      <section class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">
+          1. Localized State Averages
+        </h2>
+        <p>
+          Property taxes and homeowners insurance premiums vary dramatically by geography. Our calculator pre-populates localized rates for major states:
+        </p>
+        
+        <div class="overflow-x-auto border border-border-subtle rounded-xl bg-bg-card">
+          <table class="w-full text-left text-xs border-collapse font-medium">
+            <thead>
+              <tr class="border-b border-border-subtle bg-bg-main text-text-muted">
+                <th class="p-3">State</th>
+                <th class="p-3">Average Property Tax Rate</th>
+                <th class="p-3">Average Home Insurance Rate</th>
+                <th class="p-3">Average Home Price (2026)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border-subtle text-text-main font-tabular">
+              <tr>
+                <td class="p-3 font-semibold">California</td>
+                <td class="p-3">0.75% (Prop 13 cap)</td>
+                <td class="p-3">0.45% of purchase price</td>
+                <td class="p-3">$780,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">Texas</td>
+                <td class="p-3">1.60% (High tax rate)</td>
+                <td class="p-3">0.75% of purchase price</td>
+                <td class="p-3">$340,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">Florida</td>
+                <td class="p-3">0.90%</td>
+                <td class="p-3">0.95% (Due to weather risk)</td>
+                <td class="p-3">$390,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">New York</td>
+                <td class="p-3">1.40%</td>
+                <td class="p-3">0.40%</td>
+                <td class="p-3">$460,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">Illinois</td>
+                <td class="p-3">2.00% (Highest tax average)</td>
+                <td class="p-3">0.50%</td>
+                <td class="p-3">$280,000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 2. PMI Pricing Matrices -->
+      <section class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">
+          2. Private Mortgage Insurance (PMI) Estimates
+        </h2>
+        <p>
+          Private Mortgage Insurance rates are dictated by credit profile, LTV tiers, and debt margins. In our calculators, PMI is modeled at a baseline rate of <strong>0.75% annually</strong> of the initial loan amount.
+        </p>
+        <p>
+          In reality, conventional PMI rates range from 0.30% to 1.50% of the loan amount. Borrowers with excellent credit (740+) typically pay significantly lower premiums than those with credit scores below 680.
+        </p>
+      </section>
+
+      <!-- 3. Debt-to-Income Rules -->
+      <section class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">
+          3. Qualifying Ratios & Guidelines
+        </h2>
+        <p>
+          Our DTI gauge models the standard conventional banking 28/36 rule:
+        </p>
+        <ul class="list-disc pl-5 space-y-2 text-xs">
+          <li><strong>Comfortable Bracket (28%):</strong> Models the maximum monthly housing budget that conservative lenders recommend.</li>
+          <li><strong>Stretch Bracket (36%):</strong> Models conventional total debt capabilities. Higher ratios (up to 43% or even 50%) are only accepted under special automated underwriting conditions (Fannie Mae Desktop Underwriter).</li>
+        </ul>
+      </section>
+
+      <!-- 4. Dynamic Rates Baseline -->
+      <section class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">
+          4. Interest Rate Baselines
+        </h2>
+        <p>
+          Default rates loaded on our forms (6.50% for standard 30-year fixed) represent average national market indicators. Users are encouraged to adjust rates to match local lender offers.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

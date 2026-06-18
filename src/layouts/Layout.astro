@@ -1,0 +1,82 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl?: string;
+  schemaMarkup?: string;
+}
+
+const { 
+  title, 
+  description = "Analyze home loans, refinance savings, PMI thresholds, and rate shock risk with the Mortgage Intelligence Platform.", 
+  canonicalUrl,
+  schemaMarkup
+} = Astro.props;
+
+const siteUrl = "https://mortgageintelligence.io"; // Dummy production URL for SEO canonicals
+const absoluteCanonical = canonicalUrl ? `${siteUrl}${canonicalUrl}` : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Theme setup -->
+    <script is:inline>
+      (function() {
+        const theme = localStorage.getItem('mi_theme') || 'system';
+        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', isDark);
+      })();
+    </script>
+    
+    <!-- SEO Meta Tags -->
+    <title>{title} | Mortgage Intelligence</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="mortgage, mortgage calculator, mortgage payment calculator, mortgage interest rates, simple mortgage calculator, free mortgage calculator, google mortgage calculator, monthly mortgage calculator, commercial mortgage calculator, reverse mortgage calculator, mortgage calculator with extra payments, mortgage calculator california, house mortgage calculator, mortgage calculator with taxes, mortgage calculator amortization, house mortgage, house mortgage payment calculator, house mortgage rates calculator, calculate house mortgage, house mortgage rate, 500 000 house mortgage payment, best house mortgage rates, house cost calculator, monthly house cost calculator, total house cost calculator" />
+    {absoluteCanonical && <link rel="canonical" href={absoluteCanonical} />}
+    
+    {schemaMarkup && <script type="application/ld+json" set:html={schemaMarkup}></script>}
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} | Mortgage Intelligence`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={absoluteCanonical || siteUrl} />
+    <meta property="og:site_name" content="Mortgage Intelligence" />
+    <meta property="og:image" content={`${siteUrl}/og-image.png`} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content={`${title} | Mortgage Intelligence`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:url" content={absoluteCanonical || siteUrl} />
+    <meta property="twitter:image" content={`${siteUrl}/og-image.png`} />
+
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-RDKT0KRTLB"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-RDKT0KRTLB');
+    </script>
+
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="bg-bg-main text-text-main min-h-screen flex flex-col antialiased">
+    <slot />
+  </body>
+</html>
