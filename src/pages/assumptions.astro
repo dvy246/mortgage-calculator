@@ -24,7 +24,10 @@ import Footer from '../components/Footer.astro';
       <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
         Calculation Assumptions & Regional Defaults
       </h1>
-      <p class="text-sm text-text-muted leading-relaxed max-w-2xl">
+      <div class="flex items-center gap-4 text-2xs text-text-muted">
+        <span>Last Updated: June 19, 2026</span>
+      </div>
+      <p class="text-sm text-text-muted leading-relaxed max-w-2xl pt-2">
         Calculators pre-populate local tax rates and escrow estimates based on public county records and regional real estate databases.
       </p>
     </div>
@@ -55,32 +58,62 @@ import Footer from '../components/Footer.astro';
               <tr>
                 <td class="p-3 font-semibold">California</td>
                 <td class="p-3">0.75% (Prop 13 cap)</td>
-                <td class="p-3">0.45% of purchase price</td>
-                <td class="p-3">$780,000</td>
+                <td class="p-3">0.08% of purchase price</td>
+                <td class="p-3">$790,000</td>
               </tr>
               <tr>
                 <td class="p-3 font-semibold">Texas</td>
                 <td class="p-3">1.60% (High tax rate)</td>
-                <td class="p-3">0.75% of purchase price</td>
+                <td class="p-3">0.12% of purchase price</td>
                 <td class="p-3">$340,000</td>
               </tr>
               <tr>
                 <td class="p-3 font-semibold">Florida</td>
-                <td class="p-3">0.90%</td>
-                <td class="p-3">0.95% (Due to weather risk)</td>
-                <td class="p-3">$390,000</td>
+                <td class="p-3">0.91%</td>
+                <td class="p-3">0.20% (Due to weather risk)</td>
+                <td class="p-3">$400,000</td>
               </tr>
               <tr>
                 <td class="p-3 font-semibold">New York</td>
                 <td class="p-3">1.40%</td>
-                <td class="p-3">0.40%</td>
-                <td class="p-3">$460,000</td>
+                <td class="p-3">0.08%</td>
+                <td class="p-3">$450,000</td>
               </tr>
               <tr>
                 <td class="p-3 font-semibold">Illinois</td>
-                <td class="p-3">2.00% (Highest tax average)</td>
-                <td class="p-3">0.50%</td>
+                <td class="p-3">2.08% (Highest tax average)</td>
+                <td class="p-3">0.10%</td>
                 <td class="p-3">$280,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">Washington</td>
+                <td class="p-3">0.94%</td>
+                <td class="p-3">0.07%</td>
+                <td class="p-3">$560,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">Georgia</td>
+                <td class="p-3">0.90%</td>
+                <td class="p-3">0.11%</td>
+                <td class="p-3">$320,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">North Carolina</td>
+                <td class="p-3">0.70%</td>
+                <td class="p-3">0.10%</td>
+                <td class="p-3">$330,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">Virginia</td>
+                <td class="p-3">0.82%</td>
+                <td class="p-3">0.08%</td>
+                <td class="p-3">$390,000</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold">Massachusetts</td>
+                <td class="p-3">1.15%</td>
+                <td class="p-3">0.09%</td>
+                <td class="p-3">$590,000</td>
               </tr>
             </tbody>
           </table>

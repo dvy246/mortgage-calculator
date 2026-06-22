@@ -10,6 +10,8 @@ import Disclaimer from '../components/Calculator/Disclaimer.astro';
 import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
+import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
   {
@@ -217,14 +219,19 @@ const faqs = [
     <!-- Repayment Table -->
     <AmortizationTable />
 
+    <FormulaDrawer type="refinance" />
+
+    <!-- Ad Slot: Between formula drawer and guide section -->
+    <AdSlot format="horizontal" slot="2002" class="my-4" />
+
     <!-- Editorial E-E-A-T Content -->
     <MortgageGuide 
       title="Refinance Break-Even"
       subtitle="Evaluating closing cost recovery timeline and lifetime interest adjustments"
-      whatItDoes="Compares your current mortgage schedule against the terms of a new refinance mortgage, calculating monthly savings, upfront expenses, and the exact month where your savings offset closing costs."
-      whenToUse="Deploy this calculator when rates are declining or when you want to explore shifting from an adjustable-rate mortgage (ARM) to a fixed-rate loan."
-      howItWorks="Runs parallel amortization schedules based on the remaining balance. Monthly P&I differences are divided into total refinance costs to identify the break-even month. Life-of-loan interest summation yields the true long-term benefit."
-      mistakes="Failing to plan for your actual tenure in the home. If your break-even point is 40 months and you plan to sell the house in 3 years (36 months), refinancing actually costs you more cash than keeping the higher rate."
+      whatItDoes="This refinance break-even engine compares your existing mortgage terms against a proposed refinance structure. It computes your net monthly Principal & Interest savings, matches amortization paths, and tracks upfront transaction costs (like underwriting, origination, and appraisal fees) to project the exact break-even month where your monthly savings fully offset the transaction closing costs."
+      whenToUse="Deploy this calculator when interest rates drop below your current note rate, or when you wish to transition from an adjustable-rate mortgage (ARM) to a stable fixed-rate mortgage. It is also highly valuable when evaluating whether to shorten your remaining loan term (e.g. refinancing from 25 years remaining on a 30-year note into a new 15-year fixed note) or deciding if rolling closing costs into the loan principal makes sense for your budget."
+      howItWorks="The calculator runs two distinct amortization schedules based on your remaining principal balance. First, it computes your current scheduled payments and interest. Second, it calculates the new monthly P&I payment based on the refinanced principal, rate, and term. The monthly payment difference represents your monthly net savings. Upfront refinance closing costs are divided by this monthly savings rate to locate the break-even month. Cumulative interest summation over both lifetimes reveals the true long-term value."
+      mistakes="The most common mistake is refinancing without considering your planned ownership horizon. If your break-even point is 42 months but you plan to relocate or sell the property in 3 years (36 months), you will lose money on the refinance. Another error is rolling closing costs into the loan principal without realizing it increases your total debt and interest accrued, extending your break-even timeline. Finally, be wary of 'no-cost' refinances; lenders typically offset closing costs by raising the interest rate, which reduces your monthly savings."
       faqs={faqs}
     />
 

@@ -11,6 +11,8 @@ import Disclaimer from '../components/Calculator/Disclaimer.astro';
 import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
+import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
   {
@@ -215,21 +217,45 @@ const faqs = [
             <div class="space-y-4 pt-3 border-t border-border-subtle mt-2">
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1.5">
-                  <label for="tax-input" class="font-medium text-text-muted">Property Tax Rate (%)</label>
+                  <span class="flex items-center">
+                    <label for="tax-input" class="font-medium text-text-muted">Property Tax Rate (%)</label>
+                    <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      <span class="tooltip-text">Annual local property tax percentage. Standard national average is around 1.1%, though varies significantly by state.</span>
+                    </span>
+                  </span>
                   <input type="number" id="tax-input" value="1.1" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
                 </div>
                 <div class="space-y-1.5">
-                  <label for="ins-input" class="font-medium text-text-muted">Home Insurance (%)</label>
+                  <span class="flex items-center">
+                    <label for="ins-input" class="font-medium text-text-muted">Home Insurance (%)</label>
+                    <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      <span class="tooltip-text">Annual homeowner's insurance premium percentage. Typically ranges from 0.3% to 0.8% of home value.</span>
+                    </span>
+                  </span>
                   <input type="number" id="ins-input" value="0.5" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1.5">
-                  <label for="pmi-input" class="font-medium text-text-muted">PMI Rate (%)</label>
+                  <span class="flex items-center">
+                    <label for="pmi-input" class="font-medium text-text-muted">PMI Rate (%)</label>
+                    <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      <span class="tooltip-text">Private Mortgage Insurance annual rate. Charged if down payment is under 20%. Standard Conventional PMI ranges from 0.3% to 1.5%.</span>
+                    </span>
+                  </span>
                   <input type="number" id="pmi-input" value="0.75" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
                 </div>
                 <div class="space-y-1.5">
-                  <label for="hoa-input" class="font-medium text-text-muted">Monthly HOA ($)</label>
+                  <span class="flex items-center">
+                    <label for="hoa-input" class="font-medium text-text-muted">Monthly HOA ($)</label>
+                    <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      <span class="tooltip-text">Monthly Homeowners Association fees. Excluded from P&I but factored into total carrying costs and DTI limits.</span>
+                    </span>
+                  </span>
                   <input type="number" id="hoa-input" value="0" step="10" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
                 </div>
               </div>
@@ -284,14 +310,19 @@ const faqs = [
     <!-- Repayment Table Section -->
     <AmortizationTable />
 
+    <FormulaDrawer type="affordability" />
+
+    <!-- Ad Slot: Between formula drawer and guide section -->
+    <AdSlot format="horizontal" slot="2001" class="my-4" />
+
     <!-- Reusable Mortgage Handbook component -->
     <MortgageGuide 
       title="House Affordability"
       subtitle="Evaluating purchasing thresholds using the 28/36 rule"
-      whatItDoes="Analyzes your gross income, ongoing recurring obligations, down payment capital, and local escrow costs to back-calculate your safe and maximum purchasing power."
-      whenToUse="Use this calculator at the very start of your home shopping journey, before seeking mortgage pre-approvals, to establish real budget guardrails."
-      howItWorks="Calculates two target housing payments: Comfortable (28% of gross monthly income) and Stretch (36% of gross monthly income minus monthly debts). It then runs piecewise back-calculations solving for Home Price H where: Monthly P&I + Taxes + Insurance + PMI + HOA equals the target payment."
-      mistakes="Avoid assuming you can borrow up to FHA max DTI ratios (43% to 50%) without severe budget strain. Lenders define what you can borrow, not what you should spend. Always factor in local property tax assessments and condo/HOA dues."
+      whatItDoes="This advanced affordability calculator is designed to analyze your total purchasing power by modeling your household income, recurring debt, down payment size, and localized escrow costs. Unlike simple calculators that only look at home prices, this engine reverse-engineers your maximum target purchase price. It maps out your finances across two primary risk profiles: a 'Comfortable' tier and a 'Stretch' tier. This allows you to visualize exactly how interest rates, HOA fees, property taxes, and PMI interact to affect your monthly cash flow."
+      whenToUse="Deploy this calculator at the very beginning of your home shopping process—ideally before you start touring homes or talking to real estate agents. Using this tool early lets you establish realistic budget thresholds based on what you should spend, rather than what a bank says you can borrow. It is also an essential tool for evaluating how paying down existing student loans or car notes before applying for a mortgage will boost your pre-approval limits."
+      howItWorks="The engine operates on two core industry-standard underwriting guidelines: the 28% front-end ratio and the 36% back-end Debt-to-Income (DTI) ratio. First, it calculates a 'Comfortable' monthly housing budget restricted to 28% of your gross monthly income. Second, it calculates a 'Stretch' monthly housing budget restricted to 36% of gross monthly income, minus your recurring monthly debts (like credit cards, auto loans, and student loans). The calculator then compares these two target numbers and selects the lower limit as the baseline for your safe monthly housing payment. From this target payment, the calculator subtracts non-housing monthly expenses (such as estimated property taxes, home insurance premiums, HOA fees, and PMI rates) to isolate the maximum monthly Principal & Interest (P&I) payment. Finally, it uses the annuity present value equation to determine the maximum loan balance that can be supported by this P&I payment at today's interest rates, and adds your down payment to show your total home purchase price."
+      mistakes="The most common mistake home buyers make is shopping at the absolute maximum limit of what a bank pre-approves them for. Lenders often allow back-end DTI ratios up to 43% (or even 50% for certain FHA/VA loans), which can leave you 'house poor'—with barely enough cash flow left to cover groceries, healthcare, utilities, and home maintenance. Another pitfall is failing to account for localized escrow fees. Property taxes and homeowners insurance vary wildly from county to county; a $400,000 house in a high-tax school district can cost hundreds of dollars more per month than the same price house a few miles away. Lastly, buyers frequently underestimate closing costs, which run an additional 2% to 5% of the purchase price, and fail to keep a post-closing emergency fund. We strongly recommend maintaining a liquid cash reserve equal to at least 6 months of housing expenses after all closing costs are paid."
       faqs={faqs}
     />
 

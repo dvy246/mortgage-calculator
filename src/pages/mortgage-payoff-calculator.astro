@@ -10,6 +10,8 @@ import Disclaimer from '../components/Calculator/Disclaimer.astro';
 import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
+import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
   {
@@ -179,21 +181,45 @@ const faqs = [
             <div class="space-y-4 pt-3 border-t border-border-subtle mt-2">
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1.5">
-                  <label for="tax-input" class="font-medium text-text-muted">Property Tax Rate (%)</label>
+                  <span class="flex items-center">
+                    <label for="tax-input" class="font-medium text-text-muted">Property Tax Rate (%)</label>
+                    <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      <span class="tooltip-text">Annual local property tax percentage. Standard national average is around 1.1%, though varies significantly by state.</span>
+                    </span>
+                  </span>
                   <input type="number" id="tax-input" value="1.1" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
                 </div>
                 <div class="space-y-1.5">
-                  <label for="ins-input" class="font-medium text-text-muted">Home Insurance (%)</label>
+                  <span class="flex items-center">
+                    <label for="ins-input" class="font-medium text-text-muted">Home Insurance (%)</label>
+                    <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      <span class="tooltip-text">Annual homeowner's insurance premium percentage. Typically ranges from 0.3% to 0.8% of home value.</span>
+                    </span>
+                  </span>
                   <input type="number" id="ins-input" value="0.5" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1.5">
-                  <label for="pmi-input" class="font-medium text-text-muted">PMI Rate (%)</label>
+                  <span class="flex items-center">
+                    <label for="pmi-input" class="font-medium text-text-muted">PMI Rate (%)</label>
+                    <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      <span class="tooltip-text">Private Mortgage Insurance annual rate. Charged if down payment is under 20%. Standard Conventional PMI ranges from 0.3% to 1.5%.</span>
+                    </span>
+                  </span>
                   <input type="number" id="pmi-input" value="0.75" step="0.05" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
                 </div>
                 <div class="space-y-1.5">
-                  <label for="hoa-input" class="font-medium text-text-muted">Monthly HOA ($)</label>
+                  <span class="flex items-center">
+                    <label for="hoa-input" class="font-medium text-text-muted">Monthly HOA ($)</label>
+                    <span class="tooltip-container ml-1.5 cursor-help text-text-muted hover:text-text-main" tabindex="0">
+                      <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      <span class="tooltip-text">Monthly Homeowners Association fees. Excluded from P&I but factored into total carrying costs and DTI limits.</span>
+                    </span>
+                  </span>
                   <input type="number" id="hoa-input" value="0" step="10" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-text-main font-tabular focus:border-border-focus focus:outline-none" />
                 </div>
               </div>
@@ -260,14 +286,19 @@ const faqs = [
     <!-- Repayment Table -->
     <AmortizationTable />
 
+    <FormulaDrawer type="payoff" />
+
+    <!-- Ad Slot: Between formula drawer and guide section -->
+    <AdSlot format="horizontal" slot="2004" class="my-4" />
+
     <!-- Contextual education handbook -->
     <MortgageGuide 
       title="Mortgage Payoff"
       subtitle="Analyzing your amortization timeline and LTV milestones"
-      whatItDoes="Models your standard monthly payments, projects your cumulative interest liability, and tracks your Loan-to-Value (LTV) ratios to predict when Private Mortgage Insurance (PMI) cancels."
-      whenToUse="Deploy this calculator to study the long-term cost of a home loan and identify critical financial milestones (like reaching 20% equity)."
-      howItWorks="Computes standard payments using the compound amortization formula, tracks remaining principal balances month-by-month, and automatically drops the PMI charge once LTV reaches 80%."
-      mistakes="Failing to look at the 'Total Cost' of borrowing. Over 30 years at 6.5%, you will pay more in interest than the original home loan principal. Choosing a 15-year term or accelerating principal paydown dramatically lowers this multiplier."
+      whatItDoes="This standard payoff engine models your monthly Principal and Interest payments and projects your lifetime cumulative interest costs. It simulates your loan balance month-by-month, mapping how your payments divide between paying down the mortgage debt and paying bank interest. It also incorporates escrow variables (property taxes, hazard insurance, and HOA dues) and private mortgage insurance (PMI) rates to project your true out-of-pocket costs and locate the exact month you will reach enough equity to cancel PMI."
+      whenToUse="Use this calculator to analyze standard fixed-rate mortgages. It is especially useful when comparing loan options (such as choosing between a 30-year or a 15-year term) or analyzing how different down payment amounts alter your monthly P&I carrying costs, loan-to-value milestones, and lifetime interest burden."
+      howItWorks="The calculator computes your fixed monthly Principal & Interest payment using the standard amortization annuity equation. It then runs a monthly loop over the loan term: multiplying the remaining principal balance by the monthly interest rate (annual APR divided by 12) to determine that month's interest cost. The rest of your payment is applied to reduce the principal balance. If the initial down payment is under 20% LTV, a monthly PMI cost is added to the housing payment. This PMI charge is automatically removed from subsequent payments once the monthly principal balance is amortized down to 80% LTV."
+      mistakes="The most common mistake is failing to calculate the 'lifetime cost' of borrowing. Over a standard 30-year amortization schedule at a 6.5% interest rate, you will pay roughly 1.5 times the original loan principal in interest alone. Selecting a shorter term, like 15 years, or adding modest extra payments dramatically lowers this multiplier. Another pitfall is ignoring the impact of escrow expenses (taxes, insurance, HOA), which are not fixed and will rise over time, increasing your monthly housing bill even on a fixed-rate loan."
       faqs={faqs}
     />
 
@@ -346,6 +377,17 @@ const faqs = [
       downSlider.value = String(maxDown);
       downInput.value = String(maxDown);
     }
+    downSlider.dispatchEvent(new Event('input'));
+  });
+
+  priceInput.addEventListener('input', () => {
+    const maxDown = Math.floor(parseFloat(priceInput.value) * 0.8);
+    downSlider.max = String(maxDown);
+    if (parseFloat(downSlider.value) > maxDown) {
+      downSlider.value = String(maxDown);
+      downInput.value = String(maxDown);
+    }
+    downSlider.dispatchEvent(new Event('input'));
   });
 
   [rateInput, termSelect, taxInput, insInput, pmiInput, hoaInput].forEach(ctrl => {

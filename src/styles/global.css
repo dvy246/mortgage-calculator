@@ -101,11 +101,14 @@ input[type="range"]::-webkit-slider-thumb {
   background: #3b82f6;
   cursor: pointer;
   transition: transform 100ms ease, background-color 100ms ease;
-  border: 2px solid var(--bg-card);
+  border: 14px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 0 2px var(--bg-card);
+  margin-top: -13px; /* Center relative to 5px track */
 }
 
 input[type="range"]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
   background: #2563eb;
 }
 
@@ -116,11 +119,13 @@ input[type="range"]::-moz-range-thumb {
   background: #3b82f6;
   cursor: pointer;
   transition: transform 100ms ease, background-color 100ms ease;
-  border: 2px solid var(--bg-card);
+  border: 14px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 0 2px var(--bg-card);
 }
 
 input[type="range"]::-moz-range-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
   background: #2563eb;
 }
 

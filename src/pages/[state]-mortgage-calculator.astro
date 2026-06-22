@@ -11,6 +11,7 @@ import Disclaimer from '../components/Calculator/Disclaimer.astro';
 import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { stateDatabase, type StateData } from '../data/states';
 
 export async function getStaticPaths() {
@@ -19,7 +20,12 @@ export async function getStaticPaths() {
     { params: { state: "texas" }, props: { stateKey: "texas" } },
     { params: { state: "florida" }, props: { stateKey: "florida" } },
     { params: { state: "new-york" }, props: { stateKey: "new-york" } },
-    { params: { state: "illinois" }, props: { stateKey: "illinois" } }
+    { params: { state: "illinois" }, props: { stateKey: "illinois" } },
+    { params: { state: "washington" }, props: { stateKey: "washington" } },
+    { params: { state: "georgia" }, props: { stateKey: "georgia" } },
+    { params: { state: "north-carolina" }, props: { stateKey: "north-carolina" } },
+    { params: { state: "virginia" }, props: { stateKey: "virginia" } },
+    { params: { state: "massachusetts" }, props: { stateKey: "massachusetts" } }
   ];
 }
 
@@ -263,6 +269,9 @@ const faqSchema = JSON.stringify({
     <!-- Repayment Table -->
     <AmortizationTable />
 
+    <!-- Ad Slot: Between table and guide section -->
+    <AdSlot format="horizontal" slot="2006" class="my-4" />
+
     <!-- Localized Mortgage Handbook Guide -->
     <MortgageGuide 
       title={`${state.name} Mortgage`}
@@ -347,6 +356,17 @@ const faqSchema = JSON.stringify({
       downSlider.value = String(maxDown);
       downInput.value = String(maxDown);
     }
+    downSlider.dispatchEvent(new Event('input'));
+  });
+
+  priceInput.addEventListener('input', () => {
+    const maxDown = Math.floor(parseFloat(priceInput.value) * 0.9);
+    downSlider.max = String(maxDown);
+    if (parseFloat(downSlider.value) > maxDown) {
+      downSlider.value = String(maxDown);
+      downInput.value = String(maxDown);
+    }
+    downSlider.dispatchEvent(new Event('input'));
   });
 
   [rateInput, termSelect, taxInput, insInput, pmiInput, hoaInput].forEach(ctrl => {

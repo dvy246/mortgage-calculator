@@ -38,11 +38,26 @@ const calculators = [
 ];
 
 const guides = [
-  { title: "First-Time Home Buyer Guide", slug: "first-time-home-buyer-guide", desc: "A comprehensive handbook navigating credit approval, down payments, and closing fees." },
-  { title: "PMI Removal Guide", slug: "pmi-removal-guide", desc: "Learn the rules to cancel private mortgage insurance and save hundreds monthly." },
-  { title: "FHA vs Conventional Loans", slug: "fha-vs-conventional-loans", desc: "Compare guidelines, down payment minimums, and insurance rates side-by-side." },
-  { title: "Mortgage Closing Costs Explained", slug: "mortgage-closing-costs-explained", desc: "A breakdown of lender fees, escrow accounts, and transfer taxes." },
-  { title: "Average Mortgage Rates by State", slug: "average-mortgage-rates-by-state", desc: "Explore local interest trends and macroeconomic regional variables." }
+  { title: "First-Time Home Buyer Guide", slug: "first-time-home-buyer-guide", desc: "A comprehensive handbook navigating credit approval, down payments, and closing fees.", category: "Home Buying" },
+  { title: "PMI Removal Guide", slug: "pmi-removal-guide", desc: "Learn the rules to cancel private mortgage insurance and save hundreds monthly.", category: "Escrow" },
+  { title: "FHA vs Conventional Loans", slug: "fha-vs-conventional-loans", desc: "Compare guidelines, down payment minimums, and insurance rates side-by-side.", category: "Loan Programs" },
+  { title: "Mortgage Closing Costs Explained", slug: "mortgage-closing-costs-explained", desc: "A breakdown of lender fees, escrow accounts, and transfer taxes.", category: "Home Buying" },
+  { title: "Average Mortgage Rates by State", slug: "average-mortgage-rates-by-state", desc: "Explore local interest trends and macroeconomic regional variables.", category: "Research & Data" },
+  { title: "Mortgage Rates Guide: Primary Market Drivers", slug: "mortgage-rates-guide", desc: "Analyze the macroeconomic variables, bond yields, and credit spreads that dictate interest rates.", category: "Research & Data" },
+  { title: "Conforming Loan Limits & Regulations", slug: "conforming-loans-guide", desc: "Learn what conforming loans are, FHFA guidelines, and current lending limits.", category: "Loan Programs" },
+  { title: "What is a Jumbo Loan & How to Qualify", slug: "jumbo-loans-guide", desc: "Understand the requirements, interest rates, and guidelines for high-value mortgages.", category: "Loan Programs" },
+  { title: "How Loan Amortization Schedules Work", slug: "loan-amortization-guide", desc: "Demystify principal and interest payments, amortization curves, and equity growth.", category: "Mortgage Math" },
+  { title: "Buying Down Your Interest Rate with Points", slug: "mortgage-points-guide", desc: "Evaluate whether paying upfront discount points makes sense for your ownership horizon.", category: "Mortgage Math" },
+  { title: "How Property Taxes & Escrow Accounts Function", slug: "property-taxes-escrow-guide", desc: "Understand the roles of tax assessments, insurance prepaids, and monthly escrow statements.", category: "Escrow" },
+  { title: "Understanding Front-End and Back-End DTI Ratios", slug: "dti-ratio-explained-guide", desc: "Master the DTI guidelines lenders use to assess your borrowing limit.", category: "Debt Management" },
+  { title: "Bi-Weekly Payments: Shave Years Off Your Mortgage", slug: "biweekly-payments-guide", desc: "Learn how restructuring your payment frequency bypasses interest and shortens terms.", category: "Prepayments" },
+  { title: "Making a Lump Sum Mortgage Prepayment", slug: "lump-sum-prepayment-guide", desc: "Model the impact of a one-time principal paydown on your interest and term.", category: "Prepayments" },
+  { title: "Rate Locks & Float-Down Agreements", slug: "rate-lock-agreements-guide", desc: "Protect your loan pricing against market volatility during mortgage processing.", category: "Interest Rates" },
+  { title: "Refinancing: Cash-Out vs. Rate-and-Term", slug: "equity-and-refinance-guide", desc: "Compare refinance structures to lower interest costs or extract equity.", category: "Refinance" },
+  { title: "Understanding Refinance Closing Costs", slug: "refinance-closing-costs-guide", desc: "Understand the fees, appraisal costs, and reserves required to refinance.", category: "Refinance" },
+  { title: "How HOA Fees Impact Home Purchasing Power", slug: "hoa-fees-affordability-guide", desc: "Analyze the hidden effect of monthly association dues on your debt capacity.", category: "Home Buying" },
+  { title: "Choosing Homeowners Insurance for Your Escrow", slug: "homeowners-insurance-guide", desc: "Learn how hazard insurance premiums affect your escrow buffer and cash flow.", category: "Escrow" },
+  { title: "How Your Credit Score Influences Mortgage APR", slug: "credit-score-mortgage-guide", desc: "Optimize your credit profile to qualify for the best interest rates.", category: "Debt Management" }
 ];
 
 const faqs = [
@@ -177,6 +192,46 @@ const faqs = [
   {
     q: "How much does it cost to refinance a mortgage?",
     a: "Refinancing costs match standard closing fees, typically ranging between 2% to 5% of the new loan balance for appraisals, underwriting, title insurance, and recording."
+  },
+  {
+    q: "What is a conforming loan?",
+    a: "A conforming loan is a conventional mortgage that meets FHFA guidelines, specifically conforming to credit score limits, debt ratios, and standard loan limits."
+  },
+  {
+    q: "When is a jumbo loan required?",
+    a: "A jumbo loan is required when the home purchase price exceeds local conforming loan limits set by the FHFA, necessitating stricter credit and down payment underwriting."
+  },
+  {
+    q: "What are mortgage discount points?",
+    a: "Discount points represent prepaid interest purchased by the buyer at closing to permanently lower their ongoing interest rate (usually 1% of the loan amount per point)."
+  },
+  {
+    q: "What is a homestead exemption?",
+    a: "A homestead exemption is a legal provision that reduces the taxable value of a primary residence for property tax calculations and caps annual assessment increases."
+  },
+  {
+    q: "How does a bi-weekly payment schedule save money?",
+    a: "A bi-weekly schedule results in 26 half-payments annually (equal to 13 full monthly checks), accelerating principal paydown and shaving 4 to 6 years off a standard 30-year term."
+  },
+  {
+    q: "Can I make a lump-sum payment directly to principal?",
+    a: "Yes. Homeowners can submit lump-sum prepayments designated as 'Principal Only' to instantly reduce the outstanding loan balance and bypass future interest accruals."
+  },
+  {
+    q: "What is a rate lock agreement?",
+    a: "A rate lock guarantees your quoted interest rate for a specific window (usually 30 to 60 days) while your mortgage application is processed, shielding you from rate hikes."
+  },
+  {
+    q: "What is a cash-out refinance?",
+    a: "A cash-out refinance replaces your current mortgage with a larger loan, allowing you to withdraw the home equity difference in cash at closing."
+  },
+  {
+    q: "How do monthly HOA dues affect mortgage approval?",
+    a: "HOA fees are added directly to your monthly housing expense, raising your front-end DTI ratio and reducing your maximum home purchase budget."
+  },
+  {
+    q: "What is the difference between conforming and jumbo interest rates?",
+    a: "Conforming loans are government-backed and highly liquid, usually carrying lower rates, whereas jumbo loans are non-conforming, riskier, and carry independent market pricing spreads."
   }
 ];
 
@@ -255,18 +310,57 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
     </div>
 
     <!-- Topical Authority Hub -->
-    <div class="space-y-6">
-      <h2 class="font-display text-xl font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">Mortgage Education & Research</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="space-y-6" id="guides-section">
+      <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-4 border-b border-border-subtle pb-2">
+        <div>
+          <h2 class="font-display text-xl font-bold text-text-main tracking-tight">Mortgage Education & Research</h2>
+          <p class="text-3xs text-text-muted mt-0.5">Filter or search through our {guides.length} E-E-A-T optimized handbooks.</p>
+        </div>
+        <!-- Search and Filter Controls -->
+        <div class="flex flex-wrap gap-2 text-xs">
+          <input 
+            type="text" 
+            id="guide-search" 
+            placeholder="Search guides..." 
+            class="h-8 rounded border border-border-input bg-bg-input px-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none w-full sm:w-48"
+          />
+          <select 
+            id="guide-category-filter" 
+            class="h-8 rounded border border-border-input bg-bg-input px-2 text-text-main focus:border-border-focus focus:outline-none"
+          >
+            <option value="all">All Categories</option>
+            <option value="Home Buying">Home Buying</option>
+            <option value="Loan Programs">Loan Programs</option>
+            <option value="Mortgage Math">Mortgage Math</option>
+            <option value="Escrow">Escrow</option>
+            <option value="Debt Management">Debt Management</option>
+            <option value="Prepayments">Prepayments</option>
+            <option value="Refinance">Refinance</option>
+            <option value="Research & Data">Research & Data</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="guides-grid">
         {guides.map(guide => (
           <a 
             href={`/guides/${guide.slug}`} 
-            class="group p-5 rounded-lg border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            class="group p-5 rounded-lg border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent guide-card"
+            data-title={guide.title.toLowerCase()}
+            data-desc={guide.desc.toLowerCase()}
+            data-category={guide.category}
           >
+            <span class="inline-block rounded-full bg-blue-500/10 px-2 py-0.5 text-4xs font-medium text-blue-400 border border-blue-500/20 mb-2 w-max">
+              {guide.category}
+            </span>
             <h3 class="font-display text-sm font-semibold text-text-main group-hover:text-brand-accent transition-colors">{guide.title}</h3>
             <p class="text-2xs text-text-muted mt-2 leading-relaxed">{guide.desc}</p>
           </a>
         ))}
+      </div>
+
+      <div id="guides-empty-state" class="hidden text-center py-12 text-xs text-text-muted">
+        No guides match your search or filter settings.
       </div>
     </div>
 
@@ -425,6 +519,7 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
   </main>
 
   <script>
+    // FAQ search script
     const searchInput = document.getElementById('faq-search') as HTMLInputElement;
     const faqItems = document.querySelectorAll('.faq-item');
     const emptyState = document.getElementById('faq-empty-state');
@@ -456,6 +551,46 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
         }
       });
     }
+
+    // Guides search and category filter script
+    const guideSearch = document.getElementById('guide-search') as HTMLInputElement;
+    const categoryFilter = document.getElementById('guide-category-filter') as HTMLSelectElement;
+    const guideCards = document.querySelectorAll('.guide-card');
+    const guidesEmptyState = document.getElementById('guides-empty-state');
+
+    function filterGuides() {
+      const query = guideSearch?.value.toLowerCase().trim() || '';
+      const category = categoryFilter?.value || 'all';
+      let visibleCount = 0;
+
+      guideCards.forEach(card => {
+        const el = card as HTMLElement;
+        const title = el.getAttribute('data-title') || '';
+        const desc = el.getAttribute('data-desc') || '';
+        const cat = el.getAttribute('data-category') || '';
+
+        const matchesQuery = title.includes(query) || desc.includes(query);
+        const matchesCategory = category === 'all' || cat === category;
+
+        if (matchesQuery && matchesCategory) {
+          el.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      if (guidesEmptyState) {
+        if (visibleCount === 0) {
+          guidesEmptyState.classList.remove('hidden');
+        } else {
+          guidesEmptyState.classList.add('hidden');
+        }
+      }
+    }
+
+    guideSearch?.addEventListener('input', filterGuides);
+    categoryFilter?.addEventListener('change', filterGuides);
   </script>
 
   <Footer />

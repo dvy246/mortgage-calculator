@@ -1,0 +1,85 @@
+---
+/**
+ * AdSlot.astro
+ * Reusable Google AdSense ad unit component.
+ * Supports multiple ad formats: banner, in-article, sidebar, multiplex.
+ * Respects cookie consent state before rendering.
+ * 
+ * Props:
+ *   slot   - The ad slot data-ad-slot ID (from your AdSense account)
+ *   format - "auto" | "horizontal" | "vertical" | "rectangle" | "fluid"
+ *   layout - Optional layout key for in-feed/in-article ads
+ *   class  - Additional CSS classes
+ *   label  - Whether to show "Advertisement" label (default: true)
+ */
+
+interface Props {
+  slot?: string;
+  format?: 'auto' | 'horizontal' | 'vertical' | 'rectangle' | 'fluid';
+  layout?: string;
+  class?: string;
+  label?: boolean;
+}
+
+const {
+  slot = 'XXXXXXXXXX',
+  format = 'auto',
+  layout,
+  class: className = '',
+  label = true
+} = Astro.props;
+
+// Publisher ID — replace with your real AdSense publisher ID
+const publisherId = 'ca-pub-XXXXXXXXXXXXXXXX';
+---
+
+<div class:list={['adslot-container', className]} data-ad-waiting aria-hidden="true">
+  {label && (
+    <p class="ad-label">Advertisement</p>
+  )}
+  <ins
+    class="adsbygoogle"
+    style="display:block"
+    data-ad-client={publisherId}
+    data-ad-slot={slot}
+    data-ad-format={format}
+    data-full-width-responsive="true"
+    {...(layout ? { 'data-ad-layout': layout } : {})}
+  ></ins>
+</div>
+
+<style>
+  .adslot-container {
+    width: 100%;
+    min-height: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-subtle);
+    padding: 0.5rem 0;
+    margin: 0 auto;
+    transition: opacity 0.3s ease;
+  }
+
+  .ad-label {
+    font-size: 0.5625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    opacity: 0.55;
+    margin: 0 0 0.25rem;
+    text-align: center;
+    line-height: 1;
+  }
+
+  /* Hide completely when no ad loaded and print */
+  @media print {
+    .adslot-container {
+      display: none !important;
+    }
+  }
+</style>

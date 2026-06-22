@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props {
   title: string;
@@ -15,7 +16,7 @@ const {
   schemaMarkup
 } = Astro.props;
 
-const siteUrl = "https://mortgageintelligence.io"; // Dummy production URL for SEO canonicals
+const siteUrl = "https://mortgagesintel.com"; // Production URL for SEO canonicals
 const absoluteCanonical = canonicalUrl ? `${siteUrl}${canonicalUrl}` : undefined;
 ---
 
@@ -24,7 +25,12 @@ const absoluteCanonical = canonicalUrl ? `${siteUrl}${canonicalUrl}` : undefined
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="mortgage" />
+    <link rel="manifest" href="/site.webmanifest" />
     
     <!-- Theme setup -->
     <script is:inline>
@@ -65,18 +71,22 @@ const absoluteCanonical = canonicalUrl ? `${siteUrl}${canonicalUrl}` : undefined
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
     
     <!-- Google tag (gtag.js) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-RDKT0KRTLB"></script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-EMNDXKBZLT"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-RDKT0KRTLB');
+      gtag('config', 'G-EMNDXKBZLT');
     </script>
 
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Google AdSense -->
+    <script is:inline async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   </head>
   <body class="bg-bg-main text-text-main min-h-screen flex flex-col antialiased">
     <slot />
+    <CookieConsent />
   </body>
 </html>

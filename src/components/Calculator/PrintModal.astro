@@ -304,6 +304,32 @@
     });
   }
 
+  // Helper to convert oklch to rgb/rgba using canvas context fillStyle serialization
+  function convertOklchToRgb(colorStr: string): string {
+    if (!colorStr || !colorStr.includes('oklch')) return colorStr;
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1;
+      canvas.height = 1;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = colorStr;
+        const resolved = ctx.fillStyle;
+        if (resolved && !resolved.includes('oklch')) {
+          return resolved;
+        }
+      }
+    } catch (e) {
+      console.warn("Canvas oklch conversion failed for color:", colorStr, e);
+    }
+    
+    // Fallback: parse basic components or return default colors
+    if (colorStr.includes('border') || colorStr.includes('subtle')) return '#cbd5e1';
+    if (colorStr.includes('bg') || colorStr.includes('card')) return '#ffffff';
+    if (colorStr.includes('text-muted')) return '#64748b';
+    return "#0f172a"; // Safe dark text color fallback
+  }
+
   // Helper to convert CSS variables to inline solid colors inside the PDF element
   function resolveCssVariables(element: HTMLElement) {
     const allElements = element.querySelectorAll('*');
@@ -312,18 +338,27 @@
       if (htmlEl instanceof SVGElement) return; // Handled separately
       
       const style = window.getComputedStyle(htmlEl);
-      const color = style.getPropertyValue('color') || style.color;
-      const bgColor = style.getPropertyValue('background-color') || style.backgroundColor;
-      const borderColor = style.getPropertyValue('border-color') || style.borderColor;
+      let color = style.getPropertyValue('color') || style.color;
+      let bgColor = style.getPropertyValue('background-color') || style.backgroundColor;
+      let borderColor = style.getPropertyValue('border-color') || style.borderColor;
       
-      if (color && (color.includes('rgb') || color.startsWith('#'))) {
-        htmlEl.style.color = color;
+      if (color) {
+        color = convertOklchToRgb(color);
+        if (color.includes('rgb') || color.startsWith('#')) {
+          htmlEl.style.color = color;
+        }
       }
-      if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)' && (bgColor.includes('rgb') || bgColor.startsWith('#'))) {
-        htmlEl.style.backgroundColor = bgColor;
+      if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)') {
+        bgColor = convertOklchToRgb(bgColor);
+        if (bgColor.includes('rgb') || bgColor.startsWith('#')) {
+          htmlEl.style.backgroundColor = bgColor;
+        }
       }
-      if (borderColor && borderColor !== 'transparent' && borderColor !== 'rgba(0, 0, 0, 0)' && (borderColor.includes('rgb') || borderColor.startsWith('#'))) {
-        htmlEl.style.borderColor = borderColor;
+      if (borderColor && borderColor !== 'transparent' && borderColor !== 'rgba(0, 0, 0, 0)') {
+        borderColor = convertOklchToRgb(borderColor);
+        if (borderColor.includes('rgb') || borderColor.startsWith('#')) {
+          htmlEl.style.borderColor = borderColor;
+        }
       }
     });
   }
@@ -396,19 +431,22 @@
           if (!clone) return;
           const style = window.getComputedStyle(orig);
           
-          const stroke = style.getPropertyValue('stroke') || style.stroke;
-          const fill = style.getPropertyValue('fill') || style.fill;
-          const color = style.getPropertyValue('color') || style.color;
+          let stroke = style.getPropertyValue('stroke') || style.stroke;
+          let fill = style.getPropertyValue('fill') || style.fill;
+          let color = style.getPropertyValue('color') || style.color;
           const fontSize = style.getPropertyValue('font-size') || style.fontSize;
           const fontFamily = style.getPropertyValue('font-family') || style.fontFamily;
           
           if (stroke && stroke !== 'none') {
+            stroke = convertOklchToRgb(stroke);
             clone.setAttribute('stroke', stroke);
           }
           if (fill && fill !== 'none') {
+            fill = convertOklchToRgb(fill);
             clone.setAttribute('fill', fill);
           }
           if (color) {
+            color = convertOklchToRgb(color);
             clone.style.color = color;
             // For SVG text elements, 'fill' acts as the text color
             if (clone.tagName.toLowerCase() === 'text') {

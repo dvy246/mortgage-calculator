@@ -114,8 +114,7 @@
     exportBtn.addEventListener('click', () => {
       if (fullSchedule.length === 0) return;
       
-      let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += "Payment #,Principal Paid,Interest Paid,Tax Paid,Insurance Paid,PMI Paid,HOA Paid,Extra Paid,Total Payment,Remaining Balance\n";
+      let csvContent = "Payment #,Principal Paid,Interest Paid,Tax Paid,Insurance Paid,PMI Paid,HOA Paid,Extra Paid,Total Payment,Remaining Balance\n";
       
       fullSchedule.forEach(entry => {
         const row = [
@@ -133,13 +132,16 @@
         csvContent += row + "\n";
       });
       
-      const encodedUri = encodeURI(csvContent);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
+      link.setAttribute("href", url);
       link.setAttribute("download", "mortgage_amortization_schedule.csv");
+      link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     });
   }
 </script>

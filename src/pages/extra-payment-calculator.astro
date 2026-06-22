@@ -10,6 +10,8 @@ import Disclaimer from '../components/Calculator/Disclaimer.astro';
 import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
+import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
   {
@@ -239,14 +241,19 @@ const faqs = [
     <!-- Repayment Table -->
     <AmortizationTable />
 
+    <FormulaDrawer type="extra" />
+
+    <!-- Ad Slot: Between formula drawer and guide section -->
+    <AdSlot format="horizontal" slot="2005" class="my-4" />
+
     <!-- Educational Guide component -->
     <MortgageGuide 
       title="Extra Payment"
       subtitle="Evaluating interest savings and amortization acceleration through prepayments"
-      whatItDoes="Models how making voluntary principal prepayments (monthly, annually, or one-time lump sum) decreases your remaining interest charges and shortens your mortgage term."
-      whenToUse="Use this calculator if you have excess monthly budget, expect annual bonuses, or have a lump sum, and want to evaluate whether to prepay the loan or invest elsewhere."
-      howItWorks="Runs two parallel amortization calculations: the baseline term schedule and the accelerated term schedule. It computes the difference in cumulative interest paid and the difference in payoff month to present your net savings."
-      mistakes="Failing to check if your lender enforces a pre-payment penalty (though rare in modern conventional loans). Prepaying a low-interest mortgage (e.g. 3%) when high-yield savings yield 5% represents a lost opportunity cost."
+      whatItDoes="This prepayment optimization engine models how making voluntary extra payments—whether on a recurring monthly basis, as an annual payment, or via a one-time lump-sum contribution—affects your mortgage payoff timeline. It tracks the accelerated reduction of your principal loan balance, demonstrating how shifting payments toward principal bypasses future interest accrual. The engine calculates your exact interest savings and projects how many months or years you will shave off your scheduled amortization timeline."
+      whenToUse="Use this calculator when structuring a budget to accelerate your home payoff. It is ideal for evaluating options like putting tax refunds, annual bonuses, or inheritance funds directly toward your mortgage principal. It also helps you weigh the financial impact of prepaying a fixed mortgage against other opportunities, such as investing in retirement funds or high-yield savings accounts."
+      howItWorks="The engine compiles two complete amortization schedules side-by-side: a baseline schedule tracking standard monthly P&I payments, and an accelerated schedule incorporating your prepayments. For each month, standard interest is calculated as Principal * monthly interest rate. Any extra payments are added directly to the principal reduction for that period. This faster principal drop reduces subsequent interest calculations, creating a compounding interest-saving effect that reduces your loan term."
+      mistakes="A common mistake is failing to write 'Principal Only' on your extra payments. If you do not specify this with your servicer, they may apply the surplus toward next month's regular payment (prepaying interest early), which fails to accelerate your equity. Another pitfall is prepaying a low-interest mortgage (such as 3%) when safe investments (like CDs or index funds) yield higher net returns. Always consider your liquidity; once you pay down mortgage principal, you cannot easily withdraw that money without refinancing or opening a home equity line of credit."
       faqs={faqs}
     />
 

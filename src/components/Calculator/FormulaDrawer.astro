@@ -1,0 +1,243 @@
+---
+interface Props {
+  type: 'affordability' | 'payoff' | 'extra' | 'refinance' | 'pmi';
+}
+
+const { type } = Astro.props;
+---
+
+<div class="max-w-4xl mx-auto mt-6 bg-bg-card border border-border-subtle rounded-xl p-5 shadow-xs transition-all duration-300 hover:shadow-md hover:border-border-focus/40">
+  <details class="group cursor-pointer">
+    <summary class="flex justify-between items-center list-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded p-1">
+      <div class="flex items-center gap-2.5">
+        <div class="h-7 w-7 rounded-lg bg-brand-primary/10 text-brand-primary flex items-center justify-center transition-transform group-hover:scale-105">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h-3a2 2 0 00-2 2v9a2 2 0 002 2h9a2 2 0 002-2v-3m-7.793-6.964l8.071-8.072m0 0l-.707-.707M19.5 3.5h-5.25m5.25 0v5.25" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-display font-bold text-xs sm:text-sm text-text-main">How We Calculate This</h3>
+          <p class="text-4xs sm:text-3xs text-text-muted mt-0.5">Step-by-step mathematical model and formulas used in this engine.</p>
+        </div>
+      </div>
+      <span class="text-text-muted group-open:rotate-180 transition-transform duration-300">
+        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </span>
+    </summary>
+
+    <div class="mt-4 pt-4 border-t border-border-subtle/50 text-3xs sm:text-2xs text-text-muted space-y-4 leading-relaxed transition-all duration-300 group-open:animate-fade-in">
+      {type === 'affordability' && (
+        <div class="space-y-4">
+          <p>
+            The affordability engine is built on the industry-standard <strong>28/36 underwriting rule</strong>, which determines the maximum monthly carrying cost lenders deem safe for conventional financing.
+          </p>
+          
+          <!-- Formulas Block -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+              <span class="font-bold text-text-main block">1. Front-End housing DTI Ratio (28% limit)</span>
+              <div class="font-mono text-brand-accent bg-bg-card border border-border-subtle/50 px-2 py-1 rounded text-center my-1 select-all font-semibold">
+                Front-End Ratio = (Monthly Housing Cost / Gross Monthly Income) &times; 100
+              </div>
+              <p class="text-4xs leading-normal">
+                Monthly Housing Cost includes: Principal &amp; Interest (P&amp;I), Property Tax, Homeowners Insurance, HOA fees, and PMI.
+              </p>
+            </div>
+            
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+              <span class="font-bold text-text-main block">2. Back-End total DTI Ratio (36% limit)</span>
+              <div class="font-mono text-brand-accent bg-bg-card border border-border-subtle/50 px-2 py-1 rounded text-center my-1 select-all font-semibold">
+                Back-End Ratio = ((Monthly Housing Cost + Monthly Debts) / Gross Monthly Income) &times; 100
+              </div>
+              <p class="text-4xs leading-normal">
+                Monthly Debts include: Credit card minimums, car loans, student loans, and other revolving lines of credit.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+            <span class="font-bold text-text-main block">Maximum Safe Purchase Price Derivation</span>
+            <p class="text-4xs">
+              First, the engine solves for the maximum allowable housing payment (<span class="font-mono">Max Housing Cost</span>) by evaluating both rules and selecting the lower value:
+            </p>
+            <div class="font-mono text-text-main bg-bg-card border border-border-subtle/50 px-3 py-1.5 rounded my-1 text-center font-bold">
+              Max Housing Cost = min( Gross Income &times; 0.28, (Gross Income &times; 0.36) - Monthly Debts )
+            </div>
+            <p class="text-4xs">
+              Once <span class="font-mono">Max Housing Cost</span> is established, the engine subtracts property taxes, homeowners insurance, HOA fees, and estimated PMI to isolate the maximum monthly Principal &amp; Interest payment (<span class="font-mono">Max P&amp;I</span>). It then calculates the maximum loan principal (<span class="font-mono">P</span>) using the present value of an annuity formula:
+            </p>
+            <div class="font-mono text-text-main bg-bg-card border border-border-subtle/50 px-3 py-1.5 rounded my-1 text-center font-bold">
+              P = Max P&amp;I &times; [1 - (1 + r)<sup>-n</sup>] / r
+            </div>
+            <p class="text-4xs">
+              Where <span class="font-mono">r</span> is the monthly interest rate (annual rate &divide; 12) and <span class="font-mono">n</span> is the total number of monthly periods (term years &times; 12). The maximum home purchase price is calculated as <span class="font-mono">P + Down Payment</span>.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {type === 'payoff' && (
+        <div class="space-y-4">
+          <p>
+            The payoff model constructs a month-by-month amortization schedule using standard compound interest formulas to track how payments reduce the outstanding balance over time.
+          </p>
+
+          <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+            <span class="font-bold text-text-main block">Standard Amortization Formula (Monthly P&amp;I)</span>
+            <p class="text-4xs">
+              To calculate the fixed monthly Principal and Interest payment (<span class="font-mono">M</span>) required to pay off a loan of principal (<span class="font-mono">P</span>) over (<span class="font-mono">n</span>) months at a monthly interest rate (<span class="font-mono">r</span>):
+            </p>
+            <div class="font-mono text-brand-accent bg-bg-card border border-border-subtle/50 px-2 py-2 rounded text-center my-1 select-all font-semibold">
+              M = P &times; [ r(1 + r)<sup>n</sup> ] / [ (1 + r)<sup>n</sup> - 1 ]
+            </div>
+            <p class="text-4xs">
+              Where <span class="font-mono">r = Annual Rate / 12</span> and <span class="font-mono">n = Loan Term in Years &times; 12</span>.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-1">
+              <span class="font-bold text-text-main block">Monthly Interest Accrual</span>
+              <div class="font-mono text-text-main bg-bg-card border border-border-subtle/50 px-2 py-1 rounded text-center my-1 font-semibold text-3xs">
+                Interest<sub>t</sub> = Principal<sub>t-1</sub> &times; r
+              </div>
+              <p class="text-4xs leading-normal">
+                Interest is computed first every month by applying the monthly rate to the remaining unpaid principal balance.
+              </p>
+            </div>
+
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-1">
+              <span class="font-bold text-text-main block">Monthly Principal Paydown</span>
+              <div class="font-mono text-text-main bg-bg-card border border-border-subtle/50 px-2 py-1 rounded text-center my-1 font-semibold text-3xs">
+                Principal<sub>t</sub> = M - Interest<sub>t</sub>
+              </div>
+              <p class="text-4xs leading-normal">
+                The remaining portion of your monthly P&amp;I payment is applied directly to reduce the outstanding loan balance.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {type === 'extra' && (
+        <div class="space-y-4">
+          <p>
+            The extra payment engine runs parallel schedules to isolate the exact impact of principal prepayments. Prepayments bypass interest accumulation, reducing the balance directly.
+          </p>
+
+          <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+            <span class="font-bold text-text-main block">Principal Reduction with Prepayment</span>
+            <p class="text-4xs">
+              With prepayments, the monthly outstanding principal balance is computed as:
+            </p>
+            <div class="font-mono text-brand-accent bg-bg-card border border-border-subtle/50 px-2 py-2 rounded text-center my-1 select-all font-semibold">
+              Principal<sub>t</sub> = Principal<sub>t-1</sub> - (P&amp;I Principal<sub>t</sub> + Extra Monthly + Extra Annual + Lump Sum)
+            </div>
+            <p class="text-4xs">
+              Because the principal drops faster than scheduled, subsequent monthly interest charges (<span class="font-mono">Principal &times; r</span>) shrink rapidly, cascading into significant long-term interest savings and an earlier loan payoff date.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-1">
+              <span class="font-bold text-text-main block">Total Scheduled Interest Paid</span>
+              <div class="font-mono text-text-main bg-bg-card border border-border-subtle/50 px-2 py-1 rounded text-center my-1 font-semibold text-3xs">
+                Scheduled Interest = &Sigma; Interest<sub>t</sub> (without extra)
+              </div>
+            </div>
+
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-1">
+              <span class="font-bold text-text-main block">Total Savings Realized</span>
+              <div class="font-mono text-text-main bg-bg-card border border-border-subtle/50 px-2 py-1 rounded text-center my-1 font-semibold text-3xs">
+                Savings = Scheduled Interest - Actual Interest Paid
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {type === 'refinance' && (
+        <div class="space-y-4">
+          <p>
+            The refinance calculator compares current loan carrying costs against a new refinance structure, solving for monthly P&amp;I savings and the break-even period in months.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+              <span class="font-bold text-text-main block">1. Net Monthly Savings</span>
+              <div class="font-mono text-brand-accent bg-bg-card border border-border-subtle/50 px-2 py-1.5 rounded text-center my-1 select-all font-semibold">
+                Monthly Savings = Current P&amp;I - New P&amp;I
+              </div>
+              <p class="text-4xs leading-normal">
+                Compares the principal and interest portion of your existing payment against the new payment under refinanced terms.
+              </p>
+            </div>
+
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+              <span class="font-bold text-text-main block">2. Refinance Break-Even Months</span>
+              <div class="font-mono text-brand-accent bg-bg-card border border-border-subtle/50 px-2 py-1.5 rounded text-center my-1 select-all font-semibold">
+                Break-Even Month = Closing Costs / Monthly Savings
+              </div>
+              <p class="text-4xs leading-normal">
+                Indicates the number of months required for accumulated monthly savings to offset the transaction closing costs.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+            <span class="font-bold text-text-main block">Roll-in Costs Integration</span>
+            <p class="text-4xs">
+              If "Roll closing costs into loan principal" is active, closing costs (<span class="font-mono">C</span>) are added to the remaining balance (<span class="font-mono">P</span>) prior to calculating the new monthly payment:
+            </p>
+            <div class="font-mono text-text-main bg-bg-card border border-border-subtle/50 px-3 py-1.5 rounded my-1 text-center font-bold">
+              New Loan Amount = Principal Balance + Closing Costs
+            </div>
+            <p class="text-4xs">
+              This avoids upfront cash outlays but increases the total debt amount, reducing the monthly savings rate and extending the break-even timeline.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {type === 'pmi' && (
+        <div class="space-y-4">
+          <p>
+            The PMI engine tracks conventional private mortgage insurance premiums and calculates when your home equity reaches the required cancellation thresholds.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+              <span class="font-bold text-text-main block">1. Monthly PMI Premium</span>
+              <div class="font-mono text-brand-accent bg-bg-card border border-border-subtle/50 px-2 py-1.5 rounded text-center my-1 select-all font-semibold">
+                Monthly PMI = (Loan Amount &times; PMI Rate) / 12
+              </div>
+              <p class="text-4xs leading-normal">
+                Calculated on the original loan balance and distributed in equal monthly installments across early years.
+              </p>
+            </div>
+
+            <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+              <span class="font-bold text-text-main block">2. Loan-To-Value (LTV) Ratio</span>
+              <div class="font-mono text-brand-accent bg-bg-card border border-border-subtle/50 px-2 py-1.5 rounded text-center my-1 select-all font-semibold">
+                LTV % = (Current Balance / Home Value) &times; 100
+              </div>
+              <p class="text-4xs leading-normal">
+                Tracks the proportion of the property value that is financed.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-bg-main border border-border-subtle p-3 rounded-lg space-y-2">
+            <span class="font-bold text-text-main block">PMI Termination Thresholds</span>
+            <ul class="list-disc pl-4 text-4xs space-y-1">
+              <li><strong>80% LTV (Borrower-Requested Cancellation):</strong> Under the Homeowners Protection Act, you can request PMI cancellation when your loan balance amortization crosses 80% of your home's original value.</li>
+              <li><strong>78% LTV (Automatic Termination):</strong> Your servicer is legally required to terminate conventional PMI automatically once your loan reaches 78% LTV, provided payments are current.</li>
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+  </details>
+</div>

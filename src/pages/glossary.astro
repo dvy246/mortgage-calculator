@@ -45,7 +45,7 @@ const terms = [
 const glossarySchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "DefinedTermSet",
-  "@id": "https://mortgageintelligence.io/glossary",
+  "@id": "https://mortgagesintel.com/glossary",
   "name": "Mortgage & Home Financing Glossary",
   "description": "Alphabetical technical definitions of home loan and mortgage terminology.",
   "hasDefinedTerm": terms.map(t => ({
@@ -77,7 +77,10 @@ const glossarySchema = JSON.stringify({
       <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
         Mortgage Glossary & Financing Definitions
       </h1>
-      <p class="text-sm text-text-muted leading-relaxed max-w-2xl">
+      <div class="flex items-center gap-4 text-2xs text-text-muted">
+        <span>Last Updated: June 19, 2026</span>
+      </div>
+      <p class="text-sm text-text-muted leading-relaxed max-w-2xl pt-2">
         Clear vocabulary is essential for financial navigation. Review standard terminology used by underwriters and loan originators.
       </p>
     </div>
