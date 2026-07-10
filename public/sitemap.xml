@@ -3,7 +3,7 @@
   <!-- Core Homepage -->
   <url>
     <loc>https://mortgagesintel.com/</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,101 +11,231 @@
   <!-- Core Financial Calculators -->
   <url>
     <loc>https://mortgagesintel.com/house-affordability-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/mortgage-payoff-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/extra-payment-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/refinance-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/mortgage-calculator-with-pmi</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+
+  <!-- States Directory -->
+  <url>
+    <loc>https://mortgagesintel.com/states</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 
   <!-- State-Specific Calculators -->
   <url>
     <loc>https://mortgagesintel.com/california-mortgage-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/texas-mortgage-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/florida-mortgage-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/new-york-mortgage-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/illinois-mortgage-calculator</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/washington-mortgage-calculator</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/georgia-mortgage-calculator</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/north-carolina-mortgage-calculator</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/virginia-mortgage-calculator</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/massachusetts-mortgage-calculator</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Guides Directory -->
+  <url>
+    <loc>https://mortgagesintel.com/guides</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 
   <!-- Editorial & SEO Educational Guides -->
   <url>
     <loc>https://mortgagesintel.com/guides/first-time-home-buyer-guide</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/guides/pmi-removal-guide</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/guides/fha-vs-conventional-loans</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/guides/mortgage-closing-costs-explained</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/guides/average-mortgage-rates-by-state</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/guides/mortgage-rates-guide</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/conforming-loans-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/jumbo-loans-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/loan-amortization-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/mortgage-points-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/property-taxes-escrow-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/dti-ratio-explained-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/biweekly-payments-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/lump-sum-prepayment-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/rate-lock-agreements-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/equity-and-refinance-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/refinance-closing-costs-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/hoa-fees-affordability-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/homeowners-insurance-guide</loc>
+    <lastmod>2026-07-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/guides/credit-score-mortgage-guide</loc>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -113,49 +243,49 @@
   <!-- Platform Information Pages -->
   <url>
     <loc>https://mortgagesintel.com/about-us</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/contact-us</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/privacy-policy</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/terms-and-conditions</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/methodology</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/assumptions</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/data-sources</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://mortgagesintel.com/glossary</loc>
-    <lastmod>2026-06-19</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>

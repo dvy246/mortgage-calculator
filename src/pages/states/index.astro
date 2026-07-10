@@ -1,0 +1,126 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { stateDatabase } from '../../data/states';
+
+const states = Object.values(stateDatabase).sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<Layout 
+  title="State Mortgage Calculators - Localized Housing Estimators" 
+  description="Select your state to launch a localized mortgage calculator pre-populated with regional averages for property taxes, homeowners insurance, and home values."
+  canonicalUrl="/states"
+>
+  <Header activeSlug="" />
+
+  <main class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-4 max-w-3xl">
+      <nav class="text-xs text-text-muted flex items-center gap-2">
+        <a href="/" class="hover:text-text-main transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-text-muted">States</span>
+      </nav>
+      <h1 class="font-display text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl">
+        Localized Mortgage Calculators
+      </h1>
+      <p class="text-base text-text-muted leading-relaxed">
+        Select a state to compute payments with local property tax rates, homeowners insurance risk metrics, and representative home values.
+      </p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col sm:flex-row gap-4 justify-between items-center">
+      <div class="relative w-full sm:max-w-md">
+        <input 
+          type="text" 
+          id="state-search" 
+          placeholder="Search by state name..." 
+          class="h-10 w-full rounded-md border border-border-input bg-bg-input px-3 py-2 text-xs text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        />
+      </div>
+    </div>
+
+    <!-- States Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="states-grid">
+      {states.map(state => (
+        <a 
+          href={`/${state.slug}-mortgage-calculator`} 
+          class="group p-6 rounded-xl border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent state-card"
+          data-name={state.name.toLowerCase()}
+        >
+          <div class="space-y-3">
+            <div class="flex justify-between items-start">
+              <h2 class="font-display text-base font-bold text-text-main group-hover:text-brand-accent transition-colors leading-tight">
+                {state.name}
+              </h2>
+              <span class="text-3xs text-text-muted font-tabular bg-bg-main border border-border-subtle px-2 py-0.5 rounded">
+                Rate: {state.taxRate}%
+              </span>
+            </div>
+            <p class="text-2xs text-text-muted leading-relaxed">
+              {state.description}
+            </p>
+            <div class="grid grid-cols-2 gap-4 pt-3 text-3xs font-medium text-text-muted/75 border-t border-border-subtle/30 font-tabular">
+              <div>
+                <span class="block text-4xs uppercase tracking-wider text-text-muted/50 mb-0.5">Median Home</span>
+                <span class="text-text-main font-semibold">${state.medianHomePrice.toLocaleString('en-US')}</span>
+              </div>
+              <div>
+                <span class="block text-4xs uppercase tracking-wider text-text-muted/50 mb-0.5">Avg Loan Rate</span>
+                <span class="text-text-main font-semibold">{state.averageMortgageRate}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 flex items-center gap-1 text-2xs font-semibold text-brand-accent group-hover:text-brand-accent-hover pt-4">
+            <span>Open {state.name} Calculator</span>
+            <svg class="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Empty State -->
+    <div id="states-empty-state" class="hidden text-center py-16 text-sm text-text-muted">
+      No states match your search query. Try another term.
+    </div>
+  </main>
+
+  <script>
+    const stateSearch = document.getElementById('state-search') as HTMLInputElement;
+    const stateCards = document.querySelectorAll('.state-card');
+    const statesEmptyState = document.getElementById('states-empty-state');
+
+    if (stateSearch) {
+      stateSearch.addEventListener('input', () => {
+        const query = stateSearch.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        stateCards.forEach(card => {
+          const el = card as HTMLElement;
+          const name = el.getAttribute('data-name') || '';
+
+          if (name.includes(query)) {
+            el.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            el.classList.add('hidden');
+          }
+        });
+
+        if (statesEmptyState) {
+          if (visibleCount === 0) {
+            statesEmptyState.classList.remove('hidden');
+          } else {
+            statesEmptyState.classList.add('hidden');
+          }
+        }
+      });
+    }
+  </script>
+
+  <Footer />
+</Layout>

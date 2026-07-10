@@ -1,0 +1,160 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const guides = [
+  { title: "First-Time Home Buyer Guide", slug: "first-time-home-buyer-guide", desc: "A comprehensive handbook navigating credit approval, down payments, and closing fees.", category: "Home Buying" },
+  { title: "PMI Removal Guide", slug: "pmi-removal-guide", desc: "Learn the rules to cancel private mortgage insurance and save hundreds monthly.", category: "Escrow" },
+  { title: "FHA vs Conventional Loans", slug: "fha-vs-conventional-loans", desc: "Compare guidelines, down payment minimums, and insurance rates side-by-side.", category: "Loan Programs" },
+  { title: "Mortgage Closing Costs Explained", slug: "mortgage-closing-costs-explained", desc: "A breakdown of lender fees, escrow accounts, and transfer taxes.", category: "Home Buying" },
+  { title: "Average Mortgage Rates by State", slug: "average-mortgage-rates-by-state", desc: "Explore local interest trends and macroeconomic regional variables.", category: "Research & Data" },
+  { title: "Mortgage Rates Guide: Primary Market Drivers", slug: "mortgage-rates-guide", desc: "Analyze the macroeconomic variables, bond yields, and credit spreads that dictate interest rates.", category: "Research & Data" },
+  { title: "Conforming Loan Limits & Regulations", slug: "conforming-loans-guide", desc: "Learn what conforming loans are, FHFA guidelines, and current lending limits.", category: "Loan Programs" },
+  { title: "What is a Jumbo Loan & How to Qualify", slug: "jumbo-loans-guide", desc: "Understand the requirements, interest rates, and guidelines for high-value mortgages.", category: "Loan Programs" },
+  { title: "How Loan Amortization Schedules Work", slug: "loan-amortization-guide", desc: "Demystify principal and interest payments, amortization curves, and equity growth.", category: "Mortgage Math" },
+  { title: "Buying Down Your Interest Rate with Points", slug: "mortgage-points-guide", desc: "Evaluate whether paying upfront discount points makes sense for your ownership horizon.", category: "Mortgage Math" },
+  { title: "How Property Taxes & Escrow Accounts Function", slug: "property-taxes-escrow-guide", desc: "Understand the roles of tax assessments, insurance prepaids, and monthly escrow statements.", category: "Escrow" },
+  { title: "Understanding Front-End and Back-End DTI Ratios", slug: "dti-ratio-explained-guide", desc: "Master the DTI guidelines lenders use to assess your borrowing limit.", category: "Debt Management" },
+  { title: "Bi-Weekly Payments: Shave Years Off Your Mortgage", slug: "biweekly-payments-guide", desc: "Learn how restructuring your payment frequency bypasses interest and shortens terms.", category: "Prepayments" },
+  { title: "Making a Lump Sum Mortgage Prepayment", slug: "lump-sum-prepayment-guide", desc: "Model the impact of a one-time principal paydown on your interest and term.", category: "Prepayments" },
+  { title: "Rate Locks & Float-Down Agreements", slug: "rate-lock-agreements-guide", desc: "Protect your loan pricing against market volatility during mortgage processing.", category: "Interest Rates" },
+  { title: "Refinancing: Cash-Out vs. Rate-and-Term", slug: "equity-and-refinance-guide", desc: "Compare refinance structures to lower interest costs or extract equity.", category: "Refinance" },
+  { title: "Understanding Refinance Closing Costs", slug: "refinance-closing-costs-guide", desc: "Understand the fees, appraisal costs, and reserves required to refinance.", category: "Refinance" },
+  { title: "How HOA Fees Impact Home Purchasing Power", slug: "hoa-fees-affordability-guide", desc: "Analyze the hidden effect of monthly association dues on your debt capacity.", category: "Home Buying" },
+  { title: "Choosing Homeowners Insurance for Your Escrow", slug: "homeowners-insurance-guide", desc: "Learn how hazard insurance premiums affect your escrow buffer and cash flow.", category: "Escrow" },
+  { title: "How Your Credit Score Influences Mortgage APR", slug: "credit-score-mortgage-guide", desc: "Optimize your credit profile to qualify for the best interest rates.", category: "Debt Management" }
+];
+---
+
+<Layout 
+  title="Mortgage Education Hub - Underwriting & Planning Guides" 
+  description="Explore our library of 20 E-E-A-T optimized handbooks covering loan programs, mortgage math, tax escrows, credit scores, and payoff strategies."
+  canonicalUrl="/guides"
+>
+  <Header activeSlug="" />
+
+  <main class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-4 max-w-3xl">
+      <nav class="text-xs text-text-muted flex items-center gap-2">
+        <a href="/" class="hover:text-text-main transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-text-muted">Guides</span>
+      </nav>
+      <h1 class="font-display text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl">
+        Mortgage Planning &amp; Underwriting Library
+      </h1>
+      <p class="text-base text-text-muted leading-relaxed">
+        Understand the financial calculations, program limits, and underwriting requirements for home purchases and refinances.
+      </p>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col md:flex-row gap-4 justify-between items-center">
+      <div class="relative w-full md:max-w-md">
+        <input 
+          type="text" 
+          id="guide-search" 
+          placeholder="Search guides by title or keywords..." 
+          class="h-10 w-full rounded-md border border-border-input bg-bg-input px-3 py-2 text-xs text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        />
+      </div>
+      <div class="flex gap-3 w-full md:w-auto">
+        <select 
+          id="guide-category-filter" 
+          class="h-10 rounded border border-border-input bg-bg-input px-3 text-xs text-text-main focus:border-border-focus focus:outline-none w-full md:w-48"
+        >
+          <option value="all">All Categories</option>
+          <option value="Home Buying">Home Buying</option>
+          <option value="Loan Programs">Loan Programs</option>
+          <option value="Mortgage Math">Mortgage Math</option>
+          <option value="Escrow">Escrow</option>
+          <option value="Debt Management">Debt Management</option>
+          <option value="Prepayments">Prepayments</option>
+          <option value="Refinance">Refinance</option>
+          <option value="Research & Data">Research & Data</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Guides Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="guides-grid">
+      {guides.map(guide => (
+        <a 
+          href={`/guides/${guide.slug}`} 
+          class="group p-6 rounded-xl border border-border-subtle bg-bg-card hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent guide-card"
+          data-title={guide.title.toLowerCase()}
+          data-desc={guide.desc.toLowerCase()}
+          data-category={guide.category}
+        >
+          <div class="space-y-3">
+            <span class="inline-block rounded-full bg-blue-500/10 px-2.5 py-0.5 text-4xs font-semibold text-blue-400 border border-blue-500/20 w-max">
+              {guide.category}
+            </span>
+            <h2 class="font-display text-sm font-semibold text-text-main group-hover:text-brand-accent transition-colors leading-tight">
+              {guide.title}
+            </h2>
+            <p class="text-2xs text-text-muted leading-relaxed">
+              {guide.desc}
+            </p>
+          </div>
+          <div class="mt-6 flex items-center gap-1 text-2xs font-semibold text-brand-accent group-hover:text-brand-accent-hover pt-4 border-t border-border-subtle/30">
+            <span>Read Handbook</span>
+            <svg class="h-3 w-3 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- Empty State -->
+    <div id="guides-empty-state" class="hidden text-center py-16 text-sm text-text-muted">
+      No guides match your search terms or category filter. Try refining your parameters.
+    </div>
+  </main>
+
+  <script>
+    const guideSearch = document.getElementById('guide-search') as HTMLInputElement;
+    const categoryFilter = document.getElementById('guide-category-filter') as HTMLSelectElement;
+    const guideCards = document.querySelectorAll('.guide-card');
+    const guidesEmptyState = document.getElementById('guides-empty-state');
+
+    function filterGuides() {
+      const query = guideSearch?.value.toLowerCase().trim() || '';
+      const category = categoryFilter?.value || 'all';
+      let visibleCount = 0;
+
+      guideCards.forEach(card => {
+        const el = card as HTMLElement;
+        const title = el.getAttribute('data-title') || '';
+        const desc = el.getAttribute('data-desc') || '';
+        const cat = el.getAttribute('data-category') || '';
+
+        const matchesQuery = title.includes(query) || desc.includes(query);
+        const matchesCategory = category === 'all' || cat === category;
+
+        if (matchesQuery && matchesCategory) {
+          el.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      if (guidesEmptyState) {
+        if (visibleCount === 0) {
+          guidesEmptyState.classList.remove('hidden');
+        } else {
+          guidesEmptyState.classList.add('hidden');
+        }
+      }
+    }
+
+    guideSearch?.addEventListener('input', filterGuides);
+    categoryFilter?.addEventListener('change', filterGuides);
+  </script>
+
+  <Footer />
+</Layout>
