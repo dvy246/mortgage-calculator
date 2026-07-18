@@ -1,0 +1,211 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BlueprintWizard from '../components/Blueprint/BlueprintWizard.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const faqs = [
+  {
+    question: "What is the Mortgage Options Explorer?",
+    answer: "The Mortgage Options Explorer is an educational tool that shows how different loan programs compare based on your financial profile. It presents conventional, FHA, VA, USDA, and jumbo loan programs side by side with information about typical requirements, estimated rates, and key features. This tool does not make recommendations or determine loan eligibility — it is designed to help you understand which programs may be worth exploring further with a lender."
+  },
+  {
+    question: "What loan programs are included in the comparison?",
+    answer: "The tool compares five common loan types: Conventional loans (standard mortgages backed by Fannie Mae and Freddie Mac), FHA loans (insured by the Federal Housing Administration), VA loans (guaranteed by the Department of Veterans Affairs), USDA loans (backed by the U.S. Department of Agriculture for eligible rural areas), and Jumbo loans (for home values exceeding conforming loan limits). Each loan program has different requirements and features that may be more or less relevant depending on your financial situation."
+  },
+  {
+    question: "How do you determine which loan programs to show?",
+    answer: "The tool uses general lending guidelines as reference points — such as typical minimum credit scores, down payment requirements, and occupancy rules — to indicate which programs are more commonly associated with different borrower profiles. These are broad reference points, not guarantees of eligibility. Actual loan approval depends on many factors including a lender's specific underwriting criteria, accurate documentation, property appraisal, and current market conditions."
+  },
+  {
+    question: "What is the difference between conventional, FHA, and VA loans?",
+    answer: "Conventional loans are offered by private lenders and typically require a credit score of 620 or higher with down payments starting at 3% to 5%. FHA loans are government-insured and may accept credit scores as low as 580 with a 3.5% down payment, but require mortgage insurance for the life of the loan in most cases. VA loans are available to eligible veterans and active-duty service members with zero down payment and no mortgage insurance, though a funding fee typically applies. Each serves different borrower profiles and financial situations."
+  },
+  {
+    question: "How accurate are the estimated interest rates shown?",
+    answer: "The interest rates shown are broad estimates based on typical rate ranges for different credit profiles and loan programs as of mid-2026. Actual rates available to you will depend on your specific credit history, loan program, down payment size, property location, lender pricing, and the date you lock your rate. Rate estimates in this tool are educational references only and do not represent a rate quote or lock from any lender."
+  },
+  {
+    question: "What is PMI and when is it required?",
+    answer: "Private Mortgage Insurance (PMI) is typically required on conventional loans when the down payment is less than 20% of the home's purchase price. PMI protects the lender if you default on your loan. It can usually be canceled once your loan balance reaches 78% of the home's original value (or 80% if you request it). FHA loans require Mortgage Insurance Premiums (MIP) instead of PMI, which include both an upfront and annual premium."
+  },
+  {
+    question: "Will this tool tell me which loan program I should choose?",
+    answer: "No. This tool is designed to present information so you can compare loan programs side by side. It does not recommend or rank loan programs, and it does not determine which loan is right for you. The best loan program depends on your individual financial situation, goals, and preferences. We encourage you to use this information as a starting point for discussions with licensed mortgage professionals who can provide personalized guidance based on your complete financial picture."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Mortgage Options Explorer",
+      "url": "https://mortgagesintel.com/mortgage-blueprint",
+      "description": "An interactive educational tool that compares loan programs side by side — conventional, FHA, VA, USDA, and jumbo — based on your financial profile.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="Mortgage Options Explorer – Compare Loan Programs Side by Side"
+  description="Explore conventional, FHA, VA, USDA, and jumbo loan programs side by side. See how typical requirements and estimated rates compare for your financial profile."
+  canonicalUrl="/mortgage-blueprint"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="blueprint" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-0.5 text-3xs font-medium text-blue-600 dark:text-blue-400">Educational Tool</span>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Mortgage Options Explorer</h1>
+      <p class="text-xs text-text-muted max-w-2xl">
+        See how conventional, FHA, VA, USDA, and jumbo loan programs compare for your financial profile.
+        Enter your information once and explore the different options side by side.
+        This is an educational reference tool — not a loan recommendation or pre-approval decision.
+      </p>
+    </div>
+
+    <BlueprintWizard />
+
+    <AdSlot format="horizontal" slot="5001" class="my-4" />
+
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 sm:p-6 space-y-5">
+      <h2 class="font-display text-base font-semibold text-text-main">How the Loan Programs Compare</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/10 text-blue-500 text-3xs font-bold">1</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Conventional Loans</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Conventional loans are the most common mortgage type, offered by private lenders and typically following Fannie Mae and Freddie Mac guidelines. They offer flexibility for different down payment sizes and are available for primary residences, second homes, and investment properties. Private Mortgage Insurance (PMI) is required for down payments below 20%.
+          </p>
+          <a href="/guides/conforming-loans-guide" class="inline-flex items-center gap-1 text-3xs font-medium text-blue-500 hover:text-blue-600 transition-colors">
+            Learn more <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-violet-500/10 text-violet-500 text-3xs font-bold">2</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">FHA Loans</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            FHA loans are insured by the Federal Housing Administration and are designed to help borrowers who may have lower credit scores or limited down payment funds. They require a minimum 3.5% down payment and accept credit scores as low as 580 in many cases. Both upfront and annual mortgage insurance premiums (MIP) are required.
+          </p>
+          <a href="/guides/fha-vs-conventional-loans" class="inline-flex items-center gap-1 text-3xs font-medium text-blue-500 hover:text-blue-600 transition-colors">
+            Learn more <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-500 text-3xs font-bold">3</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">VA Loans</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            VA loans are guaranteed by the Department of Veterans Affairs and offer eligible veterans, active-duty service members, and qualifying spouses zero down payment options with no mortgage insurance. A one-time funding fee typically applies. Interest rates are often competitive compared to other loan types.
+          </p>
+          <a href="/guides/first-time-home-buyer-guide" class="inline-flex items-center gap-1 text-3xs font-medium text-blue-500 hover:text-blue-600 transition-colors">
+            Learn more <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/10 text-amber-500 text-3xs font-bold">4</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">USDA Loans</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            USDA loans are backed by the U.S. Department of Agriculture and offer zero down payment options for eligible buyers in designated rural and suburban areas. Income limits apply. The program includes both an upfront guarantee fee and an annual fee, though rates are often below market averages.
+          </p>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-rose-500/10 text-rose-500 text-3xs font-bold">5</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Jumbo Loans</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Jumbo loans are non-conforming mortgages for amounts exceeding the conforming loan limits set by Fannie Mae and Freddie Mac. They are used for higher-priced properties and typically require higher credit scores (700+) and larger down payments (10% to 20%). Terms vary significantly by lender.
+          </p>
+          <a href="/guides/jumbo-loans-guide" class="inline-flex items-center gap-1 text-3xs font-medium text-blue-500 hover:text-blue-600 transition-colors">
+            Learn more <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </a>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-cyan-500/10 text-cyan-500 text-3xs font-bold">6</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">How to Choose</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            The right loan program depends on your credit profile, down payment savings, employment situation, and property goals. Factors like how long you plan to stay in the home, your tolerance for monthly payment fluctuations, and whether you qualify for specialized programs all play a role. Compare options side by side and speak with multiple lenders to find what fits your situation.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <MortgageGuide
+      title="Loan Program Comparison"
+      subtitle="Understanding the major mortgage loan programs available to borrowers"
+      whatItDoes="This comparison tool presents five major mortgage loan programs — Conventional, FHA, VA, USDA, and Jumbo — side by side using your financial profile as context. It shows typical requirements (credit scores, down payments, DTI ranges), estimated interest rates, mortgage insurance details, and program-specific features. The tool helps you see which programs may be worth exploring further without requiring you to research each one separately."
+      whenToUse="Use this tool early in your home-buying research, before you start talking to lenders or touring properties. Understanding which loan programs exist and how their typical requirements compare can help you focus your research on programs that match your financial profile. The tool is also useful when considering different property types or if your employment status has changed since you last explored mortgage options."
+      howItWorks="You provide information about your situation (buying scenario, timeline), finances (income, debts, savings, credit range), target (price range, state), and profile (employment type, property type). The tool references general lending guidelines to show which programs are more commonly associated with profiles like yours. Each loan card displays typical minimum requirements, estimated rate ranges based on credit profile, monthly payment estimates, and mortgage insurance details. The tool also generates a list of common preparation topics with links to relevant guides."
+      mistakes="A common mistake is assuming that a single loan program is the 'best' without comparing alternatives. Each program has trade-offs — lower down payments may come with higher insurance costs, while better rates may require higher credit scores. Another frequent gap is not considering how long you plan to stay in the home when comparing programs. Some programs have lower upfront costs but higher ongoing insurance, making them better suited for longer ownership periods. Finally, remember that the guidelines referenced here are generalizations — individual lenders may offer programs with different parameters."
+      faqs={faqs}
+    />
+
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 sm:p-6 space-y-4">
+      <h2 class="font-display text-sm font-semibold text-text-main">Related Tools</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <a href="/mortgage-readiness-score" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">Mortgage Readiness Score</span>
+            <span class="block text-3xs text-text-muted truncate">Assess your financial readiness</span>
+          </div>
+        </a>
+        <a href="/house-affordability-calculator" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">House Affordability Calculator</span>
+            <span class="block text-3xs text-text-muted truncate">Set a realistic home buying budget</span>
+          </div>
+        </a>
+        <a href="/compare/" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">Comparison Tools</span>
+            <span class="block text-3xs text-text-muted truncate">Compare loan types and strategies</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <Disclaimer />
+  </main>
+
+  <Footer />
+</Layout>

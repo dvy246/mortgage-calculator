@@ -7,88 +7,136 @@ import Footer from '../components/Footer.astro';
 <Layout title="Contact Us - Mortgage Intelligence" description="Get in touch with the Mortgage Intelligence platform for general inquiries, feedback, and support." canonicalUrl="/contact-us">
   <Header activeSlug="contact" />
 
-  <main class="mx-auto max-w-lg px-4 py-16 sm:px-6 lg:px-8 space-y-8 flex-grow">
-    <div class="space-y-3 text-center">
+  <main class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <div class="space-y-4 text-center max-w-2xl mx-auto">
       <span class="text-4xs font-bold uppercase tracking-widest text-brand-accent">Get in Touch</span>
-      <h1 class="font-display text-3xl font-extrabold tracking-tight text-text-main">
+      <h1 class="font-display text-3xl font-extrabold tracking-tight text-text-main sm:text-4xl">
         Contact Us
       </h1>
-      <p class="text-xs text-text-muted">
-        Have feedback about our calculators or want to report an underwriting bug? Let us know.
+      <p class="text-sm text-text-muted leading-relaxed">
+        Have feedback about our calculators, want to report an underwriting bug, or discuss licensing? Our editorial and technical support teams are ready to help.
       </p>
     </div>
 
-    <!-- Contact Form -->
-    <div class="rounded-xl border border-border-subtle bg-bg-card p-6 shadow-xs relative">
-      <form id="contact-form" class="space-y-4 text-xs">
-        <div class="space-y-1">
-          <label for="contact-name" class="block font-medium text-text-muted">Name</label>
-          <input 
-            type="text" 
-            id="contact-name" 
-            placeholder="John Doe" 
-            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-            required
-          />
-        </div>
-
-        <div class="space-y-1">
-          <label for="contact-email" class="block font-medium text-text-muted">Email Address</label>
-          <input 
-            type="email" 
-            id="contact-email" 
-            placeholder="john@example.com" 
-            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-            required
-          />
-        </div>
-
-        <div class="space-y-1">
-          <label for="contact-subject" class="block font-medium text-text-muted">Subject</label>
-          <select 
-            id="contact-subject" 
-            class="h-9 w-full rounded-md border border-border-input bg-bg-input px-2.5 text-text-main focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-            required
-          >
-            <option value="feedback">General Feedback</option>
-            <option value="calculator">Calculator Inaccuracy / Bug</option>
-            <option value="licensing">API / Business Licensing</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div class="space-y-1">
-          <label for="contact-message" class="block font-medium text-text-muted">Message</label>
-          <textarea 
-            id="contact-message" 
-            rows="4" 
-            placeholder="Your message details..." 
-            class="w-full rounded-md border border-border-input bg-bg-input p-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent resize-none"
-            required
-          ></textarea>
-        </div>
-
-        <button 
-          type="submit" 
-          id="contact-submit-btn"
-          class="h-9 w-full rounded-md bg-brand-primary text-xs font-semibold text-bg-card hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer border border-border-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-        >
-          Send Message
-        </button>
-      </form>
-
-      <!-- Success Overlay -->
-      <div id="contact-success" class="hidden flex flex-col items-center justify-center text-center py-12 space-y-3">
-        <div class="h-10 w-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        <div class="space-y-1">
-          <h4 class="font-bold text-xs text-text-main">Message Transmitted</h4>
-          <p class="text-3xs text-text-muted px-4 leading-normal">
-            Thank you for contacting us. We appreciate your feedback and generally respond within 48 business hours.
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      
+      <!-- Contact Info Section -->
+      <div class="space-y-6 text-xs sm:text-sm text-text-muted leading-relaxed">
+        <div class="space-y-3">
+          <h2 class="font-display text-base font-bold text-text-main">Direct Communication</h2>
+          <p>
+            We value structural transparency and user feedback. If you notice any mathematical discrepancies in our calculators or want clarification regarding our methodology assumptions, please contact us directly.
           </p>
+        </div>
+
+        <div class="space-y-4 pt-4 border-t border-border-subtle">
+          <div class="flex items-start gap-3">
+            <svg class="h-5 w-5 text-brand-accent mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <div>
+              <h4 class="font-display font-semibold text-text-main text-xs sm:text-sm">Editorial & General Inquiries</h4>
+              <p class="text-2xs text-text-muted mt-0.5">For general queries, suggestions, or editorial feedback:</p>
+              <a href="mailto:contact@mortgagesintel.com" class="text-xs font-semibold text-brand-accent hover:text-brand-accent-hover block mt-1">contact@mortgagesintel.com</a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3 pt-2">
+            <svg class="h-5 w-5 text-brand-accent mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <div>
+              <h4 class="font-display font-semibold text-text-main text-xs sm:text-sm">Mailing Address & Operations</h4>
+              <p class="text-2xs text-text-muted mt-0.5">Mortgage Intelligence Platform</p>
+              <p class="text-2xs text-text-muted">1209 North Orange Street</p>
+              <p class="text-2xs text-text-muted">Wilmington, DE 19801</p>
+              <p class="text-2xs text-text-muted">United States</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-bg-card rounded-xl border border-border-subtle text-2xs space-y-2 mt-4">
+          <strong class="text-text-main">Privacy Assurance:</strong>
+          <p>
+            Any information submitted via this contact page is used strictly to answer your inquiry. We do not store email submissions in marketing databases, distribute lists, or share your communications with third-party loan brokers.
+          </p>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="rounded-xl border border-border-subtle bg-bg-card p-6 shadow-xs relative">
+        <h3 class="font-display font-bold text-text-main text-sm sm:text-base mb-4">Send a Message</h3>
+        <form id="contact-form" class="space-y-4 text-xs">
+          <div class="space-y-1">
+            <label for="contact-name" class="block font-medium text-text-muted">Name</label>
+            <input 
+              type="text" 
+              id="contact-name" 
+              placeholder="John Doe" 
+              class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              required
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label for="contact-email" class="block font-medium text-text-muted">Email Address</label>
+            <input 
+              type="email" 
+              id="contact-email" 
+              placeholder="john@example.com" 
+              class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              required
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label for="contact-subject" class="block font-medium text-text-muted">Subject</label>
+            <select 
+              id="contact-subject" 
+              class="h-9 w-full rounded-md border border-border-input bg-bg-input px-2.5 text-text-main focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+              required
+            >
+              <option value="feedback">General Feedback</option>
+              <option value="calculator">Calculator Inaccuracy / Bug</option>
+              <option value="licensing">API / Business Licensing</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="space-y-1">
+            <label for="contact-message" class="block font-medium text-text-muted">Message</label>
+            <textarea 
+              id="contact-message" 
+              rows="4" 
+              placeholder="Your message details..." 
+              class="w-full rounded-md border border-border-input bg-bg-input p-3 text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent resize-none"
+              required
+            ></textarea>
+          </div>
+
+          <button 
+            type="submit" 
+            id="contact-submit-btn"
+            class="h-9 w-full rounded-md bg-brand-primary text-xs font-semibold text-bg-card hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer border border-border-subtle focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+          >
+            Send Message
+          </button>
+        </form>
+
+        <!-- Success Overlay -->
+        <div id="contact-success" class="hidden flex flex-col items-center justify-center text-center py-12 space-y-3">
+          <div class="h-10 w-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div class="space-y-1">
+            <h4 class="font-bold text-xs text-text-main">Message Transmitted</h4>
+            <p class="text-3xs text-text-muted px-4 leading-normal">
+              Thank you for contacting us. We appreciate your feedback and generally respond within 48 business hours. If you need immediate assistance, you can also reach us directly at <a href="mailto:contact@mortgagesintel.com" class="text-brand-accent font-semibold hover:underline">contact@mortgagesintel.com</a>.
+            </p>
+          </div>
         </div>
       </div>
     </div>

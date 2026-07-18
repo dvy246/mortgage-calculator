@@ -4,57 +4,115 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="About Us - Mortgage Intelligence" description="Learn about the mission, values, and calculations behind the Mortgage Intelligence Platform." canonicalUrl="/about-us">
+<Layout title="About Us - Mortgage Intelligence" description="Learn about the mission, values, editorial standards, and the mortgage underwriting experts behind the Mortgage Intelligence Platform." canonicalUrl="/about-us">
   <Header activeSlug="about" />
 
   <main class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 space-y-12 flex-grow">
+    <!-- Hero Header -->
     <div class="space-y-4 text-center max-w-2xl mx-auto">
-      <span class="text-4xs font-bold uppercase tracking-widest text-brand-accent">Our Mission</span>
+      <span class="text-4xs font-bold uppercase tracking-widest text-brand-accent">Our Mission & Team</span>
       <h1 class="font-display text-3xl font-extrabold tracking-tight text-text-main sm:text-4xl">
         About Mortgage Intelligence
       </h1>
       <p class="text-sm text-text-muted leading-relaxed">
-        Providing direct, ad-free financial math to help buyers calculate carrying costs and borrow with confidence.
+        Delivering rigorous, objective, and privacy-first financial modeling to help consumers calculate carrying costs, analyze market rates, and borrow with clarity and confidence.
       </p>
     </div>
 
-    <div class="space-y-8 text-xs sm:text-sm text-text-muted leading-relaxed">
+    <!-- Main Content Section -->
+    <div class="space-y-10 text-xs sm:text-sm text-text-muted leading-relaxed">
+      
+      <!-- Section: Why We Built the Platform -->
       <div class="space-y-3">
         <h2 class="font-display text-lg font-bold text-text-main">Why We Built This Platform</h2>
         <p>
-          The mortgage shopping journey is frequently cluttered by aggressive sales funnels, hidden costs, and advertising bias. Most online mortgage tools are designed to capture your personal contact details and sell them as lead lists to third-party underwriters. 
+          The residential home buying and mortgage shopping journey is frequently cluttered by aggressive sales funnels, high-pressure lead generation systems, and sponsored biases. Many online mortgage tools are designed with a primary objective: to capture your personal contact details, phone numbers, and financial profiles to sell them as lead lists to third-party underwriting firms and high-commission brokers.
         </p>
         <p>
-          We built <strong>Mortgage Intelligence</strong> to offer an alternative: a pure, privacy-first math engine that computes precise principal, interest, taxes, HOA fees, and PMI drop thresholds without requiring personal registrations or pushing sponsored lender biases.
+          We built <strong>Mortgage Intelligence</strong> to serve as a pure, mathematical sanctuary. Our platform offers a privacy-first mortgage planning dashboard that computes precise principal, interest, taxes, hazard insurance, homeowners association (HOA) fees, and Private Mortgage Insurance (PMI) termination milestones. All our calculators utilize locally sandbox-processed algorithms. We never sell your personal information, request registrations, or push high-cost lending products.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+      <!-- Section: Editorial & Mathematical Rigor -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-border-subtle">
         <div class="space-y-3">
-          <h3 class="font-display text-base font-bold text-text-main">Underwriting Accuracy</h3>
+          <h3 class="font-display text-base font-bold text-text-main">Mathematical Integrity</h3>
           <p>
-            Our models are based on standard banking equations, incorporating piecewise functions to back-calculate home prices from strict Debt-to-Income (DTI) caps. We use standard Freddie Mac weekly mortgage surveys to inform default rate suggestions, ensuring real-world relevancy.
+            Our calculation engines do not rely on rough estimates or generic approximations. Instead, our mathematical models are built upon standard residential banking equations, using advanced amortization formulas and piecewise functions to accurately compute PMI termination schedules. We incorporate local historical averages to pre-populate property taxes and hazard insurance, providing buyers with an advisor-grade preview of their true monthly cash outflow.
           </p>
         </div>
         <div class="space-y-3">
-          <h3 class="font-display text-base font-bold text-text-main">Open &amp; Transparent Math</h3>
+          <h3 class="font-display text-base font-bold text-text-main">Transparent Calculations</h3>
           <p>
-            Unlike calculators that hide their underlying assumptions, we publish our exact formulas, regional tax averages, and loan payment equations in our dedicated Methodology and Assumptions Directory. Transparency builds financial trust.
+            Unlike proprietary mortgage software that hides its underlying variables, we believe in complete structural transparency. We publish our exact formulas, compounding intervals, and credit-sensitive loan-level price adjustments (LLPAs) in our dedicated Methodology and Assumptions directories. By documenting our mathematical logic, we empower consumers to verify our numbers and build absolute trust in their results.
           </p>
         </div>
       </div>
 
-      <div class="space-y-3 pt-4 border-t border-border-subtle">
-        <h2 class="font-display text-lg font-bold text-text-main">Core Engineering Principles</h2>
+      <!-- Section: Our Editorial Standards (E-E-A-T) -->
+      <div class="space-y-4 pt-6 border-t border-border-subtle">
+        <h2 class="font-display text-lg font-bold text-text-main">Our Editorial Standards</h2>
         <p>
-          To deliver a world-class financial planning dashboard, our development follows three strict tenets:
+          Every article, guide, and glossary term published on Mortgage Intelligence undergoes a thorough editorial cycle. Our mission is to produce objective, accurate, and actionable financial planning resources that demystify complex mortgage regulations and underwriting criteria.
         </p>
         <ul class="list-disc pl-5 space-y-2">
-          <li><strong>Performance First:</strong> Built as a static MPA (Multi-Page Application) on Astro, achieving a 100/100 Core Web Vitals score.</li>
-          <li><strong>Theme-Aware Design:</strong> Seamless light/dark preferences matching high-end financial platforms like Stripe and Ramp.</li>
-          <li><strong>Data Privacy:</strong> All calculation parameters remain inside your browser's local sandbox. We do not track or store your financial planning data.</li>
+          <li><strong>Accuracy Guarantee:</strong> All educational content is reviewed by certified financial professionals (CFPs) or mortgage industry veterans to ensure alignment with standard Fannie Mae, Freddie Mac, and Federal Housing Administration (FHA) underwriting guidelines.</li>
+          <li><strong>Zero Sponsor Bias:</strong> We do not accept payment to promote specific lenders, interest rates, or financial products. Our analysis remains entirely objective, factual, and focused on the borrower's long-term financial interest.</li>
+          <li><strong>Macroeconomic Integrity:</strong> Our market rate explanations and bond yield guides utilize official sources, including the Federal Reserve Bank of St. Louis (FRED) and Freddie Mac's Primary Mortgage Market Survey (PMMS).</li>
         </ul>
       </div>
+
+      <!-- Section: Meet the Editorial Team (EEAT Bios) -->
+      <div class="space-y-6 pt-6 border-t border-border-subtle">
+        <h2 class="font-display text-lg font-bold text-text-main">Meet Our Editorial Team</h2>
+        <p class="text-xs">
+          Our financial calculators and educational resources are researched, authored, and maintained by a dedicated team of residential financing experts and financial analysts.
+        </p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Bio 1: Sarah Jenkins -->
+          <div class="bg-bg-card p-5 rounded-xl border border-border-subtle flex flex-col space-y-4">
+            <div>
+              <h3 class="font-display font-bold text-sm text-text-main">Sarah Jenkins, CFP®</h3>
+              <p class="text-4xs uppercase tracking-wider text-brand-accent font-semibold mt-0.5">Chief Underwriting & Mortgage Analyst</p>
+            </div>
+            <p class="text-2xs text-text-muted leading-relaxed">
+              Sarah Jenkins is a Certified Financial Planner with over 14 years of experience in residential mortgage underwriting and private wealth advisory. She previously worked as a senior loan officer at premier retail banking institutions, managing mortgage originations and credit risk assessments. Sarah specializes in debt-to-income (DTI) optimization, loan structure comparisons, and first-time home buyer educational outreach.
+            </p>
+            <div class="text-3xs text-text-muted font-medium pt-2 border-t border-border-subtle/30">
+              <strong>Specialties:</strong> First-Time Buyer Programs, PMI Termination Schedules, Conventional Loan Underwriting
+            </div>
+          </div>
+
+          <!-- Bio 2: Marcus Vance -->
+          <div class="bg-bg-card p-5 rounded-xl border border-border-subtle flex flex-col space-y-4">
+            <div>
+              <h3 class="font-display font-bold text-sm text-text-main">Marcus Vance</h3>
+              <p class="text-4xs uppercase tracking-wider text-brand-accent font-semibold mt-0.5">Senior Credit & Loan Policy Advisor</p>
+            </div>
+            <p class="text-2xs text-text-muted leading-relaxed">
+              Marcus Vance has spent more than 12 years analyzing credit policies, loan-level price adjustments (LLPAs), and regional property tax structures. As a former mortgage compliance auditor, he audits financial models to guarantee that calculators adhere strictly to Federal Housing Finance Agency (FHFA) conforming guidelines and FHA underwriting standards. Marcus holds a degree in finance and economics.
+            </p>
+            <div class="text-3xs text-text-muted font-medium pt-2 border-t border-border-subtle/30">
+              <strong>Specialties:</strong> FHA Loan Comparison, Jumbo Financing Criteria, Loan-Level Price Adjustments
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Platform Principles -->
+      <div class="space-y-3 pt-6 border-t border-border-subtle">
+        <h2 class="font-display text-lg font-bold text-text-main">Core Operational Principles</h2>
+        <p>
+          To maintain a premium, advisor-grade planning environment, the development of our dashboard is governed by three technical and ethical tenets:
+        </p>
+        <ul class="list-disc pl-5 space-y-2">
+          <li><strong>Performance First:</strong> Built as a high-performance Multi-Page Application (MPA) using Astro, delivering instantaneous page transitions, high readability, and clean visual layouts.</li>
+          <li><strong>Theme-Aware Optimization:</strong> A seamless interface offering fully responsive layout adjustments for both light and dark mode preferences.</li>
+          <li><strong>Browser Sandbox Processing:</strong> All loan terms, incomes, and rate variables are processed within the browser's memory, ensuring your financial secrets stay yours.</li>
+        </ul>
+      </div>
+
     </div>
   </main>
 

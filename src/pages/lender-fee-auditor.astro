@@ -1,0 +1,596 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// YMYL Disclaimers and FAQs for SEO and User Safety
+const faqs = [
+  {
+    question: "What is a mortgage 'junk fee'?",
+    answer: "A junk fee is an inflated or unnecessary fee charged by a lender at closing. These often include document preparation fees, application fees, or separate processing and underwriting charges. While underwriters do perform work, charging both underwriting and processing fees is often double-charging for administrative tasks, and these fees can frequently be matched, reduced, or waived."
+  },
+  {
+    question: "Which closing costs are legally locked?",
+    answer: "Under the CFPB's TRID rules, Lender Origination Charges (Section A) and Transfer Taxes have a 0% tolerance. This means once a lender issues a Loan Estimate, they cannot increase these fees at closing unless there is a valid 'changed circumstance' (e.g., loan program change or appraisal mismatch). However, you can negotiate them *before* locking in your loan."
+  },
+  {
+    question: "How do I shop for Title Insurance?",
+    answer: "Section C of your Loan Estimate lists 'Services You Can Shop For'. You do not have to use the title insurance company your lender lists. Shopping around can save you hundreds of dollars. You can get quotes from independent title companies and submit your choice to the lender."
+  }
+];
+---
+
+<Layout 
+  title="Lender Loan Estimate Auditor & Fee Negotiator"
+  description="Audit your mortgage Loan Estimate (LE) Page 2 fees. Uncover hidden lender junk fees, compare closing costs to regional benchmarks, and generate a customized fee negotiation script."
+  canonicalUrl="/lender-fee-auditor"
+>
+  <Header activeSlug="lender-auditor" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-4">
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl lg:text-4xl tracking-tight">
+        Lender Loan Estimate Auditor <span class="text-brand-accent">& Fee Negotiator</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-text-muted max-w-3xl leading-relaxed">
+        Lenders frequently bundle unnecessary administrative fees into your mortgage closing costs. This tool compares your Loan Estimate (LE) line items against state-level averages, calculates legal CFPB tolerances, and writes your negotiation emails.
+      </p>
+    </div>
+
+    <!-- AdSense Notice and Safety Banner -->
+    <div class="rounded-xl border border-warning/30 bg-warning/5 p-4 text-xs text-text-muted space-y-2 leading-relaxed">
+      <div class="flex items-center gap-2 font-bold text-warning">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span>Consumer Advisory & Disclaimer</span>
+      </div>
+      <p>
+        <strong>Disclaimer:</strong> This application is for educational and illustrative purposes only. All benchmark estimates are based on industry surveys and average cost disclosures. This tool does not constitute legal representation, formal lending approval, or official financial advice. We encourage users to verify all fees with their licensed mortgage loan officer or independent real estate attorney. All calculations are executed securely within your browser; no personal financial documents are uploaded or stored.
+      </p>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT: Inputs (LE replica form) (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Regional Settings Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main flex items-center gap-2">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary text-bg-main text-3xs font-bold">1</span>
+            Select Your Location & Loan Info
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label for="state-select" class="text-xs font-semibold text-text-muted">US State (for fee benchmarks)</label>
+              <select 
+                id="state-select" 
+                class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-xs text-text-main font-semibold focus:border-border-focus focus:outline-none cursor-pointer"
+              >
+                <option value="CA">California</option>
+                <option value="TX">Texas</option>
+                <option value="NY">New York</option>
+                <option value="FL">Florida</option>
+                <option value="IL">Illinois</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="OH">Ohio</option>
+                <option value="GA">Georgia</option>
+                <option value="NC">North Carolina</option>
+                <option value="MI">Michigan</option>
+                <option value="OTHER" selected>Other / National Average</option>
+              </select>
+            </div>
+            <div class="space-y-1.5">
+              <label for="loan-amount-input" class="text-xs font-semibold text-text-muted">Expected Loan Amount</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-xs font-bold text-text-muted">$</span>
+                <input 
+                  type="number" 
+                  id="loan-amount-input" 
+                  value="350000" 
+                  step="5000"
+                  class="h-9 w-full rounded-md border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:border-border-focus focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section A: Origination Charges -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <div class="flex justify-between items-center border-b border-border-subtle pb-3">
+            <h2 class="font-display text-sm font-semibold text-text-main flex items-center gap-2">
+              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary text-bg-main text-3xs font-bold">2</span>
+              A. Origination Charges (0% Tolerance)
+            </h2>
+            <span class="px-2 py-0.5 rounded text-4xs font-bold bg-rose-500/10 text-rose-500 border border-rose-500/20">Lender Fees</span>
+          </div>
+
+          <p class="text-3xs text-text-muted leading-relaxed">
+            These are administrative fees charged by the lender to set up the loan. They are fully locked once the final Loan Estimate is issued. Look for double charges (e.g. charging both processing AND underwriting).
+          </p>
+
+          <div class="space-y-4">
+            <!-- Underwriting Fee -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border-subtle pb-3">
+              <div class="space-y-0.5">
+                <label for="underwriting-input" class="text-xs font-bold text-text-main block">Underwriting Fee</label>
+                <span class="text-3xs text-text-muted block">National Benchmark: <strong class="text-text-main font-tabular">$950</strong></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="absolute left-2.5 top-1.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="underwriting-input" value="1250" class="fee-input h-8 w-28 rounded border border-border-input bg-bg-input pl-5 pr-2 text-xs font-tabular text-text-main focus:outline-none" />
+                </div>
+                <span class="audit-badge px-2 py-0.5 rounded text-4xs font-bold hidden"></span>
+              </div>
+            </div>
+
+            <!-- Processing Fee -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border-subtle pb-3">
+              <div class="space-y-0.5">
+                <label for="processing-input" class="text-xs font-bold text-text-main block">Processing Fee</label>
+                <span class="text-3xs text-text-muted block">National Benchmark: <strong class="text-text-main font-tabular">$750</strong></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="absolute left-2.5 top-1.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="processing-input" value="950" class="fee-input h-8 w-28 rounded border border-border-input bg-bg-input pl-5 pr-2 text-xs font-tabular text-text-main focus:outline-none" />
+                </div>
+                <span class="audit-badge px-2 py-0.5 rounded text-4xs font-bold hidden"></span>
+              </div>
+            </div>
+
+            <!-- Application/Commitment Fee -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border-subtle pb-3">
+              <div class="space-y-0.5">
+                <label for="application-input" class="text-xs font-bold text-text-main block">Application or Commitment Fee</label>
+                <span class="text-3xs text-text-muted block">National Benchmark: <strong class="text-text-main font-tabular">$0</strong> (Often Waived)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="absolute left-2.5 top-1.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="application-input" value="350" class="fee-input h-8 w-28 rounded border border-border-input bg-bg-input pl-5 pr-2 text-xs font-tabular text-text-main focus:outline-none" />
+                </div>
+                <span class="audit-badge px-2 py-0.5 rounded text-4xs font-bold hidden"></span>
+              </div>
+            </div>
+            
+            <!-- Loan Discount Points -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="space-y-0.5">
+                <label for="points-input" class="text-xs font-bold text-text-main block">Discount Points Paid (to buy down interest rate)</label>
+                <span class="text-3xs text-text-muted block">Ensure your interest rate is lower if discount points are charged.</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="absolute left-2.5 top-1.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="points-input" value="0" class="fee-input h-8 w-28 rounded border border-border-input bg-bg-input pl-5 pr-2 text-xs font-tabular text-text-main focus:outline-none" />
+                </div>
+                <span class="audit-badge px-2 py-0.5 rounded text-4xs font-bold hidden"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section B: Services You Cannot Shop For (10% Tolerance limit) -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <div class="flex justify-between items-center border-b border-border-subtle pb-3">
+            <h2 class="font-display text-sm font-semibold text-text-main flex items-center gap-2">
+              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary text-bg-main text-3xs font-bold">3</span>
+              B. Services You Cannot Shop For (10% Tolerance)
+            </h2>
+            <span class="px-2 py-0.5 rounded text-4xs font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">Lender-Selected</span>
+          </div>
+
+          <p class="text-3xs text-text-muted leading-relaxed">
+            These are services required by the lender that you must use their selected provider for. These fees are legally protected under a cumulative 10% limit—the actual cost at closing cannot exceed the Loan Estimate by more than 10%.
+          </p>
+
+          <div class="space-y-4">
+            <!-- Appraisal Fee -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border-subtle pb-3">
+              <div class="space-y-0.5">
+                <label for="appraisal-input" class="text-xs font-bold text-text-main block">Home Appraisal Fee</label>
+                <span class="text-3xs text-text-muted block">National Benchmark: <strong class="text-text-main font-tabular">$550</strong></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="absolute left-2.5 top-1.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="appraisal-input" value="650" class="fee-input h-8 w-28 rounded border border-border-input bg-bg-input pl-5 pr-2 text-xs font-tabular text-text-main focus:outline-none" />
+                </div>
+                <span class="audit-badge px-2 py-0.5 rounded text-4xs font-bold hidden"></span>
+              </div>
+            </div>
+
+            <!-- Credit Report Fee -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="space-y-0.5">
+                <label for="credit-input" class="text-xs font-bold text-text-main block">Credit Report Fee</label>
+                <span class="text-3xs text-text-muted block">National Benchmark: <strong class="text-text-main font-tabular">$35 - $75</strong> (Tri-Merge Report)</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="absolute left-2.5 top-1.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="credit-input" value="125" class="fee-input h-8 w-28 rounded border border-border-input bg-bg-input pl-5 pr-2 text-xs font-tabular text-text-main focus:outline-none" />
+                </div>
+                <span class="audit-badge px-2 py-0.5 rounded text-4xs font-bold hidden"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section C: Services You Can Shop For (No Limit / Negotiable) -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <div class="flex justify-between items-center border-b border-border-subtle pb-3">
+            <h2 class="font-display text-sm font-semibold text-text-main flex items-center gap-2">
+              <span class="flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary text-bg-main text-3xs font-bold">4</span>
+              C. Services You Can Shop For (Negotiable)
+            </h2>
+            <span class="px-2 py-0.5 rounded text-4xs font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Shoppable</span>
+          </div>
+
+          <p class="text-3xs text-text-muted leading-relaxed">
+            These are services you are allowed to shop for. If you select your own providers, there are no legal tolerance limits, but you can save thousands of dollars by getting quotes from competing title companies.
+          </p>
+
+          <div class="space-y-4">
+            <!-- Lender Title Policy -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border-subtle pb-3">
+              <div class="space-y-0.5">
+                <label for="title-lender-input" class="text-xs font-bold text-text-main block">Lender's Title Insurance Policy</label>
+                <span class="text-3xs text-text-muted block">State Average Title Cost: <strong class="text-text-main font-tabular" id="title-lender-benchmark">$900</strong></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="absolute left-2.5 top-1.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="title-lender-input" value="1350" class="fee-input h-8 w-28 rounded border border-border-input bg-bg-input pl-5 pr-2 text-xs font-tabular text-text-main focus:outline-none" />
+                </div>
+                <span class="audit-badge px-2 py-0.5 rounded text-4xs font-bold hidden"></span>
+              </div>
+            </div>
+
+            <!-- Settlement / Escrow Agent Fee -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div class="space-y-0.5">
+                <label for="escrow-input" class="text-xs font-bold text-text-main block">Settlement / Closing Escrow Fee</label>
+                <span class="text-3xs text-text-muted block">State Average Escrow Cost: <strong class="text-text-main font-tabular" id="escrow-benchmark">$600</strong></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="absolute left-2.5 top-1.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="escrow-input" value="950" class="fee-input h-8 w-28 rounded border border-border-input bg-bg-input pl-5 pr-2 text-xs font-tabular text-text-main focus:outline-none" />
+                </div>
+                <span class="audit-badge px-2 py-0.5 rounded text-4xs font-bold hidden"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Auditor Scorecard & Script (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-20">
+        
+        <!-- Scorecard Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-6 shadow-md">
+          <h2 class="font-display text-sm font-semibold text-text-main border-b border-border-subtle pb-2">Junk Fee Scorecard</h2>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-bg-main p-3.5 rounded-lg border border-border-subtle">
+              <span class="text-4xs text-text-muted font-bold uppercase tracking-wider block">Audited Junk Fees</span>
+              <span class="text-xl font-extrabold text-text-main font-tabular block" id="scorecard-total-audited">$0</span>
+            </div>
+            <div class="bg-bg-main p-3.5 rounded-lg border border-border-subtle" id="savings-card">
+              <span class="text-4xs text-text-muted font-bold uppercase tracking-wider block">Potential Savings</span>
+              <span class="text-xl font-extrabold text-emerald-500 font-tabular block" id="scorecard-potential-savings">$0</span>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-text-muted">CFPB Regulatory Risk Status:</span>
+              <span id="regulatory-badge" class="px-2 py-0.5 rounded text-4xs font-extrabold"></span>
+            </div>
+            <div id="risk-description" class="text-3xs text-text-muted leading-relaxed bg-bg-main p-3 rounded-lg border border-border-subtle">
+              Reviewing your Loan Estimate input metrics...
+            </div>
+          </div>
+
+          <!-- High-Ticket Affiliate CTA -->
+          <div class="border-t border-border-subtle pt-4 space-y-3">
+            <div class="text-3xs text-text-muted font-semibold leading-relaxed">
+              * Lender rates or closing costs too high? Compare clean quotes in 2 minutes without impacting credit.
+            </div>
+            <a 
+              href="https://www.credible.com/mortgage" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-full inline-flex h-9 items-center justify-center rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs shadow-sm hover:shadow transition-all text-center"
+            >
+              Get Competing Mortgage Quotes (Credible)
+            </a>
+          </div>
+        </div>
+
+        <!-- Script Generator Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main flex items-center justify-between border-b border-border-subtle pb-2">
+            <span>Email Negotiation Script</span>
+            <button 
+              id="copy-script-btn" 
+              class="text-4xs font-bold text-brand-accent hover:text-brand-accent-hover focus:outline-none transition-colors border border-brand-accent/20 px-2 py-0.5 rounded bg-brand-accent/5 hover:bg-brand-accent/10 cursor-pointer"
+            >
+              Copy Script
+            </button>
+          </h2>
+
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Copy and send this email to your Loan Officer. Lenders have the authority to waive origination fees to secure your business, especially if you show competing offers.
+          </p>
+
+          <div class="bg-bg-input rounded-lg border border-border-subtle p-3 font-mono text-4xs text-text-main whitespace-pre-wrap leading-relaxed max-h-72 overflow-y-auto cursor-text select-all" id="script-container">
+            Loading script templates...
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Educational Guide Content (For SEO Defensibility) -->
+    <div class="border-t border-border-subtle pt-10 space-y-6">
+      <h2 class="font-display text-lg font-bold text-text-main sm:text-xl">
+        Consumer Guide: How to Negotiate Closing Fees and Identify Inflated Charges
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs sm:text-sm text-text-muted leading-relaxed">
+        <div class="space-y-4">
+          <h3 class="font-display font-semibold text-text-main">1. Origination Charges (Section A)</h3>
+          <p>
+            This section represents what the lender charges to package and process your mortgage. Underwriting and Processing fees are administrative costs that cover back-end logistics. However, many lenders double-charge by assessing separate charges for both. If a lender charges an Application fee, Underwriting fee, and Processing fee, ask them to waive the Application fee and combine or reduce the processing costs.
+          </p>
+          <h3 class="font-display font-semibold text-text-main">2. Services You Can Shop For (Section C)</h3>
+          <p>
+            Lender Title Policy and Escrow settlement services represent a significant percentage of your upfront cash closing requirements. Lenders provide an official list of title providers, but you can choose any state-licensed provider. Compare the fees on your LE with local independent title firms. You could save $500–$1,500 simply by switching providers.
+          </p>
+        </div>
+        <div class="space-y-4">
+          <h3 class="font-display font-semibold text-text-main">3. Understanding Legal Tolerance Limits</h3>
+          <p>
+            The CFPB mandates strict legal boundaries for fee increases between the Loan Estimate (LE) and the Closing Disclosure (CD):
+          </p>
+          <ul class="list-disc list-inside pl-2 space-y-1">
+            <li><strong>0% Tolerance:</strong> Origination charges and transfer taxes. These cannot increase by even $1 unless you request a structural change to the mortgage parameters.</li>
+            <li><strong>10% Tolerance:</strong> Third-party services selected from the lender's recommended provider list. The cumulative total of these fees cannot rise by more than 10%.</li>
+            <li><strong>No Tolerance:</strong> Prepaids, property taxes, homeowner's insurance, and third-party services you shopped for independently.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Accordion -->
+    <div class="border-t border-border-subtle pt-10 space-y-6">
+      <h2 class="font-display text-lg font-bold text-text-main sm:text-xl">Frequently Asked Questions</h2>
+      <dl class="space-y-6 max-w-4xl">
+        {faqs.map(faq => (
+          <div class="space-y-2">
+            <dt class="font-display text-sm font-semibold text-text-main">{faq.question}</dt>
+            <dd class="text-xs sm:text-sm text-text-muted leading-relaxed">{faq.answer}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  // State specific benchmarks database
+  const stateBenchmarks = {
+    CA: { title: 980, escrow: 650, app: 0 },
+    TX: { title: 1120, escrow: 590, app: 0 },
+    NY: { title: 1250, escrow: 720, app: 0 },
+    FL: { title: 890, escrow: 450, app: 0 },
+    IL: { title: 950, escrow: 600, app: 0 },
+    PA: { title: 920, escrow: 550, app: 0 },
+    OH: { title: 820, escrow: 480, app: 0 },
+    GA: { title: 880, escrow: 520, app: 0 },
+    NC: { title: 780, escrow: 500, app: 0 },
+    MI: { title: 850, escrow: 510, app: 0 },
+    OTHER: { title: 900, escrow: 550, app: 0 }
+  };
+
+  const nationalBenchmarks = {
+    underwriting: 950,
+    processing: 750,
+    application: 0,
+    points: 0,
+    appraisal: 550,
+    credit: 45
+  };
+
+  // DOM Elements
+  const stateSelect = document.getElementById('state-select') as HTMLSelectElement;
+  const loanAmountInput = document.getElementById('loan-amount-input') as HTMLInputElement;
+  const underwritingInput = document.getElementById('underwriting-input') as HTMLInputElement;
+  const processingInput = document.getElementById('processing-input') as HTMLInputElement;
+  const applicationInput = document.getElementById('application-input') as HTMLInputElement;
+  const pointsInput = document.getElementById('points-input') as HTMLInputElement;
+  const appraisalInput = document.getElementById('appraisal-input') as HTMLInputElement;
+  const creditInput = document.getElementById('credit-input') as HTMLInputElement;
+  const titleLenderInput = document.getElementById('title-lender-input') as HTMLInputElement;
+  const escrowInput = document.getElementById('escrow-input') as HTMLInputElement;
+
+  const totalAuditedEl = document.getElementById('scorecard-total-audited');
+  const potentialSavingsEl = document.getElementById('scorecard-potential-savings');
+  const savingsCard = document.getElementById('savings-card');
+  const regulatoryBadge = document.getElementById('regulatory-badge');
+  const riskDescription = document.getElementById('risk-description');
+  const scriptContainer = document.getElementById('script-container');
+  const copyScriptBtn = document.getElementById('copy-script-btn');
+
+  const benchmarkTitleVal = document.getElementById('title-lender-benchmark');
+  const benchmarkEscrowVal = document.getElementById('escrow-benchmark');
+
+  function calculateAudit() {
+    const state = stateSelect.value;
+    const loanAmount = parseFloat(loanAmountInput.value) || 0;
+    
+    // Get state title insurance and settlement benchmarks
+    const stateData = stateBenchmarks[state] || stateBenchmarks['OTHER'];
+    
+    // Update displayed benchmarks in form label
+    if (benchmarkTitleVal) benchmarkTitleVal.textContent = `$${stateData.title}`;
+    if (benchmarkEscrowVal) benchmarkEscrowVal.textContent = `$${stateData.escrow}`;
+
+    // Get current user inputs
+    const underwriting = parseFloat(underwritingInput.value) || 0;
+    const processing = parseFloat(processingInput.value) || 0;
+    const application = parseFloat(applicationInput.value) || 0;
+    const points = parseFloat(pointsInput.value) || 0;
+    const appraisal = parseFloat(appraisalInput.value) || 0;
+    const credit = parseFloat(creditInput.value) || 0;
+    const titleLender = parseFloat(titleLenderInput.value) || 0;
+    const escrow = parseFloat(escrowInput.value) || 0;
+
+    const inputs = [
+      { el: underwritingInput, val: underwriting, bench: nationalBenchmarks.underwriting, label: 'Underwriting' },
+      { el: processingInput, val: processing, bench: nationalBenchmarks.processing, label: 'Processing' },
+      { el: applicationInput, val: application, bench: stateData.app, label: 'Application' },
+      { el: appraisalInput, val: appraisal, bench: nationalBenchmarks.appraisal, label: 'Appraisal' },
+      { el: creditInput, val: credit, bench: nationalBenchmarks.credit, label: 'Credit Report' },
+      { el: titleLenderInput, val: titleLender, bench: stateData.title, label: 'Lender Title Policy' },
+      { el: escrowInput, val: escrow, bench: stateData.escrow, label: 'Settlement Escrow' }
+    ];
+
+    let totalJunkFees = 0;
+    let totalPotentialSavings = 0;
+    let flaggedItems = [];
+
+    inputs.forEach(item => {
+      const badge = item.el.parentElement.nextElementSibling as HTMLSpanElement;
+      const difference = item.val - item.bench;
+      totalJunkFees += item.val;
+
+      if (badge) {
+        if (difference > 0) {
+          totalPotentialSavings += difference;
+          flaggedItems.push({ label: item.label, overcharge: difference, actual: item.val, expected: item.bench });
+          
+          badge.textContent = `+$${Math.round(difference)} Over`;
+          badge.className = "audit-badge px-2 py-0.5 rounded text-4xs font-bold bg-danger/10 text-danger border border-danger/20 block";
+        } else {
+          badge.textContent = "Fair Rate";
+          badge.className = "audit-badge px-2 py-0.5 rounded text-4xs font-bold bg-success/10 text-success border border-success/20 block";
+        }
+      }
+    });
+
+    // Update Scorecard Values
+    if (totalAuditedEl) totalAuditedEl.textContent = `$${Math.round(totalJunkFees).toLocaleString()}`;
+    if (potentialSavingsEl) potentialSavingsEl.textContent = `$${Math.round(totalPotentialSavings).toLocaleString()}`;
+
+    if (savingsCard) {
+      if (totalPotentialSavings > 0) {
+        savingsCard.className = "bg-danger/5 p-3.5 rounded-lg border border-danger/30 transition-all";
+        if (potentialSavingsEl) potentialSavingsEl.className = "text-xl font-extrabold text-danger font-tabular block animate-pulse";
+      } else {
+        savingsCard.className = "bg-success/5 p-3.5 rounded-lg border border-success/30 transition-all";
+        if (potentialSavingsEl) potentialSavingsEl.className = "text-xl font-extrabold text-success font-tabular block";
+      }
+    }
+
+    // Regulatory Status Update (YMYL Security)
+    if (regulatoryBadge && riskDescription) {
+      if (totalPotentialSavings > 800) {
+        regulatoryBadge.textContent = "HIGH OVERCHARGES";
+        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-danger text-white border border-danger";
+        riskDescription.innerHTML = `⚠️ Your lender is charging <strong>$${Math.round(totalPotentialSavings)}</strong> above average closing cost benchmarks in your state. Multiple origination and settlement line items are flagged as inflated. We recommend requesting a waiver of administrative charges.`;
+      } else if (totalPotentialSavings > 200) {
+        regulatoryBadge.textContent = "MODERATE OVERCHARGES";
+        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-warning text-white border border-warning";
+        riskDescription.innerHTML = `👉 Your closing cost details show moderate markup of <strong>$${Math.round(totalPotentialSavings)}</strong>. Some administration or settlement items can be optimized. See the negotiation email below to request adjustments.`;
+      } else {
+        regulatoryBadge.textContent = "OPTIMIZED ESTIMATE";
+        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-success text-white border border-success";
+        riskDescription.innerHTML = `✅ Congratulations! Your Loan Estimate fees match or fall below our target regional benchmarks. This represents an optimized financial structure. Proceed with rate lock options.`;
+      }
+    }
+
+    // Generate Negotiation Script
+    updateNegotiationScript(flaggedItems, totalPotentialSavings);
+  }
+
+  function updateNegotiationScript(flaggedItems: { label: string; overcharge: number; actual: number; expected: number }[], totalSavings: number) {
+    if (!scriptContainer) return;
+
+    if (totalSavings === 0) {
+      scriptContainer.textContent = `Subject: Mortgage Closing Cost Clarification\n\nDear [Loan Officer Name],\n\nI have reviewed the Loan Estimate dated [Date] for our mortgage application. I notice that all administrative and closing fees are in alignment with the industry standard benchmarks.\n\nCould you please let me know if there are any promotional waivers or rate incentives available for locking in our loan today?\n\nThank you,\n[Your Name]`;
+      return;
+    }
+
+    let itemsDetails = "";
+    flaggedItems.forEach(item => {
+      itemsDetails += `- **${item.label}**: Currently quoted at $${item.actual}, while the regional benchmark average is $${item.expected} (a difference of $${Math.round(item.overcharge)}).\n`;
+    });
+
+    scriptContainer.innerHTML = `Subject: Clarification on Loan Estimate Fees - Loan # [Loan Number]
+
+Dear [Loan Officer Name],
+
+Thank you for providing the Loan Estimate for our home purchase application. I am reviewing the closing fee outline and noticed a few administrative line items that appear to be significantly above regional benchmarks. 
+
+I would appreciate it if we could discuss the following items listed on Page 2:
+
+${itemsDetails}
+Specifically, since the Underwriting and Processing fees are administrative overhead charges, I would like to request that we combine these into a single processing fee of $${nationalBenchmarks.processing} or waive the application fee. 
+
+Furthermore, I plan to seek independent quotes for the Title and Escrow fees (Section C) to see if we can locate a more cost-effective settlement provider, unless your team is able to match those local benchmarks.
+
+I would love to lock in our loan and move forward with your company. Can we modify these origination charges to make the loan estimates more competitive?
+
+Sincerely,
+
+[Your Name]
+[Your Phone Number]`;
+  }
+
+  // Bind change listeners to all elements
+  stateSelect.addEventListener('change', calculateAudit);
+  loanAmountInput.addEventListener('input', calculateAudit);
+  
+  const inputs = [
+    underwritingInput, processingInput, applicationInput, pointsInput,
+    appraisalInput, creditInput, titleLenderInput, escrowInput
+  ];
+  
+  inputs.forEach(input => {
+    if (input) {
+      input.addEventListener('input', calculateAudit);
+    }
+  });
+
+  // Copy Script Action
+  if (copyScriptBtn && scriptContainer) {
+    copyScriptBtn.addEventListener('click', () => {
+      const text = scriptContainer.textContent || "";
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = copyScriptBtn.textContent;
+        copyScriptBtn.textContent = "Copied!";
+        copyScriptBtn.classList.replace('text-brand-accent', 'text-success');
+        setTimeout(() => {
+          copyScriptBtn.textContent = originalText;
+          copyScriptBtn.classList.replace('text-success', 'text-brand-accent');
+        }, 1500);
+      });
+    });
+  }
+
+  // Run initial calculation
+  calculateAudit();
+</script>

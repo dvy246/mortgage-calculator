@@ -2,6 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import AuthorBio from '../../components/AuthorBio.astro';
+import { guidesDatabase } from '../../data/guides';
 
 export async function getStaticPaths() {
   return [
@@ -35,540 +37,21 @@ interface Props {
 const { guideKey } = Astro.props;
 const { slug } = Astro.params;
 
-interface GuideData {
-  title: string;
-  description: string;
-  category: string;
-  lastUpdated: string;
-  ctaText: string;
-  ctaHref: string;
-  sections: { heading: string; content: string }[];
+const guide = guidesDatabase[guideKey];
+
+if (!guide) {
+  return Astro.redirect('/404');
 }
 
-const guidesDatabase: Record<string, GuideData> = {
-  "first-time": {
-    title: "First-Time Home Buyer Guide",
-    description: "Navigate credit checks, down payments, and debt requirements to buy your first home.",
-    category: "Home Buying",
-    lastUpdated: "June 2026",
-    ctaText: "Check What You Can Afford",
-    ctaHref: "/house-affordability-calculator",
-    sections: [
-      {
-        heading: "1. Credit Score Preparation & Tier Limits",
-        content: "Your credit score is the single most important factor determining your interest rate. Lenders generally require a minimum score of 580 for FHA loans and 620 for conventional loans. Scores above 740 receive the premier interest rate adjustments, saving you thousands over the loan duration. Underwriters evaluate your credit report for loan-level price adjustments (LLPAs). Paying down credit card balances below 30% utilization at least three months prior to loan application is recommended to secure the best rates."
-      },
-      {
-        heading: "2. The True Down Payment Minimums",
-        content: "While 20% down eliminates private mortgage insurance (PMI), you do not need that much to purchase a home. Conventional loans allow down payments as low as 3% for qualified first-time buyers through programs like Fannie Mae HomeReady and Freddie Mac Home Possible. FHA loans require 3.5%, while VA and USDA loans offer 0% down options for military personnel and rural properties. Be sure to calculate how lower down payments increase your monthly principal and interest charges."
-      },
-      {
-        heading: "3. Understanding DTI Limits",
-        content: "Underwriters calculate your Debt-to-Income (DTI) ratio to gauge risk. Your housing expenses should not exceed 28% of gross monthly income, and total debt payments (including car loans, student loans, and credit cards) should not exceed 36%. Keeping your debts low prior to application increases purchasing leverage. If your ratios exceed these limits, you may require a larger down payment or a co-signer to qualify."
-      },
-      {
-        heading: "4. Closing Reserves and Post-Closing Liquidity",
-        content: "Beyond the down payment, first-time buyers must budget for closing fees (usually 2% to 5% of purchase price) and maintain post-closing cash reserves. Lenders typically verify that you have two to six months of mortgage payments in liquid accounts after closing to buffer against employment disruption."
-      }
-    ]
-  },
-  "pmi-removal": {
-    title: "Private Mortgage Insurance (PMI) Removal Guide",
-    description: "Learn when and how to request PMI removal to save hundreds of dollars every month.",
-    category: "Mortgage Management",
-    lastUpdated: "June 2026",
-    ctaText: "Calculate Your PMI Cancellation Date",
-    ctaHref: "/mortgage-calculator-with-pmi",
-    sections: [
-      {
-        heading: "1. The Homeowners Protection Act of 1998",
-        content: "Federal law mandates that lenders automatically cancel PMI on conventional loans once your principal balance is scheduled to reach 78% of the original purchase value of the home, provided your payments are current. The termination date is based on the original amortization schedule, regardless of whether your property value has increased."
-      },
-      {
-        heading: "2. Requesting PMI Cancellation at 80% LTV",
-        content: "You do not have to wait for the automatic 78% threshold. Once your balance reaches 80% of the original home price, you can submit a written request to your lender to cancel PMI. You must have a good payment history (no payments 30 days late within the last year) and no second liens on the property."
-      },
-      {
-        heading: "3. Re-appraising due to Home Appreciation",
-        content: "If property values in your neighborhood have risen significantly, your current loan-to-value ratio might already be below 80% even if you haven't paid down the principal. You can contact your lender to request a new appraisal. If the appraisal confirms LTV is below 80% (or 75% if you've owned the home for less than five years), PMI can be legally removed early."
-      },
-      {
-        heading: "4. Refinancing to Eliminate PMI",
-        content: "If you have a high interest rate, refinancing into a new conventional mortgage with a balance below 80% LTV can remove PMI while simultaneously lowering your interest rate. Model this transition using our refinance break-even engine to check if closing costs offset the monthly insurance savings."
-      }
-    ]
-  },
-  "fha-vs-conv": {
-    title: "FHA vs. Conventional Mortgage Loans",
-    description: "Understand the core differences in guidelines, rates, and mortgage insurance.",
-    category: "Loan Comparison",
-    lastUpdated: "June 2026",
-    ctaText: "Model Principal Amortization",
-    ctaHref: "/mortgage-payoff-calculator",
-    sections: [
-      {
-        heading: "1. Qualification Guidelines and Credit Limits",
-        content: "FHA loans are backed by the Federal Housing Administration and are designed for borrowers with lower credit scores or smaller down payments. Conventional loans are not government-insured and carry stricter credit guidelines but offer more flexibility once equity is established. FHA allows scores down to 500 with 10% down, and 580 with 3.5% down."
-      },
-      {
-        heading: "2. Mortgage Insurance Structural Differences",
-        content: "Conventional loans charge PMI if down payment is under 20%, which can be cancelled once LTV drops to 80%. FHA loans charge both an upfront MIP fee (1.75% of the loan amount) and an annual MIP fee (typically 0.85%) that lasts for the entire loan life if your down payment was less than 10%, requiring a future refinance to remove it."
-      },
-      {
-        heading: "3. Loan Limits and Property Standards",
-        content: "Conventional loans adhere to loan limits set by Fannie Mae and Freddie Mac. FHA loans have regional limits that are generally lower than conventional limits, varying by county based on local housing markets. Additionally, FHA appraisals enforce strict safety, security, and habitability guidelines that the home must satisfy."
-      },
-      {
-        heading: "4. Long-Term Cost Analysis",
-        content: "While FHA loans often carry slightly lower nominal interest rates, their overall APR is typically higher due to the lifetime mortgage insurance premium. Conventional loans are generally more cost-effective over a 30-year period if you have the credit and down payment to qualify."
-      }
-    ]
-  },
-  "closing-costs": {
-    title: "Mortgage Closing Costs Explained",
-    description: "Budget for the upfront fees and transaction costs required to close your loan.",
-    category: "Home Buying",
-    lastUpdated: "June 2026",
-    ctaText: "Analyze Refinance Savings",
-    ctaHref: "/refinance-calculator",
-    sections: [
-      {
-        heading: "1. What are Closing Costs?",
-        content: "Closing costs are processing fees paid to lenders, title companies, and municipalities to close your mortgage. They typically range from 2% to 5% of the total purchase price of the home. On a $400,000 purchase, expect $8,000 to $20,000 in closing costs. Lenders are required to provide a Loan Estimate (LE) within three days of application outlining these fees."
-      },
-      {
-        heading: "2. Common Fee Breakdowns",
-        content: "Lender fees include origination charges, discount points, underwriting fees, and credit report fees. Third-party fees cover home appraisals, surveys, title searches, and title insurance. Government fees include recording taxes, transfer fees, and local deed recording stamps."
-      },
-      {
-        heading: "3. Prepaids and Escrow Accounts",
-        content: "At closing, lenders require prepaying property taxes and homeowners insurance premiums to establish an escrow account. This ensures funds are available when county tax bills and insurance policies renew. Typically, lenders collect two to three months of taxes and insurance up front as reserves."
-      },
-      {
-        heading: "4. How to Minimize Closing Expenses",
-        content: "You can request a seller concession (where the seller pays a portion of closing fees, capped at 3% to 9% depending on loan type and down payment). Alternatively, you can opt for a 'no-closing-cost' loan where the lender covers fees in exchange for a slightly higher interest rate."
-      }
-    ]
-  },
-  "state-rates": {
-    title: "Average Mortgage Rates by State",
-    description: "Analyze how regional property taxes, insurance averages, and local credit dynamics affect rates.",
-    category: "Research & Data",
-    lastUpdated: "June 2026",
-    ctaText: "Launch Regional Mortgage Calculator",
-    ctaHref: "/texas-mortgage-calculator",
-    sections: [
-      {
-        heading: "1. Why Mortgage Rates Differ Regionally",
-        content: "While baseline mortgage rates are dictated by national bond markets (specifically the 10-Year Treasury yield), local market competition, state foreclosure laws, and credit profiles cause interest rates to vary by region. States with fast foreclosure timelines often carry lower lender risk offsets than states with judicial foreclosure rules."
-      },
-      {
-        heading: "2. Real Estate Friction: Taxes and Insurance",
-        content: "Escrow charges have a massive impact on your total monthly payment. For example, Texas averages a high property tax rate of 1.60%, while California property taxes are capped under Prop 13, but California median purchase prices are significantly higher. In Florida, home insurance premiums are twice the national average due to weather risk."
-      },
-      {
-        heading: "3. State-Specific Conforming Loan Limits",
-        content: "Conforming loan limits are adjusted annually by the FHFA based on regional housing appreciation. High-cost counties in California, New York, and Hawaii have conforming limits that exceed standard limits, allowing buyers to secure lower conforming rates rather than higher jumbo rates."
-      },
-      {
-        heading: "4. Shopping Local vs. National Lenders",
-        content: "Check local credit unions, regional banks, and national online mortgage brokers. State-specific housing authorities (such as CalHFA in California or TDHCA in Texas) offer down payment assistance programs that can lower your effective borrowing rate."
-      }
-    ]
-  },
-  "mortgage-rates": {
-    title: "Mortgage Rates Guide: Primary Market Drivers",
-    description: "Analyze the macroeconomic variables, bond yields, and credit spreads that dictate interest rates.",
-    category: "Research & Data",
-    lastUpdated: "June 2026",
-    ctaText: "Check Extra Payment Acceleration",
-    ctaHref: "/extra-payment-calculator",
-    sections: [
-      {
-        heading: "1. Macroeconomic Drivers: Treasury Yields and Inflation",
-        content: "Mortgage rates are not set by the Federal Reserve directly. Instead, they track the yield on the 10-Year U.S. Treasury Bond. Because mortgages represent long-term debts, investors demand higher yields to protect against inflation. When inflation expectations rise, bond yields and mortgage rates climb."
-      },
-      {
-        heading: "2. Conforming vs. Jumbo Loan Interest Spreads",
-        content: "Loans that fit within FHFA guidelines are conforming and can be securitized into agency mortgage-backed securities (MBS). Jumbo loans exceed these limits and must be held on bank balance sheets or securitized privately, resulting in different risk pricing spreads that can cause jumbo rates to fluctuate independently."
-      },
-      {
-        heading: "3. How Credit Tiers Shift Interest Costs",
-        content: "Lenders adjust rates based on credit score tiers (under FICO model brackets). A score drop from 740 to 670 can add 0.50% or more to your interest rate through Loan-Level Price Adjustments (LLPAs). Over a 30-year term, this single adjustment accumulates to tens of thousands of dollars in interest."
-      },
-      {
-        heading: "4. Rate Locks and Float-Down Agreements",
-        content: "Mortgage rates fluctuate daily. A rate lock agreement guarantees your interest rate for a specific window (typically 30 to 60 days) during loan processing. A float-down agreement allows you to capture a lower rate if market interest rates decline before closing."
-      }
-    ]
-  },
-  "conforming-loans": {
-    title: "Conforming Loan Limits & Regulations",
-    description: "Learn what conforming loans are, FHFA guidelines, and current lending limits.",
-    category: "Loan Programs",
-    lastUpdated: "June 2026",
-    ctaText: "Calculate Affordability Limits",
-    ctaHref: "/house-affordability-calculator",
-    sections: [
-      {
-        heading: "1. What is a Conforming Loan?",
-        content: "A conforming loan is a conventional mortgage that meets the underwriting guidelines set by Fannie Mae and Freddie Mac. These criteria include credit score minimums, debt-to-income limits, and maximum loan amounts."
-      },
-      {
-        heading: "2. FHFA Conforming Limits",
-        content: "The Federal Housing Finance Agency (FHFA) adjusts conforming loan limits annually based on national home appreciation. Standard baseline limits apply to most counties, with high-cost county exceptions."
-      },
-      {
-        heading: "3. Benefits of Conforming Financing",
-        content: "Conforming mortgages feature lower interest rates and smaller down payment requirements compared to non-conforming or Jumbo loans because they can be easily packaged and sold to investors."
-      },
-      {
-        heading: "4. Underwriting Standards",
-        content: "To secure a conforming loan, borrowers typically need a credit score of 620 or higher and a Debt-to-Income (DTI) ratio below 36%, though automated systems can approve DTIs up to 45% under certain conditions."
-      }
-    ]
-  },
-  "jumbo-loans": {
-    title: "What is a Jumbo Loan & How to Qualify",
-    description: "Understand the requirements, interest rates, and guidelines for high-value mortgages.",
-    category: "Loan Programs",
-    lastUpdated: "June 2026",
-    ctaText: "Estimate Monthly Payment",
-    ctaHref: "/mortgage-payoff-calculator",
-    sections: [
-      {
-        heading: "1. Defining the Jumbo Threshold",
-        content: "Jumbo loans are non-conforming mortgages that exceed the conforming loan limits set by the FHFA. Because they cannot be purchased by Fannie Mae or Freddie Mac, they carry higher risk for lenders."
-      },
-      {
-        heading: "2. Qualification Criteria",
-        content: "Qualifying for a jumbo loan requires strict underwriting standards, including credit scores above 700, low DTI ratios below 38-43%, larger down payments (typically 10-20%), and extensive asset reserves."
-      },
-      {
-        heading: "3. Interest Rate Dynamics",
-        content: "Jumbo rates can fluctuate independently of conforming rates. Depending on market liquidity, jumbo loans may carry slightly higher or occasionally even lower interest rates than conforming loans."
-      },
-      {
-        heading: "4. Reserve Requirements",
-        content: "Lenders typically require jumbo loan borrowers to hold 6 to 12 months of post-closing Principal, Interest, Taxes, and Insurance (PITI) payments in liquid reserves (savings or brokerage accounts)."
-      }
-    ]
-  },
-  "loan-amortization": {
-    title: "How Loan Amortization Schedules Work",
-    description: "Demystify principal and interest payments, amortization curves, and equity growth.",
-    category: "Mortgage Math",
-    lastUpdated: "June 2026",
-    ctaText: "View Your Amortization Table",
-    ctaHref: "/mortgage-payoff-calculator",
-    sections: [
-      {
-        heading: "1. The Amortization Concept",
-        content: "Amortization is the process of spreading a loan into equal periodic payments. Over time, the portion of each payment allocated to principal increases, while the portion going to interest decreases."
-      },
-      {
-        heading: "2. Frontloaded Interest Dynamics",
-        content: "In the early years of a mortgage, interest dominates the payment structure. For example, on a 30-year loan, more than 70% of early payments are consumed by interest charges, meaning equity builds slowly."
-      },
-      {
-        heading: "3. Shifting the Equity Curve",
-        content: "As the outstanding principal balance decreases, the monthly interest charge (calculated as balance times monthly rate) declines. The leftover payment amount applied to principal grows, accelerating equity."
-      },
-      {
-        heading: "4. 15-Year vs. 30-Year Amortization",
-        content: "A 15-year fixed loan features a much steeper principal paydown curve than a 30-year loan. Because you pay off the balance twice as fast, you avoid substantial lifetime interest costs."
-      }
-    ]
-  },
-  "mortgage-points": {
-    title: "Buying Down Your Interest Rate with Points",
-    description: "Evaluate whether paying upfront discount points makes sense for your ownership horizon.",
-    category: "Mortgage Math",
-    lastUpdated: "June 2026",
-    ctaText: "Check Refinance Savings",
-    ctaHref: "/refinance-calculator",
-    sections: [
-      {
-        heading: "1. What are Discount Points?",
-        content: "Discount points are prepaid interest paid to the lender at closing in exchange for a permanently lower interest rate. One point typically costs 1% of the total loan amount and lowers the rate by 0.25%."
-      },
-      {
-        heading: "2. Calculating the Point Break-Even",
-        content: "To determine if buying points is worth it, divide the upfront cost of the points by the monthly payment savings. This yields the number of months required to recoup the initial investment."
-      },
-      {
-        heading: "3. Long-Term Financial Impact",
-        content: "If you plan to stay in the home longer than the point break-even period (usually 5 to 7 years), paying discount points can save you thousands of dollars in cumulative lifetime interest charges."
-      },
-      {
-        heading: "4. Tax Deductibility",
-        content: "Discount points paid on a primary home purchase are generally tax-deductible as mortgage interest in the year they are paid, although buyers should consult a CPA to confirm eligibility."
-      }
-    ]
-  },
-  "property-taxes-escrow": {
-    title: "How Property Taxes & Escrow Accounts Function",
-    description: "Understand the roles of tax assessments, insurance prepaids, and monthly escrow statements.",
-    category: "Escrow",
-    lastUpdated: "June 2026",
-    ctaText: "Add Escrow Parameters",
-    ctaHref: "/house-affordability-calculator",
-    sections: [
-      {
-        heading: "1. Purpose of an Escrow Account",
-        content: "An escrow account is a holding account managed by your servicer. They collect a portion of your property taxes and homeowners insurance in each monthly check, then pay those bills when they come due."
-      },
-      {
-        heading: "2. Tax Assessment Rates",
-        content: "Property taxes are levied by local county or city governments based on the assessed market value of your home. These assessments can change annually, causing your total housing payment to shift."
-      },
-      {
-        heading: "3. Escrow Shortages and Overages",
-        content: "If your property taxes or insurance premiums rise, your monthly payment will increase to cover the difference and rebuild the required reserve buffer, resulting in an escrow shortage bill."
-      },
-      {
-        heading: "4. Escrow Cushions",
-        content: "Federal law allows servicers to maintain an escrow cushion of up to two months of tax and insurance payments to protect against premium increases, which is collected upfront at closing."
-      }
-    ]
-  },
-  "dti-ratio-explained": {
-    title: "Understanding Front-End and Back-End DTI Ratios",
-    description: "Master the DTI guidelines lenders use to assess your borrowing limit.",
-    category: "Debt Management",
-    lastUpdated: "June 2026",
-    ctaText: "Stress-Test Your DTI",
-    ctaHref: "/house-affordability-calculator",
-    sections: [
-      {
-        heading: "1. What is Debt-to-Income?",
-        content: "DTI is a percentage representing the portion of your gross monthly income consumed by recurring debt payments. Lenders use it to verify that you have sufficient cash reserves after paying bills."
-      },
-      {
-        heading: "2. Front-End DTI (Housing Ratio)",
-        content: "The front-end DTI ratio is the percentage of gross monthly income spent solely on housing costs (PITI + HOA). Conventional guidelines typically limit this ratio to 28%."
-      },
-      {
-        heading: "3. Back-End DTI (Total Debt Ratio)",
-        content: "The back-end DTI ratio includes housing costs plus all recurring obligations found on your credit report, like credit card minimums, student loans, and auto loans. Standard limits cap this at 36%."
-      },
-      {
-        heading: "4. Compensating Underwriting Factors",
-        content: "Lenders can approve higher DTI ratios (up to 45-50% for FHA/VA loans) if borrowers have high credit scores, large down payments, or substantial liquid assets in reserve."
-      }
-    ]
-  },
-  "biweekly-payments": {
-    title: "Bi-Weekly Payments: Shave Years Off Your Mortgage",
-    description: "Learn how restructuring your payment frequency bypasses interest and shortens terms.",
-    category: "Prepayments",
-    lastUpdated: "June 2026",
-    ctaText: "Check Extra Payment Acceleration",
-    ctaHref: "/extra-payment-calculator",
-    sections: [
-      {
-        heading: "1. How Bi-Weekly Payments Work",
-        content: "Instead of making one monthly payment, you pay half of your monthly payment every two weeks. Because there are 52 weeks in a year, you end up making 26 half-payments, equal to 13 full payments."
-      },
-      {
-        heading: "2. Shaving Years Off the Term",
-        content: "By making one extra monthly payment each year, you reduce your principal balance faster. On a standard 30-year fixed-rate mortgage, this simple shift can shave 4 to 6 years off your term."
-      },
-      {
-        heading: "3. Compound Interest Savings",
-        content: "Because principal declines faster, less interest accumulates over time. This compounding reduction can save you tens of thousands of dollars in cumulative lifetime interest charges."
-      },
-      {
-        heading: "4. Setting up a Bi-Weekly Plan",
-        content: "Confirm with your loan servicer if they offer a formal, free bi-weekly payment schedule. Avoid third-party companies that charge fees to manage this process on your behalf."
-      }
-    ]
-  },
-  "lump-sum-prepayment": {
-    title: "Making a Lump Sum Mortgage Prepayment",
-    description: "Model the impact of a one-time principal paydown on your interest and term.",
-    category: "Prepayments",
-    lastUpdated: "June 2026",
-    ctaText: "Model Lump-Sum Payments",
-    ctaHref: "/extra-payment-calculator",
-    sections: [
-      {
-        heading: "1. Defining Lump Sum Prepayments",
-        content: "A lump sum prepayment is a single, one-time payment made directly to your loan principal, separate from your regular monthly P&I check."
-      },
-      {
-        heading: "2. Immediate Interest Reduction",
-        content: "Prepayments bypass the amortization interest engine, immediately reducing the interest calculations for all subsequent periods. This is highly effective early in the loan term."
-      },
-      {
-        heading: "3. Impact on Loan Term vs. Payment",
-        content: "Prepaying principal will not lower subsequent monthly payments; instead, it shortens the remaining term of the loan. To lower payments, you must execute a 'recast' with your lender."
-      },
-      {
-        heading: "4. Opportunity Cost Considerations",
-        content: "Before making a lump sum payment, compare your mortgage interest rate against potential returns from low-risk investments or retirement savings, factoring in liquidity needs."
-      }
-    ]
-  },
-  "rate-lock-agreements": {
-    title: "Rate Locks & Float-Down Agreements",
-    description: "Protect your loan pricing against market volatility during mortgage processing.",
-    category: "Interest Rates",
-    lastUpdated: "June 2026",
-    ctaText: "Project Mortgage Payoff",
-    ctaHref: "/mortgage-payoff-calculator",
-    sections: [
-      {
-        heading: "1. What is a Rate Lock?",
-        content: "A rate lock guarantees your interest rate, points, and program terms for a set period (typically 30, 45, or 60 days) while your loan application undergoes underwriting."
-      },
-      {
-        heading: "2. Protection Against Rate Hikes",
-        content: "A rate lock shields you from market interest rate increases during processing, ensuring your monthly carrying costs do not exceed your planned budget before closing."
-      },
-      {
-        heading: "3. Float-Down Provisions",
-        content: "A float-down agreement is an optional feature allowing you to secure a lower interest rate if market mortgage rates drop during your lock window prior to closing."
-      },
-      {
-        heading: "4. Expiration Risks",
-        content: "If a rate lock expires before your loan closes due to processing delays, your rate will revert to current market pricing unless you pay a lock extension fee."
-      }
-    ]
-  },
-  "equity-and-refinance": {
-    title: "Refinancing: Cash-Out vs. Rate-and-Term",
-    description: "Compare refinance structures to lower interest costs or extract equity.",
-    category: "Refinance",
-    lastUpdated: "June 2026",
-    ctaText: "Calculate Break-Even Month",
-    ctaHref: "/refinance-calculator",
-    sections: [
-      {
-        heading: "1. Rate-and-Term Refinancing",
-        content: "A rate-and-term refinance replaces your existing mortgage with a new one to secure a lower interest rate, change the loan term length, or convert from an ARM to a fixed-rate note."
-      },
-      {
-        heading: "2. Cash-Out Refinancing",
-        content: "A cash-out refinance replaces your current mortgage with a larger loan, allowing you to withdraw the equity difference in cash for debt consolidation or home improvements."
-      },
-      {
-        heading: "3. Home Equity Requirements",
-        content: "Lenders typically limit conventional cash-out refinances to 80% of the home's appraised value, requiring you to retain at least 20% equity post-closing."
-      },
-      {
-        heading: "4. Closing Cost Adjustments",
-        content: "Both refinance options carry standard closing costs (2% to 5% of the new loan balance). Borrowers must compute their break-even period to ensure long-term savings."
-      }
-    ]
-  },
-  "refinance-closing-costs": {
-    title: "Understanding Refinance Closing Costs",
-    description: "Understand the fees, appraisal costs, and reserves required to refinance.",
-    category: "Refinance",
-    lastUpdated: "June 2026",
-    ctaText: "Verify Refinance Viability",
-    ctaHref: "/refinance-calculator",
-    sections: [
-      {
-        heading: "1. Refinance Fees Portfolio",
-        content: "Refinancing a mortgage requires processing fees similar to a purchase, including lender origination fees, appraisal costs, credit report fees, and title insurance premiums."
-      },
-      {
-        heading: "2. Rolling Costs Into the Loan",
-        content: "Many lenders allow you to roll closing costs into the new loan principal. While this eliminates upfront cash outlays, it increases your total debt and interest accrued."
-      },
-      {
-        heading: "3. Point Buy-Down Options",
-        content: "Borrowers can pay discount points during a refinance to lower their rate further, which is cost-effective if they plan to hold the new mortgage for a long time."
-      },
-      {
-        heading: "4. No-Cost Refinance Realities",
-        content: "A 'no-cost' refinance usually means the lender pays closing fees in exchange for charging a higher interest rate, which reduces monthly savings and increases total loan cost."
-      }
-    ]
-  },
-  "hoa-fees-affordability": {
-    title: "How HOA Fees Impact Home Purchasing Power",
-    description: "Analyze the hidden effect of monthly association dues on your debt capacity.",
-    category: "Home Buying",
-    lastUpdated: "June 2026",
-    ctaText: "Factor in HOA Fees",
-    ctaHref: "/house-affordability-calculator",
-    sections: [
-      {
-        heading: "1. What are HOA Fees?",
-        content: "Homeowners Association (HOA) fees are monthly dues collected to cover common property maintenance, building insurance, security, and community amenities."
-      },
-      {
-        heading: "2. Impact on DTI Underwriting",
-        content: "Underwriters add HOA dues directly to your monthly housing expense. Because they increase your front-end DTI ratio, they reduce the maximum mortgage payment you qualify for."
-      },
-      {
-        heading: "3. Direct Reduction in Purchase Limit",
-        content: "Every $100 in monthly HOA fees reduces your maximum borrowing power by approximately $15,000 to $20,000, depending on prevailing interest rates."
-      },
-      {
-        heading: "4. Special Assessment Risks",
-        content: "Beyond standard monthly fees, HOAs can levy one-time 'special assessments' for major structural repairs, which can stress your personal cash reserves."
-      }
-    ]
-  },
-  "homeowners-insurance": {
-    title: "Choosing Homeowners Insurance for Your Escrow",
-    description: "Learn how hazard insurance premiums affect your escrow buffer and cash flow.",
-    category: "Escrow",
-    lastUpdated: "June 2026",
-    ctaText: "Project Payoff Schedule",
-    ctaHref: "/mortgage-payoff-calculator",
-    sections: [
-      {
-        heading: "1. Hazard Insurance Requirements",
-        content: "Lenders require homeowners insurance (hazard insurance) to protect their collateral against hazards like fire, windstorms, and vandalism before funding."
-      },
-      {
-        heading: "2. Calculating Premium Rates",
-        content: "Premiums are based on the home's replacement cost, location, building materials, and local weather risks. Average rates typically range from 0.3% to 0.8% annually."
-      },
-      {
-        heading: "3. Escrow Integration",
-        content: "Your annual insurance premium is divided by 12 and collected inside your monthly mortgage payment. The servicer holds these funds in escrow to pay the insurance bill."
-      },
-      {
-        heading: "4. Deductible Adjustments",
-        content: "Choosing a higher deductible (e.g. increasing from $1,000 to $2,500) lowers your annual premium, reducing your monthly payment and improving your DTI ratio."
-      }
-    ]
-  },
-  "credit-score-mortgage": {
-    title: "How Your Credit Score Influences Mortgage APR",
-    description: "Optimize your credit profile to qualify for the best interest rates.",
-    category: "Debt Management",
-    lastUpdated: "June 2026",
-    ctaText: "Test Credit Score Changes",
-    ctaHref: "/mortgage-calculator-with-pmi",
-    sections: [
-      {
-        heading: "1. The FICO Model Standard",
-        content: "Lenders evaluate mortgage risk using your FICO credit scores from Equifax, Experian, and TransUnion. They use the middle score of the primary earner to price the loan."
-      },
-      {
-        heading: "2. Loan-Level Price Adjustments (LLPAs)",
-        content: "Fannie Mae and Freddie Mac charge LLPAs based on credit scores and LTV. Borrowers with scores below 740 pay higher risk fees, which are passed on as higher interest rates."
-      },
-      {
-        heading: "3. PMI Pricing Correlation",
-        content: "PMI premiums are highly credit-sensitive. A borrower with a 640 credit score can pay three times more in monthly PMI fees than a borrower with a 760 score."
-      },
-      {
-        heading: "4. Quick Optimization Actions",
-        content: "Improve your rate by paying down revolving card balances to keep credit utilization below 10%, avoiding new credit inquiries, and correcting credit report errors."
-      }
-    ]
-  }
-};
+// Calculate approximate word count
+const totalWords = guide.sections.reduce((acc, curr) => acc + curr.heading.split(' ').length + curr.content.split(' ').length, 0);
 
-const guide: GuideData = guidesDatabase[guideKey];
+// Author Metadata lookup
+const authorNames = {
+  sarah: "Sarah Jenkins, CFP®",
+  marcus: "Marcus Vance"
+};
+const authorName = authorNames[guide.authorKey];
 
 // Construct TechArticle JSON-LD Schema
 const articleSchema = JSON.stringify({
@@ -578,8 +61,9 @@ const articleSchema = JSON.stringify({
   "description": guide.description,
   "image": "https://mortgagesintel.com/assets/og-guide.png",
   "author": {
-    "@type": "Organization",
-    "name": "Mortgage Intelligence Underwriting Editorial"
+    "@type": "Person",
+    "name": authorName,
+    "jobTitle": guide.authorKey === 'sarah' ? "Chief Underwriting Analyst" : "Senior Credit Advisor"
   },
   "publisher": {
     "@type": "Organization",
@@ -591,8 +75,45 @@ const articleSchema = JSON.stringify({
   },
   "datePublished": "2026-01-15T08:00:00+08:00",
   "dateModified": "2026-06-18T08:00:00+08:00",
-  "mainEntityOfPage": `https://mortgagesintel.com/guides/${slug}`
+  "mainEntityOfPage": `https://mortgagesintel.com/guides/${slug}`,
+  "wordCount": totalWords
 });
+
+// Related guides (same category or alternative guides)
+const allGuidesList = Object.entries(guidesDatabase).map(([key, value]) => ({
+  slug: key === "first-time" ? "first-time-home-buyer-guide" :
+        key === "pmi-removal" ? "pmi-removal-guide" :
+        key === "fha-vs-conv" ? "fha-vs-conventional-loans" :
+        key === "closing-costs" ? "mortgage-closing-costs-explained" :
+        key === "state-rates" ? "average-mortgage-rates-by-state" :
+        key === "mortgage-rates" ? "mortgage-rates-guide" :
+        key === "conforming-loans" ? "conforming-loans-guide" :
+        key === "jumbo-loans" ? "jumbo-loans-guide" :
+        key === "loan-amortization" ? "loan-amortization-guide" :
+        key === "mortgage-points" ? "mortgage-points-guide" :
+        key === "property-taxes-escrow" ? "property-taxes-escrow-guide" :
+        key === "dti-ratio-explained" ? "dti-ratio-explained-guide" :
+        key === "biweekly-payments" ? "biweekly-payments-guide" :
+        key === "lump-sum-prepayment" ? "lump-sum-prepayment-guide" :
+        key === "rate-lock-agreements" ? "rate-lock-agreements-guide" :
+        key === "equity-and-refinance" ? "equity-and-refinance-guide" :
+        key === "refinance-closing-costs" ? "refinance-closing-costs-guide" :
+        key === "hoa-fees-affordability" ? "hoa-fees-affordability-guide" :
+        key === "homeowners-insurance" ? "homeowners-insurance-guide" :
+        key === "credit-score-mortgage" ? "credit-score-mortgage-guide" : "",
+  title: value.title,
+  category: value.category
+})).filter(g => g.slug !== slug);
+
+const relatedGuides = allGuidesList
+  .filter(g => g.category === guide.category)
+  .slice(0, 3);
+
+// Fallback to random if not enough in same category
+if (relatedGuides.length < 3) {
+  const fillers = allGuidesList.filter(g => !relatedGuides.find(rg => rg.slug === g.slug));
+  relatedGuides.push(...fillers.slice(0, 3 - relatedGuides.length));
+}
 ---
 
 <Layout 
@@ -618,35 +139,61 @@ const articleSchema = JSON.stringify({
       <div class="inline-flex items-center rounded-full bg-blue-500/10 px-2.5 py-0.5 text-2xs font-medium text-blue-400 border border-blue-500/20">
         {guide.category}
       </div>
-      <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
+      <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight leading-tight">
         {guide.title}
       </h1>
-      <div class="flex items-center gap-4 text-2xs text-text-muted">
-        <span>Published by <strong>Mortgage Intelligence Editorial</strong></span>
+      
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-2xs text-text-muted pt-1">
+        <span>By <strong>{authorName}</strong></span>
         <span>&bull;</span>
         <span>Last Updated: {guide.lastUpdated}</span>
+        <span>&bull;</span>
+        <span>Reading Time: {Math.ceil(totalWords / 200)} min ({totalWords} words)</span>
       </div>
-      <p class="text-sm text-text-muted leading-relaxed max-w-2xl pt-2">
+
+      <p class="text-sm text-text-muted leading-relaxed max-w-3xl pt-2">
         {guide.description}
       </p>
     </div>
 
+    <!-- Key Takeaways Panel -->
+    <div class="rounded-xl border border-brand-accent/20 bg-brand-accent/5 p-6 space-y-3">
+      <h3 class="font-display text-xs sm:text-sm font-bold text-text-main flex items-center gap-2">
+        <svg class="h-4 w-4 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Key Takeaways &amp; Highlights</span>
+      </h3>
+      <ul class="list-disc pl-5 space-y-2 text-2xs sm:text-xs text-text-muted leading-relaxed">
+        {guide.keyTakeaways.map(takeaway => (
+          <li>{takeaway}</li>
+        ))}
+      </ul>
+    </div>
+
     <!-- Guide Content -->
-    <article class="space-y-8 text-text-main leading-relaxed text-sm">
+    <article class="space-y-10 text-text-main leading-relaxed text-sm">
       {guide.sections.map(section => (
-        <div class="space-y-3">
-          <h2 class="font-display text-base font-bold text-text-main tracking-tight pt-2">
+        <div class="space-y-4">
+          <h2 class="font-display text-base sm:text-lg font-bold text-text-main tracking-tight pt-2 border-b border-border-subtle/30 pb-1">
             {section.heading}
           </h2>
-          <p class="text-text-muted">
-            {section.content}
-          </p>
+          {section.content.split('\n\n').map(paragraph => (
+            <p class="text-text-muted leading-relaxed">
+              {paragraph}
+            </p>
+          ))}
         </div>
       ))}
     </article>
 
+    <!-- Author Profile Bio (EEAT Compliance) -->
+    <div class="pt-8 border-t border-border-subtle/50">
+      <AuthorBio authorKey={guide.authorKey} />
+    </div>
+
     <!-- Internal Link CTA Card -->
-    <div class="rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mt-12">
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
       <div class="space-y-1">
         <h3 class="font-display text-sm font-semibold text-text-main">Apply These Insights</h3>
         <p class="text-xs text-text-muted">Run your specific numbers using our specialized decision tools.</p>
@@ -659,9 +206,30 @@ const articleSchema = JSON.stringify({
       </a>
     </div>
 
+    <!-- Related Articles -->
+    <div class="space-y-4 pt-8 border-t border-border-subtle/50">
+      <h3 class="font-display text-sm font-bold text-text-main">Related Financing Guides</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {relatedGuides.map(rg => (
+          <a href={`/guides/${rg.slug}`} class="group p-4 bg-bg-card border border-border-subtle hover:border-border-focus rounded-lg transition-colors flex flex-col justify-between h-full">
+            <div class="space-y-2">
+              <span class="text-4xs text-brand-accent uppercase tracking-wider font-semibold">{rg.category}</span>
+              <h4 class="font-display text-xs font-bold text-text-main group-hover:text-brand-accent transition-colors line-clamp-2 leading-tight">
+                {rg.title}
+              </h4>
+            </div>
+            <span class="inline-flex items-center gap-1 text-4xs font-bold text-text-muted group-hover:text-brand-accent pt-3 transition-colors">
+              <span>Read Guide</span>
+              <svg class="h-2.5 w-2.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+
     <!-- Editorial Disclaimer -->
     <div class="border-t border-border-subtle pt-8 text-3xs text-text-muted leading-relaxed">
-      <strong>Editorial Policy:</strong> Mortgage Intelligence is committed to objective financial reporting. Our content is thoroughly researched by our technical underwriting analysts. Content is provided for educational purposes and should not be treated as professional financial or legal counsel.
+      <strong>Editorial Policy:</strong> Mortgage Intelligence is committed to objective financial reporting. Our content is thoroughly researched by our technical underwriting analysts. Content is provided for educational purposes and should not be treated as professional financial, legal, or investment counsel.
     </div>
   </main>
 

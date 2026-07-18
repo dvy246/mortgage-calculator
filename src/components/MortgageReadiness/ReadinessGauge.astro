@@ -1,0 +1,81 @@
+---
+export interface Props {
+  score: number;
+  label?: string;
+  size?: 'sm' | 'md' | 'lg';
+}
+
+const { score, label, size = 'md' } = Astro.props;
+const clampedScore = Math.max(0, Math.min(100, score));
+
+const sizeMap = {
+  sm: { w: 160, h: 100, r: 70, text: 'text-xs', big: 'text-lg' },
+  md: { w: 220, h: 135, r: 95, text: 'text-sm', big: 'text-2xl' },
+  lg: { w: 280, h: 170, r: 120, text: 'text-base', big: 'text-3xl' }
+};
+const { w, h, r, text, big } = sizeMap[size];
+const cx = w / 2;
+const cy = h - 12;
+
+function deg(s: number): number {
+  return 180 + (s / 100) * 180;
+}
+function pt(angleDeg: number) {
+  const rad = (angleDeg * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
+function arcPath(sAngle: number, eAngle: number): string {
+  const s = pt(sAngle);
+  const e = pt(eAngle);
+  const large = eAngle - sAngle > 180 ? 1 : 0;
+  return `M ${s.x.toFixed(1)} ${s.y.toFixed(1)} A ${r} ${r} 0 ${large} 1 ${e.x.toFixed(1)} ${e.y.toFixed(1)}`;
+}
+
+const scoreAngle = deg(clampedScore);
+const needle = pt(scoreAngle);
+const backgroundArc = arcPath(180, 360);
+
+let zoneColor = '#10b981';
+if (clampedScore < 40) zoneColor = '#ef4444';
+else if (clampedScore < 65) zoneColor = '#f59e0b';
+else if (clampedScore < 85) zoneColor = '#84cc16';
+
+interface ZonePath {
+  d: string;
+  color: string;
+}
+const zoneSegments: ZonePath[] = [];
+const zoneDefs = [
+  { start: 0, end: 40, color: '#ef4444' },
+  { start: 40, end: 65, color: '#f59e0b' },
+  { start: 65, end: 85, color: '#84cc16' },
+  { start: 85, end: 100, color: '#10b981' }
+];
+for (const z of zoneDefs) {
+  if (clampedScore < z.start) continue;
+  const aStart = deg(z.start);
+  const aEnd = deg(z.end);
+  const effectiveEnd = clampedScore < z.end ? scoreAngle : aEnd;
+  if (effectiveEnd <= aStart) continue;
+  zoneSegments.push({ d: arcPath(aStart, effectiveEnd), color: z.color });
+}
+---
+
+<svg viewBox="0 0 {w} {h}" class="w-full max-w-[{w}px] h-auto" fill="none" role="img" aria-label="Readiness score gauge showing {clampedScore} out of 100">
+  <defs>
+    <filter id="ns-{size}">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.25" />
+    </filter>
+  </defs>
+  <path d={backgroundArc} stroke="#e4e4e7" stroke-width="8" stroke-linecap="round" class="dark:stroke-zinc-700" />
+  {zoneSegments.map(z => (
+    <path d={z.d} stroke={z.color} stroke-width="8" stroke-linecap="round" />
+  ))}
+  <line x1={cx} y1={cy} x2={needle.x} y2={needle.y} stroke={zoneColor} stroke-width="2.5" stroke-linecap="round" filter={`url(#ns-${size})`} />
+  <circle cx={cx} cy={cy} r="4" fill={zoneColor} />
+  <text x={cx} y={cy - 8} text-anchor="middle" fill="currentColor" class={`font-bold ${big} font-tabular`} dominant-baseline="central">{clampedScore}</text>
+  <text x={cx} y={cy + 14} text-anchor="middle" fill="currentColor" class={`text-text-muted ${text}`} dominant-baseline="central">/ 100</text>
+  {label && (
+    <text x={cx} y={h - 4} text-anchor="middle" fill="currentColor" class="text-text-muted text-4xs" dominant-baseline="central">{label}</text>
+  )}
+</svg>

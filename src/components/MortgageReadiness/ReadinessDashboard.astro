@@ -1,0 +1,345 @@
+---
+import ReadinessGauge from './ReadinessGauge.astro';
+
+const dimensions = [
+  { key: 'income', label: 'Income & Employment', icon: 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
+  { key: 'debt', label: 'Debt Health', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+  { key: 'savings', label: 'Savings Position', icon: 'M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3' },
+  { key: 'credit', label: 'Credit Readiness', icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' },
+  { key: 'market', label: 'Market Context', icon: 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z' }
+];
+---
+
+<div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-6" id="readiness-dashboard">
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="font-display text-sm font-semibold text-text-main">Your Readiness Profile</h2>
+      <p class="text-xs text-text-muted mt-0.5">Compare your financial profile against common home-buying guidelines.</p>
+    </div>
+    <span id="readiness-badge" class="inline-flex items-center rounded-full px-2.5 py-0.5 text-3xs font-medium border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 whitespace-nowrap">Calculating...</span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="space-y-5">
+      <!-- Income & Employment -->
+      <fieldset class="space-y-3">
+        <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Income &amp; Employment</legend>
+        <div class="space-y-1.5">
+          <label for="readiness-employment" class="text-xs font-medium text-text-muted">Employment Status</label>
+          <select id="readiness-employment" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+            <option value="employed">Employed Full-Time</option>
+            <option value="self-employed">Self-Employed</option>
+            <option value="contract">Contract / Gig</option>
+            <option value="retired">Retired</option>
+            <option value="unemployed">Not Currently Employed</option>
+          </select>
+        </div>
+        <div class="space-y-1.5">
+          <label for="readiness-tenure" class="text-xs font-medium text-text-muted">Years at Current Role / Industry</label>
+          <select id="readiness-tenure" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+            <option value="<1">Less than 1 year</option>
+            <option value="1-2">1–2 years</option>
+            <option value="2-5" selected>2–5 years</option>
+            <option value="5-10">5–10 years</option>
+            <option value="10+">10+ years</option>
+          </select>
+        </div>
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center">
+            <label for="readiness-income" class="text-xs font-medium text-text-muted">Annual Household Income</label>
+            <span class="font-semibold text-text-main font-tabular text-xs" id="r-income-display">$95,000</span>
+          </div>
+          <input type="range" id="readiness-income" min="25000" max="350000" step="5000" value="95000" class="w-full" aria-label="Annual Household Income" />
+        </div>
+      </fieldset>
+
+      <!-- Debt -->
+      <fieldset class="space-y-3">
+        <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Debt &amp; Expenses</legend>
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center">
+            <label for="readiness-debts" class="text-xs font-medium text-text-muted">Total Monthly Debt Payments</label>
+            <span class="font-semibold text-text-main font-tabular text-xs" id="r-debts-display">$450</span>
+          </div>
+          <input type="range" id="readiness-debts" min="0" max="5000" step="50" value="450" class="w-full" aria-label="Total Monthly Debt Payments" />
+        </div>
+        <div class="flex items-center gap-2 text-xs text-text-muted bg-bg-main rounded-lg px-3 py-2 border border-border-subtle">
+          <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+          <span>Include credit cards, student loans, car payments. <strong id="r-dti-label">DTI: 5.7%</strong></span>
+        </div>
+      </fieldset>
+
+      <!-- Savings -->
+      <fieldset class="space-y-3">
+        <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Savings Position</legend>
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center">
+            <label for="readiness-downpayment" class="text-xs font-medium text-text-muted">Down Payment Saved</label>
+            <span class="font-semibold text-text-main font-tabular text-xs" id="r-dp-display">$40,000</span>
+          </div>
+          <input type="range" id="readiness-downpayment" min="0" max="250000" step="5000" value="40000" class="w-full" aria-label="Down Payment Saved" />
+        </div>
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center">
+            <label for="readiness-target" class="text-xs font-medium text-text-muted">Target Home Price</label>
+            <span class="font-semibold text-text-main font-tabular text-xs" id="r-target-display">$350,000</span>
+          </div>
+          <input type="range" id="readiness-target" min="100000" max="1000000" step="10000" value="350000" class="w-full" aria-label="Target Home Price" />
+        </div>
+        <div class="flex items-center gap-2 text-xs text-text-muted bg-bg-main rounded-lg px-3 py-2 border border-border-subtle">
+          <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+          <span>Down payment: <strong id="r-dp-pct-label">11.4%</strong> of target price.</span>
+        </div>
+        <div class="space-y-1.5">
+          <label for="readiness-ef" class="text-xs font-medium text-text-muted">Emergency Fund (months of expenses)</label>
+          <select id="readiness-ef" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+            <option value="<1">Less than 1 month</option>
+            <option value="1-3">1–3 months</option>
+            <option value="3-6" selected>3–6 months</option>
+            <option value="6+">6+ months</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <!-- Credit -->
+      <fieldset class="space-y-3">
+        <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Credit Profile</legend>
+        <div class="space-y-1.5">
+          <label for="readiness-credit" class="text-xs font-medium text-text-muted">Estimated Credit Score Range</label>
+          <select id="readiness-credit" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+            <option value="excellent">Excellent (760+)</option>
+            <option value="good" selected>Good (700–759)</option>
+            <option value="fair">Fair (640–699)</option>
+            <option value="poor">Below 640</option>
+            <option value="unsure">Not Sure</option>
+          </select>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- Results Column -->
+    <div class="space-y-5">
+      <div class="flex flex-col items-center justify-center p-4">
+        <div id="readiness-gauge-container">
+          <ReadinessGauge score={50} label="Overall Readiness" size="md" />
+        </div>
+        <div id="readiness-label-container" class="mt-3 text-center">
+          <span id="readiness-label-text" class="font-display text-sm font-semibold text-text-main">Calculating...</span>
+          <p id="readiness-description" class="text-xs text-text-muted mt-1 max-w-xs mx-auto">Adjust your inputs to see how your profile compares.</p>
+        </div>
+      </div>
+
+      <!-- Dimension Scores -->
+      <div class="space-y-2.5">
+        <h3 class="font-display text-xs font-semibold text-text-main">Dimension Breakdown</h3>
+
+        <div class="space-y-2" id="dimension-scores">
+          {dimensions.map(dim => (
+            <div class="flex items-center gap-3 p-2.5 rounded-lg border border-border-subtle bg-bg-main" id={`dim-${dim.key}`}>
+              <svg class="h-4 w-4 shrink-0 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d={dim.icon} /></svg>
+              <div class="flex-1 min-w-0">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-text-muted truncate">{dim.label}</span>
+                  <span class="font-semibold text-text-main font-tabular text-xs" id={`dim-${dim.key}-score`}>--</span>
+                </div>
+                <div class="mt-1 h-1.5 w-full rounded-full bg-border-subtle overflow-hidden">
+                  <div class="h-full rounded-full transition-all duration-500" id={`dim-${dim.key}-bar`} style="width: 0%; background: #e4e4e7;"></div>
+                </div>
+              </div>
+              <span class="text-3xs text-text-muted shrink-0 w-6 text-right" id={`dim-${dim.key}-wt`}>20%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-border-subtle bg-bg-main p-3 space-y-2">
+        <div class="flex items-center gap-1.5 text-3xs text-text-muted">
+          <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>Educational estimate based on general guidelines. Individual lender criteria vary.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { calculateReadiness, DEFAULT_INPUTS } from '../../utils/readinessScore';
+
+  const employment = document.getElementById('readiness-employment') as HTMLSelectElement;
+  const tenure = document.getElementById('readiness-tenure') as HTMLSelectElement;
+  const income = document.getElementById('readiness-income') as HTMLInputElement;
+  const incomeDisplay = document.getElementById('r-income-display');
+  const debts = document.getElementById('readiness-debts') as HTMLInputElement;
+  const debtsDisplay = document.getElementById('r-debts-display');
+  const downPayment = document.getElementById('readiness-downpayment') as HTMLInputElement;
+  const dpDisplay = document.getElementById('r-dp-display');
+  const targetPrice = document.getElementById('readiness-target') as HTMLInputElement;
+  const targetDisplay = document.getElementById('r-target-display');
+  const ef = document.getElementById('readiness-ef') as HTMLSelectElement;
+  const credit = document.getElementById('readiness-credit') as HTMLSelectElement;
+
+  const dtiLabel = document.getElementById('r-dti-label');
+  const dpPctLabel = document.getElementById('r-dp-pct-label');
+  const badge = document.getElementById('readiness-badge');
+  const gaugeContainer = document.getElementById('readiness-gauge-container');
+  const labelText = document.getElementById('readiness-label-text');
+  const labelDesc = document.getElementById('readiness-description');
+
+  function getInputs() {
+    const annualIncome = parseFloat(income.value) || 0;
+    const monthlyDebts = parseFloat(debts.value) || 0;
+    const dp = parseFloat(downPayment.value) || 0;
+    const target = parseFloat(targetPrice.value) || 1;
+    return {
+      employmentStatus: employment.value as any,
+      yearsAtJob: tenure.value as any,
+      annualIncome,
+      monthlyDebts,
+      downPayment: dp,
+      targetHomePrice: target,
+      emergencyFund: ef.value as any,
+      creditScore: credit.value as any,
+      state: 'CA'
+    };
+  }
+
+  const barColors: Record<string, string> = {
+    income: '#3b82f6',
+    debt: '#8b5cf6',
+    savings: '#06b6d4',
+    credit: '#10b981',
+    market: '#a1a1aa'
+  };
+
+  function formatCurrency(val: number): string {
+    return '$' + Math.round(val).toLocaleString('en-US');
+  }
+
+  function formatPercent(val: number): string {
+    return val.toFixed(1) + '%';
+  }
+
+  function recalculate() {
+    const inputs = getInputs();
+    const result = calculateReadiness(inputs);
+
+    if (dtiLabel) {
+      dtiLabel.textContent = `DTI: ${result.dti.toFixed(1)}%`;
+    }
+    if (dpPctLabel) {
+      dpPctLabel.textContent = `${result.downPaymentPercent.toFixed(1)}%`;
+    }
+
+    if (badge) {
+      const colors: Record<string, string> = {
+        'Strong': 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+        'Developing': 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400',
+        'Building': 'border-orange-500/20 bg-orange-500/10 text-orange-600 dark:text-orange-400',
+        'Early Stage': 'border-rose-500/20 bg-rose-500/10 text-rose-600 dark:text-rose-400'
+      };
+      badge.textContent = result.label;
+      badge.className = `inline-flex items-center rounded-full px-2.5 py-0.5 text-3xs font-medium border ${colors[result.label] || colors['Building']}`;
+    }
+
+    if (labelText) labelText.textContent = result.label;
+    if (labelDesc) labelDesc.textContent = result.labelDescription;
+
+    if (gaugeContainer) {
+      gaugeContainer.innerHTML = '';
+      const gaugeEl = document.createElement('div');
+      gaugeEl.innerHTML = generateGaugeHTML(result.total, 'Overall Readiness');
+      gaugeContainer.appendChild(gaugeEl.firstElementChild || gaugeEl);
+    }
+
+    const dims = ['income', 'debt', 'savings', 'credit', 'market'];
+    dims.forEach(dim => {
+      const scoreEl = document.getElementById(`dim-${dim}-score`);
+      const barEl = document.getElementById(`dim-${dim}-bar`);
+      const wtEl = document.getElementById(`dim-${dim}-wt`);
+      const data = (result as any)[dim] as { raw: number; weight: number; weighted: number | string };
+      if (scoreEl) scoreEl.textContent = String(Math.round(data.raw));
+      if (barEl) {
+        barEl.style.width = `${data.raw}%`;
+        (barEl as HTMLElement).style.background = barColors[dim];
+      }
+      const weightLabel = ['', '20%', '25%', '25%', '20%', '10%'];
+      if (wtEl) {
+        const wt = data.weight * 100;
+        wtEl.textContent = `${Math.round(wt)}%`;
+      }
+    });
+  }
+
+  function generateGaugeHTML(score: number, label: string): string {
+    const clampedScore = Math.max(0, Math.min(100, score));
+    const w = 220, h = 135, r = 95;
+    const cx = w / 2, cy = h - 12;
+
+    function deg(s: number) { return 180 + (s / 100) * 180; }
+    function point(angleDeg: number) {
+      const rad = (angleDeg * Math.PI) / 180;
+      return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+    }
+    function arcPath(sAngle: number, eAngle: number) {
+      const s = point(sAngle), e = point(eAngle);
+      const large = eAngle - sAngle > 180 ? 1 : 0;
+      return `M ${s.x.toFixed(1)} ${s.y.toFixed(1)} A ${r} ${r} 0 ${large} 1 ${e.x.toFixed(1)} ${e.y.toFixed(1)}`;
+    }
+
+    const zones = [
+      { start: 0, end: 40, color: '#ef4444' },
+      { start: 40, end: 65, color: '#f59e0b' },
+      { start: 65, end: 85, color: '#84cc16' },
+      { start: 85, end: 100, color: '#10b981' }
+    ];
+
+    const scoreAngle = deg(clampedScore);
+    const needle = point(scoreAngle);
+    const bgArc = arcPath(180, 360);
+
+    let zoneColor = '#10b981';
+    for (const z of zones) {
+      if (clampedScore >= z.start && clampedScore < z.end) { zoneColor = z.color; break; }
+    }
+    if (clampedScore >= 85) zoneColor = '#10b981';
+
+    const zonePaths = zones.map(z => {
+      const aStart = deg(z.start), aEnd = deg(z.end);
+      if (clampedScore < z.start) return '';
+      const effectiveEnd = clampedScore < z.end ? scoreAngle : aEnd;
+      if (effectiveEnd <= aStart) return '';
+      return `<path d="${arcPath(aStart, effectiveEnd)}" stroke="${z.color}" stroke-width="8" stroke-linecap="round" />`;
+    }).filter(Boolean).join('\n');
+
+    return `<svg viewBox="0 0 ${w} ${h}" class="w-full max-w-[${w}px] h-auto" fill="none">
+      <defs>
+        <filter id="ns-${score}"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.25" /></filter>
+      </defs>
+      <path d="${bgArc}" stroke="#e4e4e7" stroke-width="8" stroke-linecap="round" class="dark:stroke-zinc-700" />
+      ${zonePaths}
+      <line x1="${cx}" y1="${cy}" x2="${needle.x}" y2="${needle.y}" stroke="${zoneColor}" stroke-width="2.5" stroke-linecap="round" filter="url(#ns-${score})" />
+      <circle cx="${cx}" cy="${cy}" r="4" fill="${zoneColor}" />
+      <text x="${cx}" y="${cy - 8}" text-anchor="middle" fill="currentColor" font-weight="700" font-size="20" font-family="Inter, system-ui, sans-serif" dominant-baseline="central">${clampedScore}</text>
+      <text x="${cx}" y="${cy + 14}" text-anchor="middle" fill="#52525b" font-size="12" font-family="Inter, system-ui, sans-serif" dominant-baseline="central">/ 100</text>
+      <text x="${cx}" y="${h - 4}" text-anchor="middle" fill="#52525b" font-size="9" font-family="Inter, system-ui, sans-serif" dominant-baseline="central">${label}</text>
+    </svg>`;
+  }
+
+  const allInputs = [employment, tenure, income, debts, downPayment, targetPrice, ef, credit];
+
+  function formatPrice(val: number): string {
+    return '$' + Math.round(val).toLocaleString('en-US');
+  }
+
+  income.addEventListener('input', () => { if (incomeDisplay) incomeDisplay.textContent = formatPrice(parseFloat(income.value)); recalculate(); });
+  debts.addEventListener('input', () => { if (debtsDisplay) debtsDisplay.textContent = formatPrice(parseFloat(debts.value)); recalculate(); });
+  downPayment.addEventListener('input', () => { if (dpDisplay) dpDisplay.textContent = formatPrice(parseFloat(downPayment.value)); recalculate(); });
+  targetPrice.addEventListener('input', () => { if (targetDisplay) targetDisplay.textContent = formatPrice(parseFloat(targetPrice.value)); recalculate(); });
+  allInputs.forEach(el => {
+    if (!['readiness-income', 'readiness-debts', 'readiness-downpayment', 'readiness-target'].includes(el.id)) {
+      el.addEventListener('change', recalculate);
+    }
+  });
+
+  recalculate();
+</script>

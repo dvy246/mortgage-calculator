@@ -1,0 +1,197 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import RentVsBuyDashboard from '../components/RentVsBuy/RentVsBuyDashboard.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const faqs = [
+  {
+    question: "How does the rent vs buy calculator work?",
+    answer: "This calculator compares the total financial outcome of buying a home versus renting over a time period you choose. For buying, it models the mortgage payment (principal and interest), property taxes, insurance, maintenance, HOA fees, PMI (if applicable), closing costs, and selling costs. For renting, it models monthly rent, rent increases, and renter's insurance. It also accounts for opportunity cost: your down payment and any monthly savings from renting are assumed to be invested at your chosen rate of return. The comparison shows which option leaves you with more net worth at the end of your time horizon."
+  },
+  {
+    question: "What is the break-even year in rent vs buy?",
+    answer: "The break-even year is the point at which buying a home becomes financially favorable compared to renting. In early years, buying typically costs more due to upfront closing costs and the fact that most of your mortgage payment goes toward interest rather than principal. Over time, home appreciation, principal paydown, and rent inflation can shift the balance. The break-even year varies significantly based on your home price, mortgage rate, down payment, rent costs, and how long you plan to stay."
+  },
+  {
+    question: "Does the calculator account for tax benefits of homeownership?",
+    answer: "The calculator includes simplified federal tax estimates. For homeowners, it models the primary residence capital gains exclusion (up to $250,000 for single filers, $500,000 for married filing jointly) and the ability to deduct mortgage interest and property taxes if you itemize deductions. For the rent scenario, it applies long-term capital gains tax (15%) on investment portfolio gains when liquidated. Tax calculations are simplified estimates and do not account for state taxes, AMT, or individual circumstances. Consult a CPA for your specific situation."
+  },
+  {
+    question: "What is opportunity cost in this context?",
+    answer: "Opportunity cost represents what you could have earned by investing your money elsewhere. When you buy a home, your down payment and closing costs are tied up in the property rather than invested in the stock market. When you rent, the calculator assumes your down payment is invested and earning compound returns at your chosen rate. If renting is cheaper monthly, those savings are also assumed to be invested. The opportunity cost comparison helps show the full financial picture beyond just monthly housing costs."
+  },
+  {
+    question: "What down payment percentage do I need?",
+    answer: "Down payment requirements vary by loan program. Conventional loans may accept as little as 3% down, FHA loans allow 3.5%, and VA and USDA loans may offer zero-down options. A down payment below 20% typically requires Private Mortgage Insurance (PMI), which increases your monthly payment. The calculator adds PMI when your down payment is below 20%. A 20% or higher down payment eliminates PMI and may result in more favorable loan terms."
+  },
+  {
+    question: "Should I include maintenance costs when comparing?",
+    answer: "Yes. Home maintenance is a real ongoing cost that renters do not face. A common guideline is to budget 1% to 2% of your home's value annually for maintenance and repairs. This covers everything from routine upkeep (lawn care, HVAC servicing) to major replacements (roof, HVAC system, water heater). The calculator uses 1% by default but you can adjust this based on the age and condition of the home you are considering."
+  },
+  {
+    question: "Will this calculator tell me whether to rent or buy?",
+    answer: "No. This calculator is an educational comparison tool that shows the financial math side of the rent versus buy decision. It does not recommend one option over the other. Many important factors are not captured in any calculator, including lifestyle preferences, job stability, family needs, desire for stability versus flexibility, and personal risk tolerance. Use this tool as one input among many in your decision-making process, and consult qualified real estate and financial professionals."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Rent vs Buy Calculator",
+      "url": "https://mortgagesintel.com/rent-vs-buy-calculator",
+      "description": "An interactive educational calculator that compares the financial outcomes of renting versus buying a home over any time horizon, including mortgage costs, rent, maintenance, taxes, and opportunity cost.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="Rent vs Buy Calculator – Compare Renting vs Buying a Home"
+  description="Compare the financial outcomes of renting versus buying a home. Interactive calculator with break-even analysis, after-tax estimates, and year-by-year comparison."
+  canonicalUrl="/rent-vs-buy-calculator"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="rent-vs-buy" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-0.5 text-3xs font-medium text-blue-600 dark:text-blue-400">Educational Tool</span>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Rent vs Buy Calculator</h1>
+      <p class="text-xs text-text-muted max-w-2xl">
+        Compare the financial math of renting versus buying a home. Adjust assumptions for home price, down payment, mortgage rate, rent, and time horizon to see which option aligns with your financial picture. This is an educational tool — not a recommendation.
+      </p>
+    </div>
+
+    <RentVsBuyDashboard />
+
+    <AdSlot format="horizontal" slot="4001" class="my-4" />
+
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 sm:p-6 space-y-5">
+      <h2 class="font-display text-base font-semibold text-text-main">Key Factors in the Rent vs Buy Decision</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-500 text-3xs font-bold">1</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Time Horizon</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            How long you plan to stay in the home is often the single most important factor. Buying involves significant upfront costs (closing costs, typically 2–5% of the price) and selling costs (typically 5–6% of the sale price). These costs are spread over your years of ownership — the longer you stay, the smaller their annual impact.
+          </p>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/10 text-blue-500 text-3xs font-bold">2</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Monthly Cost Comparison</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            The monthly cost of owning includes principal and interest, property taxes, homeowners insurance, maintenance reserves, HOA fees, and potentially PMI. Renting includes monthly rent and renter's insurance. In many markets, the monthly cost of buying exceeds renting for comparable homes, especially when mortgage rates are elevated.
+          </p>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/10 text-amber-500 text-3xs font-bold">3</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Opportunity Cost</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Money used for a down payment and closing costs cannot be invested elsewhere. Conversely, if renting costs less than buying each month, those monthly savings can be invested. This calculator models both scenarios: your down payment invested in the market and any monthly savings from renting also invested, helping you compare total net worth outcomes.
+          </p>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-violet-500/10 text-violet-500 text-3xs font-bold">4</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Home Appreciation</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Over time, homes generally increase in value. The calculator assumes a default annual appreciation rate of 3.5%, based on long-term national averages. Local markets vary significantly — some areas have appreciated much faster, while others have seen periods of flat or declining values. Adjust this assumption to match your local market expectations.
+          </p>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-rose-500/10 text-rose-500 text-3xs font-bold">5</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Rent Inflation</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Rents tend to rise over time. The calculator assumes a default annual rent increase of 3%, which approximates long-term national averages. In high-demand markets, rent growth can outpace this significantly. Rising rent costs are one reason buying can become more favorable over longer time horizons, as your mortgage payment remains fixed (for fixed-rate loans) while rent escalates.
+          </p>
+        </div>
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-cyan-500/10 text-cyan-500 text-3xs font-bold">6</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Tax Considerations</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Homeownership offers potential tax benefits: the mortgage interest deduction (if you itemize), property tax deduction (subject to SALT cap), and the primary residence capital gains exclusion ($250K single / $500K married). However, after the 2017 tax law changes, fewer than 10% of taxpayers itemize deductions. This calculator includes simplified federal tax estimates. State taxes are not modeled.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <MortgageGuide
+      title="Rent vs Buy"
+      subtitle="Understanding the financial trade-offs between renting and homeownership"
+      whatItDoes="This comparison calculator models the full financial picture of renting versus buying a home over any chosen time horizon. Unlike simple monthly payment comparisons, it accounts for upfront costs (down payment, closing costs, security deposits), ongoing costs (mortgage, taxes, insurance, maintenance, HOA, rent, rent increases), and opportunity cost (what your money could earn if invested instead of tied up in a home). The result shows you the break-even year, year-by-year net worth comparison, and which option leaves you better off financially under your chosen assumptions."
+      whenToUse="Use this calculator when you are trying to decide between continuing to rent or buying a home. It is most useful early in your decision-making process, before you start touring homes or applying for mortgages. The calculator is also valuable when considering a move: if you already own a home and are deciding whether to sell and rent or buy a new property. Adjusting the time horizon slider can help you understand how long you would need to stay in a home for buying to make financial sense."
+      howItWorks="The calculator runs two parallel financial models over your chosen time horizon. On the buy side, it amortizes the mortgage (principal and interest), adds property taxes, insurance, maintenance (at your chosen percentage), HOA fees, and PMI (if down payment is below 20%). It projects home appreciation and calculates net equity at exit after subtracting selling costs and applicable capital gains taxes. On the rent side, it models rent payments with annual increases, renter's insurance, and invests your down payment plus any monthly savings from renting into an investment portfolio at your chosen return rate. It then compares the after-tax net worth from both paths to determine the break-even point."
+      mistakes="A common mistake is comparing the mortgage payment alone against rent without including taxes, insurance, maintenance, and HOA. The true monthly cost of owning is significantly higher than P&I alone. Another frequent error is underestimating how long you will stay. Many buyers sell within 5-7 years, which is often before the break-even point — especially when mortgage rates are elevated. Overestimating home appreciation or underestimating maintenance costs can also lead to overly optimistic buy conclusions. Finally, renters often forget to account for rent increases over time, which can make buying more attractive over longer horizons."
+      faqs={faqs}
+    />
+
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 sm:p-6 space-y-4">
+      <h2 class="font-display text-sm font-semibold text-text-main">Related Tools</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <a href="/house-affordability-calculator" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">House Affordability Calculator</span>
+            <span class="block text-3xs text-text-muted truncate">Set a realistic home buying budget</span>
+          </div>
+        </a>
+        <a href="/mortgage-readiness-score" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">Mortgage Readiness Score</span>
+            <span class="block text-3xs text-text-muted truncate">Assess your financial readiness</span>
+          </div>
+        </a>
+        <a href="/compare/" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">Comparison Tools</span>
+            <span class="block text-3xs text-text-muted truncate">Compare loan types and strategies</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <Disclaimer />
+  </main>
+
+  <Footer />
+</Layout>

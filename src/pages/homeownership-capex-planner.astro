@@ -1,0 +1,577 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+// YMYL Safety FAQs and disclaimers
+const faqs = [
+  {
+    question: "What is a home maintenance sinking fund?",
+    answer: "A sinking fund is a separate savings reserve specifically set aside for a future cash expenditure. Unlike a general emergency fund, a home maintenance sinking fund is destined to be spent, because physical home systems (like roofs and water heaters) degrade on predictable chronological lifespans. Having a dedicated fund prevents you from using high-interest credit cards or home equity loans when systems fail."
+  },
+  {
+    question: "Is the 1% annual maintenance rule accurate?",
+    answer: "The 1% rule (saving 1% of home value annually) is a useful starting point but is often highly inaccurate. It does not account for the age of your major systems. A 100-year-old historic home with a 20-year-old roof requires far more immediate savings than a brand-new home of the same value. A bottom-up component-based calculation is much more reliable."
+  },
+  {
+    question: "Do home warranties cover all these replacements?",
+    answer: "Home warranties typically cover mechanical breakdowns of appliances and systems (like HVAC electrical failures or leaking water heaters), but they do not cover structural elements like roofs, siding, or cosmetic renovations. A home warranty can act as a secondary buffer to protect your sinking fund from premature failures, but it is not a replacement for a CapEx plan."
+  }
+];
+---
+
+<Layout 
+  title="30-Year Homeownership CapEx & Sinking Fund Planner"
+  description="Plan for the long-term maintenance and replacement costs of your home. Model a custom 30-year capital expenditure (CapEx) replacement timeline and calculate your monthly sinking fund reserves."
+  canonicalUrl="/homeownership-capex-planner"
+>
+  <Header activeSlug="capex-planner" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <!-- Header Section -->
+    <div class="space-y-4">
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl lg:text-4xl tracking-tight">
+        30-Year Homeownership <span class="text-brand-accent">CapEx & Sinking Fund Planner</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-text-muted max-w-3xl leading-relaxed">
+        Home ownership comes with "phantom costs". Roofs, HVACs, and water heaters have finite lifespans. This tool helps you calculate when major expenses will hit and how much you must save monthly starting today to avoid taking on high-interest debt.
+      </p>
+    </div>
+
+    <!-- AdSense Notice and Safety Banner -->
+    <div class="rounded-xl border border-warning/30 bg-warning/5 p-4 text-xs text-text-muted space-y-2 leading-relaxed">
+      <div class="flex items-center gap-2 font-bold text-warning">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span>Consumer Advisory & Disclaimer</span>
+      </div>
+      <p>
+        <strong>Disclaimer:</strong> This application is for educational and planning purposes only. Lifespan schedules are based on typical manufacturer warranties and national construction trade averages. Contractor labor rates and material costs can vary dramatically by geography and economic inflation. We recommend consulting a licensed general contractor or home inspector for site-specific evaluations. All calculation operations run in your browser; no user data is collected.
+      </p>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- LEFT: Inputs (Sliders & Dropdowns for systems) (7 Cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- General Property Info -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main flex items-center gap-2">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary text-bg-main text-3xs font-bold">1</span>
+            General Property Parameters
+          </h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label for="home-size-input" class="text-xs font-semibold text-text-muted">Home Size (Square Footage)</label>
+              <div class="relative">
+                <input 
+                  type="number" 
+                  id="home-size-input" 
+                  value="2000" 
+                  step="100"
+                  class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:border-border-focus focus:outline-none"
+                />
+                <span class="absolute right-3 top-2 text-3xs text-text-muted">sq ft</span>
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <label for="seed-input" class="text-xs font-semibold text-text-muted">Starting Sinking Fund Seed (Current Savings)</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2 text-xs text-text-muted">$</span>
+                <input 
+                  type="number" 
+                  id="seed-input" 
+                  value="1000" 
+                  step="500"
+                  class="h-9 w-full rounded-md border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:border-border-focus focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Major Systems Setup -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-5 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main flex items-center gap-2 border-b border-border-subtle pb-3">
+            <span class="flex h-5 w-5 items-center justify-center rounded-full bg-brand-primary text-bg-main text-3xs font-bold">2</span>
+            Current Age & Replacement Cost of Home Systems
+          </h2>
+
+          <div class="space-y-6">
+            
+            <!-- Roof -->
+            <div class="space-y-2.5">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-text-main">1. Roof System</span>
+                <span class="text-3xs text-text-muted">Estimated Replacement Cost: <strong class="text-text-main font-tabular" id="cost-roof-display">$12,000</strong></span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <span class="text-3xs text-text-muted font-semibold">Roof Material Type</span>
+                  <select id="material-roof" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main focus:outline-none">
+                    <option value="asphalt" data-cost="10000" data-life="20">Asphalt Shingles (20 Yr Life)</option>
+                    <option value="metal" data-cost="22000" data-life="50">Metal Roofing (50 Yr Life)</option>
+                    <option value="tile" data-cost="30000" data-life="50">Clay / Concrete Tile (50 Yr Life)</option>
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex justify-between text-3xs text-text-muted font-semibold">
+                    <span>Current Age</span>
+                    <span id="age-roof-val" class="font-bold text-text-main">12 Yrs old</span>
+                  </div>
+                  <input type="range" id="age-roof" min="0" max="30" value="12" class="w-full" />
+                </div>
+              </div>
+            </div>
+
+            <!-- HVAC System -->
+            <div class="space-y-2.5">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-text-main">2. HVAC System (Heating & AC)</span>
+                <span class="text-3xs text-text-muted">Estimated Replacement Cost: <strong class="text-text-main font-tabular" id="cost-hvac-display">$8,500</strong></span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <span class="text-3xs text-text-muted font-semibold">HVAC Quality / Type</span>
+                  <select id="type-hvac" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main focus:outline-none">
+                    <option value="standard" data-cost="7500" data-life="15">Standard System (15 Yr Life)</option>
+                    <option value="premium" data-cost="12000" data-life="20">Premium Heat Pump (20 Yr Life)</option>
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex justify-between text-3xs text-text-muted font-semibold">
+                    <span>Current Age</span>
+                    <span id="age-hvac-val" class="font-bold text-text-main">5 Yrs old</span>
+                  </div>
+                  <input type="range" id="age-hvac" min="0" max="25" value="5" class="w-full" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Water Heater -->
+            <div class="space-y-2.5">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-text-main">3. Water Heater</span>
+                <span class="text-3xs text-text-muted">Estimated Replacement Cost: <strong class="text-text-main font-tabular" id="cost-water-display">$2,200</strong></span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <span class="text-3xs text-text-muted font-semibold">Water Heater Type</span>
+                  <select id="type-water" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main focus:outline-none">
+                    <option value="tank" data-cost="1800" data-life="10">Standard Tank (10 Yr Life)</option>
+                    <option value="tankless" data-cost="3200" data-life="20">Tankless Gas (20 Yr Life)</option>
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex justify-between text-3xs text-text-muted font-semibold">
+                    <span>Current Age</span>
+                    <span id="age-water-val" class="font-bold text-text-main">6 Yrs old</span>
+                  </div>
+                  <input type="range" id="age-water" min="0" max="20" value="6" class="w-full" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Kitchen Appliances -->
+            <div class="space-y-2.5">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-text-main">4. Kitchen & Laundry Appliances</span>
+                <span class="text-3xs text-text-muted">Estimated Replacement Cost: <strong class="text-text-main font-tabular" id="cost-appliances-display">$4,500</strong></span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                  <span class="text-3xs text-text-muted font-semibold">Appliance Package Tier</span>
+                  <select id="tier-appliances" class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-xs text-text-main focus:outline-none">
+                    <option value="standard" data-cost="4000" data-life="12">Standard Package (12 Yr Life)</option>
+                    <option value="premium" data-cost="8000" data-life="15">Premium Built-in (15 Yr Life)</option>
+                  </select>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex justify-between text-3xs text-text-muted font-semibold">
+                    <span>Current Age</span>
+                    <span id="age-appliances-val" class="font-bold text-text-main">3 Yrs old</span>
+                  </div>
+                  <input type="range" id="age-appliances" min="0" max="15" value="3" class="w-full" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Sinking Fund Scorecard & Visual Timeline (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-20">
+        
+        <!-- Sinking Fund Target Card -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-5 shadow-md">
+          <h2 class="font-display text-sm font-semibold text-text-main border-b border-border-subtle pb-2">Reserve Sinking Fund</h2>
+          
+          <div class="bg-bg-main p-4 rounded-lg border border-border-subtle text-center">
+            <span class="text-3xs text-text-muted font-bold uppercase tracking-wider block">Recommended Monthly Savings</span>
+            <span class="text-2xl font-extrabold text-brand-accent font-tabular block" id="recommended-monthly-savings">$0</span>
+            <span class="text-4xs text-text-muted block mt-1">To ensure reserve balance remains positive for 30 years</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-text-muted">Total 30-Year CapEx Cost:</span>
+              <span id="total-capex-cost" class="font-bold text-text-main font-tabular">$0</span>
+            </div>
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-text-muted">First Peak Cost Year:</span>
+              <span id="first-peak-year" class="font-bold text-text-main">Year --</span>
+            </div>
+            <div id="timeline-insight" class="text-3xs text-text-muted leading-relaxed bg-bg-main p-3 rounded-lg border border-border-subtle">
+              Analyzing system lifespans...
+            </div>
+          </div>
+
+          <!-- High-Ticket Affiliate CTA (Home Warranty) -->
+          <div class="border-t border-border-subtle pt-4 space-y-3">
+            <div class="text-3xs text-text-muted font-semibold leading-relaxed">
+              * Shield your savings from premature appliance or HVAC breakdowns. Get custom protection quotes.
+            </div>
+            <a 
+              href="https://www.choicehomewarranty.com/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-full inline-flex h-9 items-center justify-center rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-sm hover:shadow transition-all text-center"
+            >
+              Get Choice Home Warranty Quotes
+            </a>
+          </div>
+        </div>
+
+        <!-- 30-Year SVG Expense Bar Chart -->
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h3 class="font-display text-sm font-semibold text-text-main flex items-center justify-between">
+            <span>Chronological CapEx Schedule</span>
+            <span class="text-4xs text-text-muted font-bold">30-Year Horizon</span>
+          </h3>
+
+          <div class="h-44 w-full relative select-none">
+            <svg viewBox="0 0 300 150" class="w-full h-full" id="capex-bar-chart">
+              <!-- Y-Axis grids -->
+              <line x1="20" y1="10" x2="20" y2="130" stroke="var(--border-subtle)" stroke-width="1" />
+              <line x1="20" y1="130" x2="295" y2="130" stroke="var(--border-subtle)" stroke-width="1" />
+              
+              <!-- Content rendered dynamically via JS -->
+              <g id="bars-group"></g>
+              <g id="labels-group"></g>
+            </svg>
+          </div>
+          
+          <div class="text-center text-4xs text-text-muted bg-bg-main py-1.5 px-3 rounded border border-border-subtle leading-tight" id="chart-scrub-hint">
+            Hover over bars to inspect scheduled replacements
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Educational Content (YMYL Safety & Topical Authority) -->
+    <div class="border-t border-border-subtle pt-10 space-y-6">
+      <h2 class="font-display text-lg font-bold text-text-main sm:text-xl">
+        Owner's Guide: Managing Home Capital Expenditures (CapEx)
+      </h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs sm:text-sm text-text-muted leading-relaxed">
+        <div class="space-y-4">
+          <h3 class="font-display font-semibold text-text-main">What is CapEx vs. Routine Maintenance?</h3>
+          <p>
+            Homeownership costs fall into two categories:
+          </p>
+          <ul class="list-disc list-inside pl-2 space-y-1">
+            <li><strong>Routine Maintenance (OpEx):</strong> Small recurring costs required to keep things operational. Examples include gutter cleaning, HVAC filter swaps, lawn care, or minor painting. These should be paid out of your monthly checking account.</li>
+            <li><strong>Capital Expenditures (CapEx):</strong> Periodic, major costs required to replace large structural elements or mechanical appliances when they reach the end of their useful lives. Examples include a new roof, new siding, replacing a HVAC heat pump, or grading a driveway. These must be funded from your sinking fund savings.</li>
+          </ul>
+        </div>
+        <div class="space-y-4">
+          <h3 class="font-display font-semibold text-text-main">How to Optimize Sinking Fund Performance</h3>
+          <p>
+            Do not keep your CapEx sinking fund in a traditional brick-and-mortar savings account yielding 0.01%. Because these expenses occur years in the future, storing your sinking fund in a High-Yield Savings Account (HYSA) or a ladder of Certificates of Deposit (CDs) earning 4%–5% interest can offset construction material inflation.
+          </p>
+          <p>
+            Review and adjust your sinking fund targets annually. Every time you replace a system, adjust its age to 0 in your planner to reset the timeline.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Accordion -->
+    <div class="border-t border-border-subtle pt-10 space-y-6">
+      <h2 class="font-display text-lg font-bold text-text-main sm:text-xl">Frequently Asked Questions</h2>
+      <dl class="space-y-6 max-w-4xl">
+        {faqs.map(faq => (
+          <div class="space-y-2">
+            <dt class="font-display text-sm font-semibold text-text-main">{faq.question}</dt>
+            <dd class="text-xs sm:text-sm text-text-muted leading-relaxed">{faq.answer}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  // DOM Elements
+  const homeSizeInput = document.getElementById('home-size-input') as HTMLInputElement;
+  const seedInput = document.getElementById('seed-input') as HTMLInputElement;
+  
+  const materialRoof = document.getElementById('material-roof') as HTMLSelectElement;
+  const ageRoof = document.getElementById('age-roof') as HTMLInputElement;
+  const ageRoofVal = document.getElementById('age-roof-val');
+  const costRoofDisplay = document.getElementById('cost-roof-display');
+
+  const typeHVAC = document.getElementById('type-hvac') as HTMLSelectElement;
+  const ageHVAC = document.getElementById('age-hvac') as HTMLInputElement;
+  const ageHVACVal = document.getElementById('age-hvac-val');
+  const costHVACDisplay = document.getElementById('cost-hvac-display');
+
+  const typeWater = document.getElementById('type-water') as HTMLSelectElement;
+  const ageWater = document.getElementById('age-water') as HTMLInputElement;
+  const ageWaterVal = document.getElementById('age-water-val');
+  const costWaterDisplay = document.getElementById('cost-water-display');
+
+  const tierAppliances = document.getElementById('tier-appliances') as HTMLSelectElement;
+  const ageAppliances = document.getElementById('age-appliances') as HTMLInputElement;
+  const ageAppliancesVal = document.getElementById('age-appliances-val');
+  const costAppliancesDisplay = document.getElementById('cost-appliances-display');
+
+  const recommendedMonthlySavings = document.getElementById('recommended-monthly-savings');
+  const totalCapexCost = document.getElementById('total-capex-cost');
+  const firstPeakYear = document.getElementById('first-peak-year');
+  const timelineInsight = document.getElementById('timeline-insight');
+
+  const barsGroup = document.getElementById('bars-group');
+  const labelsGroup = document.getElementById('labels-group');
+  const chartScrubHint = document.getElementById('chart-scrub-hint');
+
+  function calculateCapEx() {
+    const homeSize = parseFloat(homeSizeInput.value) || 0;
+    const initialSeed = parseFloat(seedInput.value) || 0;
+
+    // Roof System parameters
+    const selectedRoof = materialRoof.options[materialRoof.selectedIndex];
+    const roofBaseCost = parseFloat(selectedRoof.getAttribute('data-cost'));
+    const roofLifespan = parseFloat(selectedRoof.getAttribute('data-life'));
+    const roofAge = parseFloat(ageRoof.value);
+    // Scale roof cost according to house size (baseline represents 2000 sqft)
+    const roofCost = Math.round(roofBaseCost * (homeSize / 2000));
+    if (ageRoofVal) ageRoofVal.textContent = `${roofAge} Yrs old`;
+    if (costRoofDisplay) costRoofDisplay.textContent = `$${roofCost.toLocaleString()}`;
+
+    // HVAC parameters
+    const selectedHVAC = typeHVAC.options[typeHVAC.selectedIndex];
+    const hvacBaseCost = parseFloat(selectedHVAC.getAttribute('data-cost'));
+    const hvacLifespan = parseFloat(selectedHVAC.getAttribute('data-life'));
+    const hvacAge = parseFloat(ageHVAC.value);
+    const hvacCost = Math.round(hvacBaseCost * (homeSize / 2000));
+    if (ageHVACVal) ageHVACVal.textContent = `${hvacAge} Yrs old`;
+    if (costHVACDisplay) costHVACDisplay.textContent = `$${hvacCost.toLocaleString()}`;
+
+    // Water Heater parameters
+    const selectedWater = typeWater.options[typeWater.selectedIndex];
+    const waterCost = parseFloat(selectedWater.getAttribute('data-cost'));
+    const waterLifespan = parseFloat(selectedWater.getAttribute('data-life'));
+    const waterAge = parseFloat(ageWater.value);
+    if (ageWaterVal) ageWaterVal.textContent = `${waterAge} Yrs old`;
+    if (costWaterDisplay) costWaterDisplay.textContent = `$${waterCost.toLocaleString()}`;
+
+    // Appliance package parameters
+    const selectedAppliances = tierAppliances.options[tierAppliances.selectedIndex];
+    const appliancesCost = parseFloat(selectedAppliances.getAttribute('data-cost'));
+    const appliancesLifespan = parseFloat(selectedAppliances.getAttribute('data-life'));
+    const appliancesAge = parseFloat(ageAppliances.value);
+    if (ageAppliancesVal) ageAppliancesVal.textContent = `${appliancesAge} Yrs old`;
+    if (costAppliancesDisplay) costAppliancesDisplay.textContent = `$${appliancesCost.toLocaleString()}`;
+
+    // Build the 30-Year Chronological Expense Schedule
+    // Array of 30 items representing expenses scheduled for Year 1 to Year 30
+    const yearlyExpenses = new Array(30).fill(0);
+    const yearlyBreakdowns = new Array(30).fill(null).map(() => []);
+
+    const scheduleSystem = (name: string, age: number, lifespan: number, cost: number) => {
+      let yearsLeft = lifespan - age;
+      if (yearsLeft <= 0) {
+        // Immediate replacement in Year 1
+        yearsLeft = 0;
+      }
+      
+      let replaceYear = yearsLeft;
+      while (replaceYear < 30) {
+        yearlyExpenses[replaceYear] += cost;
+        yearlyBreakdowns[replaceYear].push(`${name} ($${cost.toLocaleString()})`);
+        replaceYear += lifespan; // Scheduled again after its standard lifespan
+      }
+    };
+
+    scheduleSystem("Roof Replacement", roofAge, roofLifespan, roofCost);
+    scheduleSystem("HVAC Replacement", hvacAge, hvacLifespan, hvacCost);
+    scheduleSystem("Water Heater", waterAge, waterLifespan, waterCost);
+    scheduleSystem("Appliances Package", appliancesAge, appliancesLifespan, appliancesCost);
+
+    // Add standard structural reserves (painting, siding, deck maintenance etc. scheduled regularly)
+    yearlyExpenses[4] += Math.round(1500 * (homeSize / 2000));
+    yearlyBreakdowns[4].push(`Exterior Painting ($${Math.round(1500 * (homeSize / 2000)).toLocaleString()})`);
+    
+    yearlyExpenses[14] += Math.round(1500 * (homeSize / 2000));
+    yearlyBreakdowns[14].push(`Exterior Painting ($${Math.round(1500 * (homeSize / 2000)).toLocaleString()})`);
+    
+    yearlyExpenses[24] += Math.round(1500 * (homeSize / 2000));
+    yearlyBreakdowns[24].push(`Exterior Painting ($${Math.round(1500 * (homeSize / 2000)).toLocaleString()})`);
+
+    // Math Sinking Fund Optimization
+    // We want to find the minimum monthly savings rate S (for S >= 0) such that the running
+    // reserve balance remains >= 0 at all times, starting with initialSeed.
+    // Monthly calculations:
+    let minMonthlyS = 0;
+    
+    // We analyze cumulative monthly steps:
+    // Let expenses occur at the END of each year.
+    // We can run a scan to find the bottleneck:
+    let cumulativeExpenses = 0;
+    for (let yr = 0; yr < 30; yr++) {
+      cumulativeExpenses += yearlyExpenses[yr];
+      const totalMonthsElapsed = (yr + 1) * 12;
+      // Reserve balance constraint: initialSeed + totalMonthsElapsed * S - cumulativeExpenses >= 0
+      // S >= (cumulativeExpenses - initialSeed) / totalMonthsElapsed
+      const s = (cumulativeExpenses - initialSeed) / totalMonthsElapsed;
+      if (s > minMonthlyS) {
+        minMonthlyS = s;
+      }
+    }
+
+    const monthlySinkingTarget = Math.max(0, Math.ceil(minMonthlyS));
+    const total30YearCapEx = yearlyExpenses.reduce((a, b) => a + b, 0);
+
+    // Update Scorecards
+    if (recommendedMonthlySavings) recommendedMonthlySavings.textContent = `$${monthlySinkingTarget.toLocaleString()}`;
+    if (totalCapexCost) totalCapexCost.textContent = `$${total30YearCapEx.toLocaleString()}`;
+
+    // Find first year with major cost
+    let firstPeakYr = -1;
+    for (let yr = 0; yr < 30; yr++) {
+      if (yearlyExpenses[yr] > 2000) {
+        firstPeakYr = yr + 1;
+        break;
+      }
+    }
+
+    if (firstPeakYear) {
+      firstPeakYear.textContent = firstPeakYr !== -1 ? `Year ${firstPeakYr}` : "None";
+    }
+
+    if (timelineInsight) {
+      if (monthlySinkingTarget > 200) {
+        timelineInsight.innerHTML = `⚠️ High immediate CapEx risk. Your systems are aging and will require major replacements starting around Year <strong>${firstPeakYr !== -1 ? firstPeakYr : '--'}</strong>. Saving <strong>$${monthlySinkingTarget}</strong> monthly prevents taking out high-interest loans.`;
+      } else if (monthlySinkingTarget > 50) {
+        timelineInsight.innerHTML = `👉 Moderate reserve target. Your home systems have staggered lifespans, distributing replacements evenly. Saving <strong>$${monthlySinkingTarget}</strong> monthly provides a safe margin.`;
+      } else {
+        timelineInsight.innerHTML = `✅ Excellent system status. With your current starting seed, a nominal savings rate of <strong>$${monthlySinkingTarget}</strong> is sufficient to cover planned system lifecycles.`;
+      }
+    }
+
+    // Render the SVG bar chart
+    renderSVGBarChart(yearlyExpenses, yearlyBreakdowns);
+  }
+
+  function renderSVGBarChart(yearlyExpenses: number[], yearlyBreakdowns: string[][]) {
+    if (!barsGroup || !labelsGroup) return;
+    barsGroup.innerHTML = "";
+    labelsGroup.innerHTML = "";
+
+    const chartWidth = 275;
+    const chartHeight = 120;
+    const marginX = 20;
+    const marginY = 10;
+    const barWidth = 6;
+    const spacing = (chartWidth - (30 * barWidth)) / 29;
+
+    const maxExpense = Math.max(1000, ...yearlyExpenses);
+
+    yearlyExpenses.forEach((exp, yr) => {
+      const x = marginX + yr * (barWidth + spacing);
+      const h = (exp / maxExpense) * chartHeight;
+      const y = marginY + chartHeight - h;
+
+      // Draw SVG rectangle bar
+      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("x", String(x));
+      rect.setAttribute("y", String(y));
+      rect.setAttribute("width", String(barWidth));
+      rect.setAttribute("height", String(h));
+      rect.setAttribute("rx", "1.5");
+      rect.setAttribute("fill", exp > 5000 ? "var(--color-danger)" : exp > 2000 ? "var(--color-warning)" : exp > 0 ? "var(--color-brand-accent)" : "var(--border-subtle)");
+      rect.setAttribute("class", "cursor-pointer transition-all hover:opacity-85");
+      
+      // Interactive event attributes
+      rect.addEventListener('mouseenter', () => {
+        rect.setAttribute("fill", "#6366f1"); // Highlight active bar
+        if (chartScrubHint) {
+          const breakdown = yearlyBreakdowns[yr].length > 0 ? yearlyBreakdowns[yr].join(" + ") : "Routine Maintenance";
+          chartScrubHint.innerHTML = `<strong>Year ${yr + 1} Scheduled:</strong> $${exp.toLocaleString()} (${breakdown})`;
+          chartScrubHint.className = "text-center text-4xs text-brand-accent bg-blue-500/10 py-1.5 px-3 rounded border border-blue-500/20 font-semibold leading-tight";
+        }
+      });
+
+      rect.addEventListener('mouseleave', () => {
+        rect.setAttribute("fill", exp > 5000 ? "var(--color-danger)" : exp > 2000 ? "var(--color-warning)" : exp > 0 ? "var(--color-brand-accent)" : "var(--border-subtle)");
+        if (chartScrubHint) {
+          chartScrubHint.textContent = "Hover over bars to inspect scheduled replacements";
+          chartScrubHint.className = "text-center text-4xs text-text-muted bg-bg-main py-1.5 px-3 rounded border border-border-subtle leading-tight";
+        }
+      });
+
+      barsGroup.appendChild(rect);
+
+      // X-Axis Year Labels (Yr 5, 10, 15, 20, 25, 30)
+      if ((yr + 1) % 5 === 0) {
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", String(x + barWidth / 2));
+        text.setAttribute("y", "142");
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("fill", "var(--text-muted)");
+        text.setAttribute("font-size", "7px");
+        text.setAttribute("font-family", "var(--font-sans)");
+        text.setAttribute("font-weight", "600");
+        text.textContent = `Yr ${yr + 1}`;
+        labelsGroup.appendChild(text);
+
+        // Vertical tick lines behind bars
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", String(x + barWidth / 2));
+        line.setAttribute("y1", "10");
+        line.setAttribute("x2", String(x + barWidth / 2));
+        line.setAttribute("y2", "130");
+        line.setAttribute("stroke", "var(--border-subtle)");
+        line.setAttribute("stroke-width", "0.5");
+        line.setAttribute("stroke-dasharray", "1 2");
+        labelsGroup.appendChild(line);
+      }
+    });
+  }
+
+  // Bind change listeners to all elements
+  homeSizeInput.addEventListener('input', calculateCapEx);
+  seedInput.addEventListener('input', calculateCapEx);
+  materialRoof.addEventListener('change', calculateCapEx);
+  ageRoof.addEventListener('input', calculateCapEx);
+  typeHVAC.addEventListener('change', calculateCapEx);
+  ageHVAC.addEventListener('input', calculateCapEx);
+  typeWater.addEventListener('change', calculateCapEx);
+  ageWater.addEventListener('input', calculateCapEx);
+  tierAppliances.addEventListener('change', calculateCapEx);
+  ageAppliances.addEventListener('input', calculateCapEx);
+
+  // Run initial calculation
+  calculateCapEx();
+</script>

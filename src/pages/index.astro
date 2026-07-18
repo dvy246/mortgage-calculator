@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ScenarioComparer from '../components/Calculator/ScenarioComparer.astro';
+import MiniMortgageForm from '../components/Calculator/MiniMortgageForm.astro';
 
 const calculators = [
   {
@@ -34,31 +35,58 @@ const calculators = [
     href: "/mortgage-calculator-with-pmi",
     description: "Estimate monthly Private Mortgage Insurance costs for down payments below 20%. Calculate exactly when PMI will automatically terminate.",
     icon: `<svg class="h-6 w-6 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>`
+  },
+  {
+    name: "Lender Loan Estimate Auditor",
+    href: "/lender-fee-auditor",
+    description: "Audit closing fees from your lender Loan Estimate. Identify inflated junk charges, compare settlement costs, and generate negotiation drafts.",
+    icon: `<svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>`
+  },
+  {
+    name: "30-Year Homeownership CapEx Planner",
+    href: "/homeownership-capex-planner",
+    description: "Model future replacement cycles for your roof, HVAC, and major systems. Calculate monthly sinking fund targets to prevent debt.",
+    icon: `<svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m0 4h3m-3 0H5m3 10v-4m0 4h3m-3 0H5m14 0V3m0 14h-3m3 0h3m-3-10V3m0 4h-3m3 0h3" /></svg>`
+  },
+  {
+    name: "Co-Buying Mortgage Equity Splitter",
+    href: "/co-buying-equity-splitter",
+    description: "Calculate dynamic equity shifts over time for unmarried co-buyers with unequal contributions. Configure co-ownership exit and buyout terms.",
+    icon: `<svg class="h-6 w-6 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`
   }
 ];
 
-const guides = [
-  { title: "First-Time Home Buyer Guide", slug: "first-time-home-buyer-guide", desc: "A comprehensive handbook navigating credit approval, down payments, and closing fees.", category: "Home Buying" },
-  { title: "PMI Removal Guide", slug: "pmi-removal-guide", desc: "Learn the rules to cancel private mortgage insurance and save hundreds monthly.", category: "Escrow" },
-  { title: "FHA vs Conventional Loans", slug: "fha-vs-conventional-loans", desc: "Compare guidelines, down payment minimums, and insurance rates side-by-side.", category: "Loan Programs" },
-  { title: "Mortgage Closing Costs Explained", slug: "mortgage-closing-costs-explained", desc: "A breakdown of lender fees, escrow accounts, and transfer taxes.", category: "Home Buying" },
-  { title: "Average Mortgage Rates by State", slug: "average-mortgage-rates-by-state", desc: "Explore local interest trends and macroeconomic regional variables.", category: "Research & Data" },
-  { title: "Mortgage Rates Guide: Primary Market Drivers", slug: "mortgage-rates-guide", desc: "Analyze the macroeconomic variables, bond yields, and credit spreads that dictate interest rates.", category: "Research & Data" },
-  { title: "Conforming Loan Limits & Regulations", slug: "conforming-loans-guide", desc: "Learn what conforming loans are, FHFA guidelines, and current lending limits.", category: "Loan Programs" },
-  { title: "What is a Jumbo Loan & How to Qualify", slug: "jumbo-loans-guide", desc: "Understand the requirements, interest rates, and guidelines for high-value mortgages.", category: "Loan Programs" },
-  { title: "How Loan Amortization Schedules Work", slug: "loan-amortization-guide", desc: "Demystify principal and interest payments, amortization curves, and equity growth.", category: "Mortgage Math" },
-  { title: "Buying Down Your Interest Rate with Points", slug: "mortgage-points-guide", desc: "Evaluate whether paying upfront discount points makes sense for your ownership horizon.", category: "Mortgage Math" },
-  { title: "How Property Taxes & Escrow Accounts Function", slug: "property-taxes-escrow-guide", desc: "Understand the roles of tax assessments, insurance prepaids, and monthly escrow statements.", category: "Escrow" },
-  { title: "Understanding Front-End and Back-End DTI Ratios", slug: "dti-ratio-explained-guide", desc: "Master the DTI guidelines lenders use to assess your borrowing limit.", category: "Debt Management" },
-  { title: "Bi-Weekly Payments: Shave Years Off Your Mortgage", slug: "biweekly-payments-guide", desc: "Learn how restructuring your payment frequency bypasses interest and shortens terms.", category: "Prepayments" },
-  { title: "Making a Lump Sum Mortgage Prepayment", slug: "lump-sum-prepayment-guide", desc: "Model the impact of a one-time principal paydown on your interest and term.", category: "Prepayments" },
-  { title: "Rate Locks & Float-Down Agreements", slug: "rate-lock-agreements-guide", desc: "Protect your loan pricing against market volatility during mortgage processing.", category: "Interest Rates" },
-  { title: "Refinancing: Cash-Out vs. Rate-and-Term", slug: "equity-and-refinance-guide", desc: "Compare refinance structures to lower interest costs or extract equity.", category: "Refinance" },
-  { title: "Understanding Refinance Closing Costs", slug: "refinance-closing-costs-guide", desc: "Understand the fees, appraisal costs, and reserves required to refinance.", category: "Refinance" },
-  { title: "How HOA Fees Impact Home Purchasing Power", slug: "hoa-fees-affordability-guide", desc: "Analyze the hidden effect of monthly association dues on your debt capacity.", category: "Home Buying" },
-  { title: "Choosing Homeowners Insurance for Your Escrow", slug: "homeowners-insurance-guide", desc: "Learn how hazard insurance premiums affect your escrow buffer and cash flow.", category: "Escrow" },
-  { title: "How Your Credit Score Influences Mortgage APR", slug: "credit-score-mortgage-guide", desc: "Optimize your credit profile to qualify for the best interest rates.", category: "Debt Management" }
-];
+import { guidesDatabase } from '../data/guides';
+
+const guides = Object.entries(guidesDatabase).map(([key, value]) => {
+  const slug = key === "first-time" ? "first-time-home-buyer-guide" :
+               key === "pmi-removal" ? "pmi-removal-guide" :
+               key === "fha-vs-conv" ? "fha-vs-conventional-loans" :
+               key === "closing-costs" ? "mortgage-closing-costs-explained" :
+               key === "state-rates" ? "average-mortgage-rates-by-state" :
+               key === "mortgage-rates" ? "mortgage-rates-guide" :
+               key === "conforming-loans" ? "conforming-loans-guide" :
+               key === "jumbo-loans" ? "jumbo-loans-guide" :
+               key === "loan-amortization" ? "loan-amortization-guide" :
+               key === "mortgage-points" ? "mortgage-points-guide" :
+               key === "property-taxes-escrow" ? "property-taxes-escrow-guide" :
+               key === "dti-ratio-explained" ? "dti-ratio-explained-guide" :
+               key === "biweekly-payments" ? "biweekly-payments-guide" :
+               key === "lump-sum-prepayment" ? "lump-sum-prepayment-guide" :
+               key === "rate-lock-agreements" ? "rate-lock-agreements-guide" :
+               key === "equity-and-refinance" ? "equity-and-refinance-guide" :
+               key === "refinance-closing-costs" ? "refinance-closing-costs-guide" :
+               key === "hoa-fees-affordability" ? "hoa-fees-affordability-guide" :
+               key === "homeowners-insurance" ? "homeowners-insurance-guide" :
+               key === "credit-score-mortgage" ? "credit-score-mortgage-guide" : "";
+               
+  return {
+    title: value.title,
+    slug,
+    desc: value.description,
+    category: value.category
+  };
+});
 
 const faqs = [
   {
@@ -301,12 +329,25 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
     </div>
 
     <!-- Comparative Engine Section -->
-    <div class="space-y-4">
-      <h2 class="font-display text-xl font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">Compare Scenarios</h2>
+    <div class="space-y-6">
+      <h2 class="font-display text-xl font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">Scenario Workspace</h2>
       <p class="text-sm text-text-muted max-w-2xl">
-        Adjust parameters on any of our calculators to lock in options. They will automatically sync to your comparison panel below.
+        Build and compare multiple mortgage scenarios side by side. Create scenarios using the form below or adjust parameters on any calculator.
       </p>
-      <ScenarioComparer />
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-4">
+          <MiniMortgageForm 
+            defaultHomePrice={400000}
+            defaultDownPayment={80000}
+            defaultRate={6.5}
+            defaultTerm={30}
+            scenarioPrefix="Scenario"
+          />
+        </div>
+        <div class="lg:col-span-8">
+          <ScenarioComparer />
+        </div>
+      </div>
     </div>
 
     <!-- Topical Authority Hub -->
@@ -453,55 +494,51 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
       </div>
     </div>
 
-    <!-- SEO Informational Section (600+ words targetting keywords) -->
     <section class="border-t border-border-subtle pt-12 mt-16 space-y-8 text-xs sm:text-sm text-text-muted leading-relaxed max-w-5xl mx-auto">
       <div class="space-y-4">
         <h2 class="font-display text-xl font-bold text-text-main tracking-tight">
-          Strategic Home Finance: Navigating the Mortgage &amp; Home Buying Ecosystem
+          Understanding Home Loans and Mortgage Carrying Costs
         </h2>
         <p>
-          Securing a <strong>house mortgage</strong> is one of the most significant financial milestones in an individual's lifetime. Whether you are searching for a <strong>simple mortgage calculator</strong> to estimate basic payments, or a comprehensive <strong>house cost calculator</strong> to model escrow dynamics, understanding the relationship between principal, <strong>mortgage interest rates</strong>, and loan duration is critical. By using a data-driven <strong>mortgage payment calculator</strong>, buyers can stress-test different borrowing brackets and avoid underestimating their total monthly cash outflow. A reliable <strong>monthly mortgage calculator</strong> gives you the insights needed to establish correct budget boundaries before you look at properties.
+          Securing a residential mortgage is one of the most significant financial commitments a home buyer will make. To plan effectively, borrowers must understand the relationship between their loan principal, interest rates, and loan terms. Utilizing specialized calculators allows buyers to estimate their baseline monthly payments and factor in local property taxes, homeowners insurance, and Private Mortgage Insurance (PMI) premiums. By stress-testing different borrowing levels, buyers can establish safe budget boundaries and select the most appropriate financing options for their needs.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
         <div class="space-y-4">
           <h3 class="font-display text-sm font-bold text-text-main">
-            How to Calculate House Mortgage Payments and Limits
+            Factors Influencing Your Monthly Housing Budget
           </h3>
           <p>
-            When preparing to buy a home, many buyers begin with a basic search for a <strong>free mortgage calculator</strong> or a quick <strong>google mortgage calculator</strong> tool. While these are excellent for high-level estimates, they often omit essential regional variables. For example, a <strong>mortgage calculator california</strong> must account for state-specific property taxes, insurance surcharges, and localized HOA limits. 
+            When calculating mortgage affordability, looking solely at principal and interest payments can lead to underestimating carrying costs. A complete housing budget, commonly referred to as PITI, must include monthly property tax allocations and hazard insurance premiums. 
           </p>
           <p>
-            To truly <strong>calculate house mortgage</strong> viability, you must look beyond the base principal and interest. A comprehensive <strong>monthly mortgage calculator</strong> should always include property taxes and insurance allocations—commonly referred to as PITI. Using a <strong>mortgage calculator with taxes</strong> ensures that you do not face a major budget shock at closing. For example, modeling a <strong>500 000 house mortgage payment</strong> without adding 1.2% in property taxes and $800 annually in home insurance will cause you to underestimate your monthly cash commitment by hundreds of dollars.
+            Additionally, property tax rates vary significantly depending on the municipality, and local hazards can drive insurance premiums up. Planning tools that integrate these localized variables ensure buyers are not faced with unexpected cost shocks at closing. Factoring in homeowners association (HOA) fees is also critical, as these monthly obligations are added directly to DTI ratio assessments.
           </p>
         </div>
 
         <div class="space-y-4">
           <h3 class="font-display text-sm font-bold text-text-main">
-            The Power of Amortization &amp; Extra Payments
+            The Role of Amortization & Accelerated Payoffs
           </h3>
           <p>
-            When analyzing a long-term loan, a <strong>mortgage calculator amortization</strong> schedule is your most powerful strategic tool. It maps out how each payment is split between reducing your principal balance and paying off the accumulated interest. In the early years of a 30-year loan, the vast majority of your monthly payment is consumed by interest, meaning your home equity grows slowly.
+            A loan amortization schedule displays how each monthly payment is divided between reducing principal and paying interest over the life of the loan. Early in the term of a 30-year fixed mortgage, interest charges consume the majority of the monthly payment, meaning home equity grows slowly.
           </p>
           <p>
-            This is why utilizing a <strong>mortgage calculator with extra payments</strong> is a game-changer. By adding a small, regular amount to your monthly principal, you can bypass front-loaded interest and cut years off your amortization timeline. For residential purchases, securing the <strong>best house mortgage rates</strong> combined with an accelerated payment strategy represents the single highest return on investment available to standard homeowners. Using a <strong>house mortgage calculator</strong> regularly allows you to adjust parameters and find the perfect balance.
+            To bypass frontloaded interest and shorten the amortization timeline, homeowners can utilize prepayment strategies. Making extra principal payments, whether monthly, annually, or as a lump sum, reduces the outstanding balance that interest is calculated on, leading to significant interest savings and accelerated equity growth over time.
           </p>
         </div>
       </div>
 
       <div class="space-y-4 pt-4">
         <h3 class="font-display text-sm font-bold text-text-main">
-          Specialized Lending: Commercial, Reverse, and Carrying Costs
+          Specialized Loan Programs and Financing Options
         </h3>
         <p>
-          Not all home loans are structured the same way. While standard home buyers look for a <strong>house mortgage rates calculator</strong> to model primary residences, investors planning property acquisitions require a specialized <strong>commercial mortgage calculator</strong>. Commercial underwriting models focus heavily on Debt Service Coverage Ratios (DSCR) and rental yields rather than personal gross income.
+          Not all mortgages are structured the same way. Home buyers can choose between conventional loans, which adhere to conforming limits set by the FHFA, and government-backed programs such as FHA or VA loans, which offer flexible credit and down payment requirements. For high-value properties that exceed standard conforming limits, buyers must qualify for non-conforming jumbo financing, which carries stricter underwriting guidelines.
         </p>
         <p>
-          On the other side of the spectrum, senior homeowners who want to convert accumulated home equity into cash flow without selling their home look for a <strong>reverse mortgage calculator</strong>. These reverse loans have unique compounding interest dynamics that require careful calculation.
-        </p>
-        <p>
-          To maintain a healthy household budget, you must calculate the <strong>total house cost calculator</strong> metrics. Combining your <strong>monthly house cost calculator</strong> and your standard non-mortgage obligations gives you a complete view of your financial health. Using a professional-grade <strong>monthly house cost calculator</strong> helps you compare options side-by-side, ensuring you lock in the ideal structure for your home investment. By utilizing a <strong>house mortgage calculator</strong>, a <strong>house mortgage payment calculator</strong>, and analyzing your target <strong>house mortgage rate</strong>, you protect your long-term wealth and buy with confidence.
+          By comparing the long-term carrying costs, interest rate lock options, and mortgage insurance structures of different programs, borrowers can choose the most cost-effective path to homeownership. Managing credit scores and reducing revolving debts prior to application helps secure the best terms, protecting long-term financial health.
         </p>
       </div>
 

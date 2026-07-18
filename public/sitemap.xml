@@ -8,6 +8,30 @@
     <priority>1.0</priority>
   </url>
 
+  <!-- Rent vs Buy Calculator -->
+  <url>
+    <loc>https://mortgagesintel.com/rent-vs-buy-calculator</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Flagship: Options Explorer -->
+  <url>
+    <loc>https://mortgagesintel.com/mortgage-blueprint</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- Flagship: Readiness Score -->
+  <url>
+    <loc>https://mortgagesintel.com/mortgage-readiness-score</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <!-- Core Financial Calculators -->
   <url>
     <loc>https://mortgagesintel.com/house-affordability-calculator</loc>
@@ -107,6 +131,44 @@
     <loc>https://mortgagesintel.com/massachusetts-mortgage-calculator</loc>
     <lastmod>2026-07-10</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Comparisons Directory -->
+  <url>
+    <loc>https://mortgagesintel.com/compare/</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/compare/15-vs-30-year-mortgage</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/compare/fha-vs-conventional-loans</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/compare/arm-vs-fixed-rate-mortgage</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/compare/buying-mortgage-points-analysis</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mortgagesintel.com/compare/extra-payment-mortgage-comparison</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 

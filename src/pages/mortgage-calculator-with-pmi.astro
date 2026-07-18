@@ -11,6 +11,7 @@ import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
 import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import ScenarioComparer from '../components/Calculator/ScenarioComparer.astro';
 import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
@@ -277,6 +278,9 @@ const faqs = [
       faqs={faqs}
     />
 
+    <!-- Scenario Workspace -->
+    <ScenarioComparer type="mortgage" title="PMI Scenario Comparison" subtitle="Compare down payment strategies and their impact on PMI costs and loan terms." />
+
     <Disclaimer />
   </main>
 
@@ -363,8 +367,13 @@ const faqs = [
     downSlider.dispatchEvent(new Event('input'));
   });
 
+  let userModified = false;
+
   [rateInput, termSelect, pmiRateInput, taxInput, insInput, hoaInput].forEach(ctrl => {
-    ctrl.addEventListener('input', recalculate);
+    ctrl.addEventListener('input', () => {
+      userModified = true;
+      recalculate();
+    });
   });
 
   function recalculate() {
@@ -519,16 +528,39 @@ const faqs = [
       window.updateStressTest(originalPrincipal, interestRate, loanTermYears, result.monthlyPropertyTax + result.monthlyInsurance + result.monthlyPMI + result.monthlyHOA);
     }
 
-    // Register data for comparative save
-    if (window.registerCurrentRunData) {
-      window.registerCurrentRunData({
-        homePrice,
-        downPayment,
-        interestRate,
-        termYears: loanTermYears,
-        monthlyPayment: result.totalMonthlyPayment,
-        totalInterest: result.totalInterestPaid
-      });
+    // Auto-capture on user input changes only
+    if ((window as any).autoCaptureScenario && userModified) {
+      (window as any).autoCaptureScenario(
+        'mortgage',
+        {
+          homePrice,
+          downPayment,
+          interestRate,
+          loanTermYears,
+          propertyTaxRate: 1.1,
+          insuranceRate: 0.5,
+          pmiRate: 0.75,
+          hoaFee: 0,
+          extraMonthly: 0,
+          extraAnnual: 0
+        },
+        {
+          monthlyPayment: result.totalMonthlyPayment,
+          totalInterest: result.totalInterestPaid,
+          totalCost: result.totalPaymentsSum,
+          payoffYears: result.payoffTermMonths / 12,
+          homePrice,
+          downPayment,
+          interestRate,
+          termYears: loanTermYears,
+          monthlyPI: result.monthlyPrincipalAndInterest,
+          monthlyTax: result.monthlyPropertyTax,
+          monthlyInsurance: result.monthlyInsurance,
+          monthlyPMI: result.monthlyPMI,
+          monthlyHOA: result.monthlyHOA,
+          pmiCancellationMonth: result.pmiCancellationMonth > 0 ? result.pmiCancellationMonth : undefined
+        }
+      );
     }
   }
 

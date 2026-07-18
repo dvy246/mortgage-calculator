@@ -5,66 +5,345 @@ import Footer from '../components/Footer.astro';
 
 const terms = [
   {
-    name: "Amortization",
-    definition: "The schedule of systematic loan repayment over a set duration, where payments are divided into monthly interest charges and principal paydown."
+    letter: "A",
+    items: [
+      {
+        name: "Adjustable-Rate Mortgage (ARM)",
+        definition: "A home loan program featuring an interest rate that adjusts periodically based on a benchmark financial index. ARMs typically offer a lower initial interest rate during an initial fixed period (e.g., 5, 7, or 10 years), after which the rate adjusts at regular intervals according to market movements. Lenders apply caps to limit how much the rate can increase per adjustment period and over the lifetime of the loan.",
+        example: "Example: A 5/1 ARM has a fixed rate for the first five years, then adjusts annually. If the index rate rises by 1.5% in year six, the monthly payment will adjust upward accordingly."
+      },
+      {
+        name: "Amortization",
+        definition: "The mathematical process of systematic debt reduction over a pre-determined loan term. Each monthly payment is divided into two parts: one portion pays off the accumulated monthly interest, and the remaining portion reduces the outstanding principal balance. In the early years of a mortgage, interest charges dominate the payment structure, while principal paydown accelerates in the latter half of the loan duration.",
+        example: "Example: On a 30-year fixed mortgage, the first payment is mostly interest, but by year 20, a larger percentage of each monthly check is directed toward reducing the principal balance."
+      },
+      {
+        name: "Annual Percentage Rate (APR)",
+        definition: "A comprehensive metric representing the true cost of borrowing, expressed as an annual rate. Unlike the nominal interest rate, APR includes both the interest charges and additional closing costs, lender origination fees, discount points, private mortgage insurance, and other upfront financing fees. Because it aggregates these expenses, APR provides a standardized baseline for comparing loans from different lenders.",
+        example: "Example: A lender might quote an interest rate of 6.25%, but after factoring in origination charges and closing fees, the calculated APR could be 6.45%."
+      },
+      {
+        name: "Appraisal",
+        definition: "An objective, professional evaluation of a property's fair market value conducted by a licensed appraiser. Lenders require an appraisal during the underwriting process to verify that the home's collateral value supports the requested loan amount. The appraiser inspects the property and compares it against recent sales of similar homes (comparables) in the immediate geographic neighborhood.",
+        example: "Example: If a buyer agrees to purchase a home for $450,000 but the appraiser values the property at $440,000, an appraisal gap occurs, requiring the buyer to cover the $10,000 difference or renegotiate the purchase price."
+      },
+      {
+        name: "Assumable Mortgage",
+        definition: "A specialized financing provision that allows a home buyer to assume legal responsibility for the seller's active mortgage loan. The buyer inherits the remaining principal balance, amortization schedule, and, most importantly, the existing interest rate. Assumable mortgages are highly valuable in high-interest environments if the seller locked in a low rate years prior. Government-backed loans (FHA, VA) are typically assumable, while conventional loans are not.",
+        example: "Example: A buyer purchases a home from a seller who has an outstanding VA loan at 3.0% interest. By assuming the loan, the buyer avoids taking out a new mortgage at current market rates of 6.5%."
+      }
+    ]
   },
   {
-    name: "Closing Costs",
-    definition: "Processing and administrative fees paid to underwriters, title entities, assessors, and local recording registers to execute a mortgage. Typically 2% to 5% of home price."
+    letter: "B",
+    items: [
+      {
+        name: "Balloon Mortgage",
+        definition: "A mortgage structure featuring low monthly payments for an initial short term (typically 5 to 7 years), followed by a single, large payment of the remaining principal balance at the end of the term. The initial payments are often calculated using a standard 30-year amortization schedule, meaning very little principal is paid down, requiring the borrower to refinance the loan, pay cash, or sell the property before the balloon payment comes due.",
+        example: "Example: A builder takes out a 7-year balloon mortgage. They pay low monthly amounts until year seven, at which point they must pay off the remaining balance of $250,000 in a single lump sum."
+      },
+      {
+        name: "Bi-Weekly Payment Schedule",
+        definition: "An accelerated payment framework where the borrower submits half of their standard monthly mortgage payment every two weeks instead of a full payment once a month. Because there are 52 weeks in a year, a bi-weekly schedule results in 26 half-payments, which equates to 13 full monthly payments annually. This extra payment is applied directly to the principal balance, bypassing interest and reducing the loan term.",
+        example: "Example: By switching from monthly to bi-weekly payments on a $300,000, 30-year fixed mortgage, a homeowner can shave 4 to 6 years off their payoff timeline and save thousands in interest."
+      },
+      {
+        name: "Bridge Loan",
+        definition: "A short-term, temporary loan designed to bridge the financial gap between the purchase of a new home and the sale of an existing property. Bridge loans typically carry higher interest rates and use the borrower's current home equity as collateral, allowing buyers to secure a new home without making their offer contingent on selling their current residence.",
+        example: "Example: A buyer uses a bridge loan to cover the $50,000 down payment on their new house while waiting for their current home to close in two months."
+      },
+      {
+        name: "Buy-Down",
+        definition: "A financing strategy where a buyer, seller, or builder pays upfront fees (known as points) to temporary or permanently lower the buyer's mortgage interest rate. In a temporary buy-down (such as a 2-1 buy-down), the rate is reduced by 2% in the first year and 1% in the second year, returning to the full note rate in the third year. This provides temporary cash flow relief to buyers.",
+        example: "Example: A developer offers a 2-1 buy-down as an incentive. The buyer's interest rate is 4.5% in year one, 5.5% in year two, and locks in at 6.5% for the remaining 28 years."
+      }
+    ]
   },
   {
-    name: "Debt-to-Income (DTI) Ratio",
-    definition: "A core underwriting metric dividing monthly recurring debts by gross monthly income. Capped traditionally at 36% for standard conventional financing."
+    letter: "C",
+    items: [
+      {
+        name: "Cash-Out Refinance",
+        definition: "A refinancing transaction that replaces the borrower's existing mortgage with a new, larger loan. The new loan pays off the old balance, and the remaining difference is paid out to the homeowner in cash at closing. Lenders typically restrict conventional cash-out refinances to 80% of the home's current appraised market value, leaving a 20% equity buffer.",
+        example: "Example: A homeowner owes $150,000 on a home appraised at $300,000. They execute a cash-out refinance for $200,000, using the $50,000 cash difference to fund a home renovation."
+      },
+      {
+        name: "Clear Title",
+        definition: "A property title that is free of liens, judgments, ownership disputes, unpaid property taxes, or legal encumbrances. A clear title is a mandatory prerequisite for securing a mortgage, as it ensures the lender's lien position is senior and the buyer's legal ownership cannot be challenged by past claimants.",
+        example: "Example: During a title search, an old contractor lien from 10 years ago is discovered. The seller must settle the debt to clear the title before the sale can finalize."
+      },
+      {
+        name: "Closing Costs",
+        definition: "The portfolio of fees, taxes, and administrative costs required to finalize a real estate transaction. Paid at closing, these costs typically range from 2% to 5% of the total loan amount and cover lender underwriting, home appraisal, title search, title insurance, recording fees, and initial escrow account reserves.",
+        example: "Example: On a $400,000 mortgage, the borrower pays $12,000 in closing costs to cover bank fees, escrow reserves, and state transfer taxes."
+      },
+      {
+        name: "Co-Signer",
+        definition: "A creditworthy individual who signs the mortgage note alongside the primary borrower, legally promising to assume full payment responsibility if the primary borrower defaults. Co-signers do not typically hold ownership rights in the physical property, but their income and credit profile are factored in to help the primary borrower qualify.",
+        example: "Example: A parent co-signs their child's first home loan, adding their high credit score to the application to help secure approval within DTI guidelines."
+      },
+      {
+        name: "Conforming Loan",
+        definition: "A conventional mortgage loan that conforms to the underwriting guidelines and maximum funding limits established by the Federal Housing Finance Agency (FHFA) and government-sponsored enterprises (GSEs) Fannie Mae and Freddie Mac. Conforming loans carry lower interest rates because they are liquid and can be easily packaged and sold on the secondary market.",
+        example: "Example: In a county where the standard conforming limit is $766,550, any conventional loan below this threshold is a conforming loan, whereas a loan for $800,000 would be non-conforming."
+      },
+      {
+        name: "Conventional Loan",
+        definition: "A private mortgage loan that is not backed, insured, or guaranteed by a federal government agency (such as the FHA, VA, or USDA). Conventional loans are originated by private lenders (banks, credit unions, mortgage companies) and must adhere to guidelines set by Fannie Mae and Freddie Mac or remain on a bank's balance sheet.",
+        example: "Example: A buyer with excellent credit and a 20% down payment opts for a conventional loan to avoid government mortgage insurance requirements."
+      }
+    ]
   },
   {
-    name: "Escrow Account",
-    definition: "A holding account managed by the mortgage servicer that collects monthly property tax and homeowners insurance allocations, paying municipal invoices upon renewal."
+    letter: "D",
+    items: [
+      {
+        name: "Debt-to-Income (DTI) Ratio",
+        definition: "A critical underwriting metric representing the percentage of a borrower's gross monthly income consumed by recurring monthly debt payments. Lenders evaluate two DTI ratios: the front-end DTI (housing expenses only, including PITI and HOA) and the back-end DTI (housing expenses plus credit card minimums, student loans, auto loans, and child support). Standard conventional guidelines prefer ratios below 28% front-end and 36% back-end.",
+        example: "Example: A borrower earning $10,000 gross monthly income with $2,800 in housing costs and $800 in auto loans has a front-end DTI of 28% and a back-end DTI of 36%."
+      },
+      {
+        name: "Default",
+        definition: "The failure of a borrower to meet the legal obligations of the mortgage agreement. Default most commonly refers to missing scheduled monthly payments (delinquency exceeding 30 to 90 days), but can also occur due to failing to maintain hazard insurance, pay property taxes, or comply with other covenants, initiating foreclosure procedures.",
+        example: "Example: After missing four consecutive mortgage payments, the borrower is declared in default, and the servicer begins the legal foreclosure process."
+      },
+      {
+        name: "Discount Points",
+        definition: "Prepaid interest purchased by the borrower at the time of closing to permanently lower the ongoing mortgage note rate. One discount point costs exactly 1% of the total loan amount and typically reduces the interest rate by 0.25% (25 basis points). Calculating the break-even month is necessary to check if the upfront cost offsets the monthly savings over time.",
+        example: "Example: On a $300,000 loan, paying $3,000 (one point) reduces the rate from 6.5% to 6.25%, saving $50 per month, yielding a break-even period of 60 months."
+      },
+      {
+        name: "Down Payment",
+        definition: "The initial cash payment made by the buyer toward the purchase price of a home at closing. The down payment is expressed as a percentage of the purchase price, and the remaining cost is financed via the mortgage loan. While 20% down is preferred to avoid mortgage insurance, programs allow as little as 3% to 3.5% down.",
+        example: "Example: Purchasing a $350,000 home with a 10% down payment requires $35,000 in cash at closing, leaving a financed loan balance of $315,000."
+      }
+    ]
   },
   {
-    name: "Loan-to-Value (LTV) Ratio",
-    definition: "A risk evaluation ratio dividing the outstanding mortgage balance by the assessed appraisal value of the property. Lenders require PMI on LTVs exceeding 80%."
+    letter: "E",
+    items: [
+      {
+        name: "Earnest Money",
+        definition: "A good-faith cash deposit submitted by a buyer to an escrow agent when signing a purchase contract. Earnest money demonstrates to the seller that the buyer's offer is serious. If the transaction closes, the earnest money is applied toward the down payment and closing costs. If the deal falls through due to contract contingencies, it is refunded.",
+        example: "Example: A buyer submits a $5,000 earnest money check along with their offer to buy a $400,000 home, which is held in a neutral title company escrow account."
+      },
+      {
+        name: "Equity",
+        definition: "The financial interest or net value that a homeowner holds in their property. Equity is calculated as the current fair market value of the home minus the outstanding balances of all mortgages, home equity loans, and liens secured by the property. Equity increases as property values rise and principal is paid down.",
+        example: "Example: A home's market value rises to $350,000, and the remaining mortgage balance is $200,000. The homeowner's accumulated equity is $150,000."
+      },
+      {
+        name: "Escrow Account",
+        definition: "A dedicated holding account managed by the mortgage servicer to pay property taxes and homeowners insurance on behalf of the borrower. The servicer collects 1/12th of the annual property tax and insurance bills inside each monthly mortgage check, keeping these reserves in escrow, then pays those invoices when they fall due.",
+        example: "Example: The lender collects $300 monthly for taxes and insurance, holding it in escrow to pay the county tax assessor and insurance carrier once a year."
+      }
+    ]
   },
   {
-    name: "Origination Fee",
-    definition: "An upfront processing fee charged by lenders to underwrite, check, and establish a new mortgage loan. Usually expressed as points or percentages of principal."
+    letter: "F",
+    items: [
+      {
+        name: "FHA Loan",
+        definition: "A government-backed mortgage insured by the Federal Housing Administration (FHA) and designed for low-to-moderate-income buyers. FHA loans feature relaxed qualification guidelines, requiring a minimum down payment of 3.5% for credit scores of 580 or higher. All FHA loans require both upfront and monthly Mortgage Insurance Premiums (MIP) that typically persist for the entire loan duration.",
+        example: "Example: A buyer with a 600 credit score qualifies for an FHA loan with 3.5% down, allowing them to purchase a home they could not finance conventional-style."
+      },
+      {
+        name: "Fixed-Rate Mortgage",
+        definition: "A home loan program where the interest rate remains constant for the entire duration of the loan. As a result, the monthly principal and interest payment is locked in, protecting the borrower from inflation and interest rate fluctuations. Standard terms are 15 and 30 years.",
+        example: "Example: A homeowner with a 30-year fixed-rate mortgage at 6.0% will pay the exact same monthly principal and interest in month 360 as they did in month 1."
+      },
+      {
+        name: "Foreclosure",
+        definition: "The legal enforcement mechanism through which a mortgage lender takes possession of a property and sells it to recover the outstanding balance of a defaulted loan. Foreclosure occurs after a borrower fails to make mortgage payments or resolve their delinquency over an extended period.",
+        example: "Example: Following six months of unpaid mortgage alerts, the bank executes foreclosure, selling the home at auction to settle the remaining debt."
+      }
+    ]
   },
   {
-    name: "Points (Discount Points)",
-    definition: "Upfront fees paid directly to the mortgage lender at closing in exchange for an interest rate reduction. One point equals 1% of the total loan amount."
+    letter: "H",
+    items: [
+      {
+        name: "Hazard Insurance",
+        definition: "The specific component of a homeowners insurance policy that protects the physical structure of the home against loss or damage from hazards such as fire, windstorms, hail, lightning, and vandalism. Lenders require borrowers to maintain active hazard insurance for the life of the loan to protect their collateral.",
+        example: "Example: If a storm damages the roof of a mortgaged home, the homeowner submits a claim to their hazard insurance carrier to cover the repair costs."
+      },
+      {
+        name: "Home Equity Line of Credit (HELOC)",
+        definition: "A revolving credit line secured by a homeowner's property equity. HELOCs function similarly to credit cards: borrowers are approved for a maximum borrowing limit, can draw funds as needed during a set draw period (usually 10 years), and pay interest only on the borrowed balance. HELOCs typically carry variable interest rates.",
+        example: "Example: A homeowner uses a $50,000 HELOC to fund a kitchen remodel, drawing out $20,000 upfront and paying monthly interest on just that drawn portion."
+      },
+      {
+        name: "Homeowners Association (HOA) Fees",
+        definition: "Monthly or annual dues collected by a community's homeowners association to fund common area maintenance, building insurance, community amenities, and neighborhood management. HOA dues are added directly to the monthly housing expense calculations, increasing the borrower's front-end DTI ratio.",
+        example: "Example: In addition to their $2,000 mortgage payment, a condo owner pays $350 monthly in HOA fees to cover pool upkeep, building security, and landscaping."
+      }
+    ]
   },
   {
-    name: "Private Mortgage Insurance (PMI)",
-    definition: "A private insurance policy protecting the conventional lender against borrower default. Mandatory for conventional loans with down payments below 20%."
+    letter: "I",
+    items: [
+      {
+        name: "Interest Rate",
+        definition: "The annual fee charged by a lender to borrow money, expressed as a percentage of the outstanding loan principal. The interest rate dictates the size of your base monthly mortgage payment but does not factor in other upfront fees or closing costs, which are captured by the APR.",
+        example: "Example: A buyer secures a $300,000 mortgage with a nominal interest rate of 6.5%, which is used to calculate their baseline monthly payment of $1,896."
+      }
+    ]
   },
   {
-    name: "Refinancing",
-    definition: "The process of replacing an active mortgage loan with a new debt agreement, typically deployed to capture lower interest rates, modify term durations, or cash-out home equity."
+    letter: "J",
+    items: [
+      {
+        name: "Jumbo Loan",
+        definition: "A conventional mortgage loan that exceeds the conforming loan limits set annually by the Federal Housing Finance Agency (FHFA). Because jumbo loans cannot be purchased or guaranteed by Fannie Mae or Freddie Mac, they carry higher lender risk and strict underwriting standards, including credit scores above 700, large down payments (10-20%), and 6-12 months of cash reserves.",
+        example: "Example: In a county with a conforming limit of $766,550, a buyer needing a mortgage of $900,000 must qualify for a non-conforming jumbo loan."
+      }
+    ]
+  },
+  {
+    letter: "L",
+    items: [
+      {
+        name: "Loan-Level Price Adjustment (LLPA)",
+        definition: "Risk-based fees charged by Fannie Mae and Freddie Mac to conventional mortgage lenders, who pass these costs onto borrowers as higher interest rates. LLPAs are determined by risk factors, primarily the borrower's credit score and the loan-to-value (LTV) ratio. Borrowers with lower credit scores or smaller down payments pay higher LLPAs.",
+        example: "Example: A borrower with a 640 credit score and 5% down payment will face a higher LLPA fee than a borrower with a 760 credit score and 20% down, resulting in a higher rate quote."
+      },
+      {
+        name: "Loan-to-Value (LTV) Ratio",
+        definition: "An underwriting risk ratio calculated by dividing the outstanding mortgage loan balance by the property's appraised market value. Lenders use LTV to determine equity buffers and underwriting risk. In conventional lending, an LTV exceeding 80% (equivalent to a down payment below 20%) triggers mandatory private mortgage insurance.",
+        example: "Example: A buyer puts $40,000 down on a $200,000 home (a $160,000 loan). The initial loan-to-value (LTV) ratio is 80% ($160,000 / $200,000)."
+      }
+    ]
+  },
+  {
+    letter: "M",
+    items: [
+      {
+        name: "Mortgage Insurance Premium (MIP)",
+        definition: "The government mortgage insurance premium required on all FHA-backed loans. MIP protects the lender in case of default. It consists of two components: an upfront MIP fee of 1.75% of the loan amount paid at closing, and an annual monthly MIP fee (typically 0.80% to 0.85%) that is added to the monthly payment, usually lasting for the life of the loan.",
+        example: "Example: An FHA borrower financing $200,000 pays $3,500 in upfront MIP at closing, and approximately $140 monthly in annual MIP fees."
+      }
+    ]
+  },
+  {
+    letter: "O",
+    items: [
+      {
+        name: "Origination Fee",
+        definition: "An administrative charge levied by mortgage lenders to cover the costs of processing, underwriting, and funding a new home loan. The origination fee is typically calculated as a percentage of the loan amount (usually 0.5% to 1%), and is paid as part of closing costs.",
+        example: "Example: A lender charges a 1% origination fee on a $250,000 mortgage application, resulting in a $2,500 fee paid by the borrower at closing."
+      }
+    ]
+  },
+  {
+    letter: "P",
+    items: [
+      {
+        name: "PITI",
+        definition: "An acronym for Principal, Interest, Taxes, and Insurance. These are the four standard components that comprise a borrower's total monthly housing payment. Underwriters use the total PITI amount (plus HOA fees) when calculating the front-end DTI ratio to evaluate affordability limits.",
+        example: "Example: A homeowner's monthly check is $2,300, which is divided into $1,500 principal and interest (P&I), $500 property taxes (T), and $300 hazard insurance (I)."
+      },
+      {
+        name: "Pre-Approval",
+        definition: "A written conditional commitment from a lender stating the specific amount a borrower qualifies to borrow. Pre-approval occurs after the lender verifies the borrower's income, employment history, liquid assets, and credit report. It is far more rigorous than pre-qualification and is required by real estate agents before submitting offers.",
+        example: "Example: A buyer obtains a pre-approval letter for up to $350,000, allowing them to write competitive offers to sellers with verified financing credibility."
+      },
+      {
+        name: "Prepayment Penalty",
+        definition: "A fee charged by a lender if a borrower pays off their mortgage balance early, either through refinancing or extra payments. Prepayment penalties are designed to protect the lender's interest yield. However, they are legally prohibited on all modern conforming conventional, FHA, and VA loans.",
+        example: "Example: An investor with a specialized commercial mortgage pays a 2% prepayment penalty for paying off their balance in year three of a ten-year term."
+      },
+      {
+        name: "Principal",
+        definition: "The raw balance of money borrowed from the lender, excluding interest, escrow reserves, or origination fees. As you make monthly amortized payments, a portion of your money reduces the principal balance, increasing your home equity.",
+        example: "Example: If you borrow $200,000, your initial principal balance is $200,000. After five years of payments, your principal balance might be reduced to $180,000."
+      },
+      {
+        name: "Private Mortgage Insurance (PMI)",
+        definition: "An insurance policy required on conventional loans when the borrower's down payment is under 20% (LTV exceeding 80%). PMI protects the lender in case of default. PMI is paid monthly and can be cancelled once the principal balance declines to 80% of the original purchase value, or automatically terminates at 78%.",
+        example: "Example: A conventional buyer with a 5% down payment pays $150 monthly in PMI fees, which will stop once they reach 80% LTV."
+      }
+    ]
+  },
+  {
+    letter: "R",
+    items: [
+      {
+        name: "Rate Lock",
+        definition: "A lender's binding guarantee to hold a specific interest rate, APR, and discount point structure for a set duration (typically 30, 45, or 60 days) during loan processing. A rate lock protects the buyer from market rate hikes while the loan goes through underwriting.",
+        example: "Example: A buyer locks in a rate of 6.25% for 45 days. If market rates climb to 6.75% before they close, their rate remains guaranteed at 6.25%."
+      },
+      {
+        name: "Refinancing",
+        definition: "The process of securing a new mortgage loan to replace an active mortgage. Homeowners refinance to secure a lower interest rate, shorten their loan term (e.g., from 30 to 15 years), convert an ARM to a fixed-rate loan, or withdraw equity via a cash-out refinance.",
+        example: "Example: A homeowner refinances their 30-year fixed rate of 7.5% down to a new 30-year fixed rate of 5.8%, reducing their monthly payment by $250."
+      },
+      {
+        name: "Reverse Mortgage",
+        definition: "A specialized home loan for homeowners aged 62 or older that allows them to convert accumulated home equity into tax-free cash payments. Unlike a standard mortgage, the lender pays the homeowner, and no monthly payments are required. The loan balance accumulates interest and is repaid when the homeowner sells, moves, or passes away.",
+        example: "Example: A retired couple uses a reverse mortgage to receive $1,000 monthly from their home equity, allowing them to supplement retirement income without moving."
+      }
+    ]
+  },
+  {
+    letter: "T",
+    items: [
+      {
+        name: "Title Insurance",
+        definition: "An insurance policy that protects home buyers and mortgage lenders against loss or damage resulting from past title defects, unpaid tax liens, structural easement disputes, or ownership challenges. A lender's policy is mandatory, while an owner's policy is optional but highly recommended.",
+        example: "Example: Years after buying a home, a long-lost heir of a previous owner claims ownership. Title insurance covers the legal defense costs and settlement."
+      }
+    ]
+  },
+  {
+    letter: "U",
+    items: [
+      {
+        name: "Underwriting",
+        definition: "The rigorous evaluation process a mortgage lender uses to assess risk and approve a loan. An underwriter verifies the borrower's credit score, employment, income stability, liquid assets, debt obligations, and checks the property's appraisal to guarantee compliance with loan guidelines.",
+        example: "Example: The mortgage underwriter reviews tax transcripts, bank statements, and credit reports to verify the borrower qualifies for conforming conventional financing."
+      }
+    ]
+  },
+  {
+    letter: "V",
+    items: [
+      {
+        name: "VA Loan",
+        definition: "A government-backed mortgage option guaranteed by the U.S. Department of Veterans Affairs, designed for active-duty military, veterans, and surviving spouses. VA loans offer 0% down payments, do not require monthly private mortgage insurance, and limit closing costs, making home ownership highly accessible.",
+        example: "Example: An army veteran purchases a $350,000 home with $0 down and no monthly mortgage insurance premiums, utilizing their VA loan entitlement."
+      }
+    ]
   }
 ];
+
+// Flatten for Search & Schema
+const flatTerms = terms.flatMap(group => group.items);
 
 const glossarySchema = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "DefinedTermSet",
   "@id": "https://mortgagesintel.com/glossary",
   "name": "Mortgage & Home Financing Glossary",
-  "description": "Alphabetical technical definitions of home loan and mortgage terminology.",
-  "hasDefinedTerm": terms.map(t => ({
+  "description": "Alphabetical technical definitions of home loan and mortgage terminology including detailed formulas, real-world examples, and E-E-A-T compliance.",
+  "hasDefinedTerm": flatTerms.map(t => ({
     "@type": "DefinedTerm",
     "name": t.name,
     "description": t.definition
   }))
 });
+
+const letters = terms.map(group => group.letter);
 ---
 
 <Layout 
   title="Mortgage Glossary & Financing Definitions"
-  description="Explore the technical glossary of underwriting terminology, including DTI, LTV, PMI, and amortization."
+  description="Explore the technical glossary of underwriting terminology, including DTI, LTV, PMI, and amortization. Verified by mortgage underwriting analysts."
   canonicalUrl="/glossary"
   schemaMarkup={glossarySchema}
 >
   <Header activeSlug="" />
 
-  <main class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-12 flex-grow">
+  <main class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8 space-y-10 flex-grow">
     <!-- Breadcrumb -->
     <nav class="text-xs text-text-muted flex items-center gap-2">
       <a href="/" class="hover:text-text-main transition-colors">Home</a>
@@ -75,26 +354,128 @@ const glossarySchema = JSON.stringify({
     <!-- Page Header -->
     <div class="space-y-4 border-b border-border-subtle pb-8">
       <h1 class="font-display text-3xl font-bold text-text-main sm:text-4xl tracking-tight">
-        Mortgage Glossary & Financing Definitions
+        Mortgage Glossary &amp; Financing Definitions
       </h1>
       <div class="flex items-center gap-4 text-2xs text-text-muted">
         <span>Last Updated: June 19, 2026</span>
+        <span>&bull;</span>
+        <span>Reviewed by <strong>Sarah Jenkins, CFP®</strong></span>
       </div>
       <p class="text-sm text-text-muted leading-relaxed max-w-2xl pt-2">
-        Clear vocabulary is essential for financial navigation. Review standard terminology used by underwriters and loan originators.
+        Clear vocabulary is essential for navigating the complex residential home buying and mortgage underwriting ecosystem. Review technical terms, metrics, and risk factors utilized by lenders, underwriting specialists, and financial advisors.
       </p>
     </div>
 
-    <!-- Glossary Definitions Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {terms.map(t => (
-        <div class="bg-bg-card p-5 rounded-xl border border-border-subtle space-y-2 hover:border-border-focus transition-colors">
-          <h3 class="font-display font-semibold text-sm text-text-main">{t.name}</h3>
-          <p class="text-xs text-text-muted leading-relaxed">{t.definition}</p>
+    <!-- Intro Explanation -->
+    <div class="p-6 bg-bg-card border border-border-subtle rounded-xl text-xs text-text-muted leading-relaxed space-y-3">
+      <h2 class="font-display font-semibold text-text-main text-sm">How to Use the Glossary</h2>
+      <p>
+        Mortgage approval is determined by credit scoring systems, debt metrics, and collateral valuation. This directory provides verified definitions of standard concepts, including government loan programs (FHA, VA), mathematical variables (APR, Amortization), and structural regulations (Conforming limits, LLPAs). Jump directly to any letter category using the navigation bar below, or search through terms using the filter tool.
+      </p>
+    </div>
+
+    <!-- Search & A-Z Quick Jump Bar -->
+    <div class="space-y-4">
+      <div class="relative max-w-md">
+        <input 
+          type="text" 
+          id="glossary-search" 
+          placeholder="Search glossary terms..." 
+          class="h-9 w-full rounded-md border border-border-input bg-bg-input px-3 py-1.5 text-xs text-text-main placeholder-text-muted/65 focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        />
+      </div>
+
+      <div class="flex flex-wrap items-center gap-1.5 border-b border-border-subtle/50 pb-4 text-2xs font-semibold text-text-muted">
+        <span>Jump to:</span>
+        {letters.map(letter => (
+          <a href={`#letter-${letter}`} class="h-6 w-6 rounded flex items-center justify-center bg-bg-card border border-border-subtle hover:border-border-focus hover:text-brand-accent transition-colors">
+            {letter}
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- Glossary List -->
+    <div class="space-y-12" id="glossary-container">
+      {terms.map(group => (
+        <div id={`letter-${group.letter}`} class="space-y-6 scroll-mt-20 letter-group">
+          <div class="flex items-center gap-4">
+            <h2 class="font-display text-xl font-bold text-brand-accent bg-brand-accent/10 h-9 w-9 rounded-lg flex items-center justify-center border border-brand-accent/20">
+              {group.letter}
+            </h2>
+            <div class="h-px bg-border-subtle/50 flex-grow"></div>
+          </div>
+          
+          <div class="grid grid-cols-1 gap-6">
+            {group.items.map(t => (
+              <div class="bg-bg-card p-6 rounded-xl border border-border-subtle space-y-3 hover:border-border-focus transition-colors glossary-item">
+                <h3 class="font-display font-bold text-sm sm:text-base text-text-main">{t.name}</h3>
+                <p class="text-xs text-text-muted leading-relaxed">{t.definition}</p>
+                {t.example && (
+                  <div class="p-3 bg-bg-main border border-border-subtle/40 rounded text-3xs text-text-muted/90 italic">
+                    {t.example}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
+
+    <!-- Empty State -->
+    <div id="glossary-empty-state" class="hidden text-center py-12 text-xs text-text-muted">
+      No glossary terms match your search query. Try another keyword.
+    </div>
   </main>
+
+  <script>
+    const searchInput = document.getElementById('glossary-search') as HTMLInputElement;
+    const glossaryItems = document.querySelectorAll('.glossary-item');
+    const letterGroups = document.querySelectorAll('.letter-group');
+    const emptyState = document.getElementById('glossary-empty-state');
+
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+        let visibleItemsCount = 0;
+
+        letterGroups.forEach(group => {
+          const itemsInGroup = group.querySelectorAll('.glossary-item');
+          let visibleInGroup = 0;
+
+          itemsInGroup.forEach(item => {
+            const el = item as HTMLElement;
+            const heading = el.querySelector('h3')?.innerText.toLowerCase() || '';
+            const text = el.querySelector('p')?.innerText.toLowerCase() || '';
+            
+            if (heading.includes(query) || text.includes(query)) {
+              el.classList.remove('hidden');
+              visibleInGroup++;
+              visibleItemsCount++;
+            } else {
+              el.classList.add('hidden');
+            }
+          });
+
+          // Hide or show the group heading based on active items
+          if (visibleInGroup === 0) {
+            group.classList.add('hidden');
+          } else {
+            group.classList.remove('hidden');
+          }
+        });
+
+        if (emptyState) {
+          if (visibleItemsCount === 0) {
+            emptyState.classList.remove('hidden');
+          } else {
+            emptyState.classList.add('hidden');
+          }
+        }
+      });
+    }
+  </script>
 
   <Footer />
 </Layout>

@@ -2,29 +2,38 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { guidesDatabase } from '../../data/guides';
 
-const guides = [
-  { title: "First-Time Home Buyer Guide", slug: "first-time-home-buyer-guide", desc: "A comprehensive handbook navigating credit approval, down payments, and closing fees.", category: "Home Buying" },
-  { title: "PMI Removal Guide", slug: "pmi-removal-guide", desc: "Learn the rules to cancel private mortgage insurance and save hundreds monthly.", category: "Escrow" },
-  { title: "FHA vs Conventional Loans", slug: "fha-vs-conventional-loans", desc: "Compare guidelines, down payment minimums, and insurance rates side-by-side.", category: "Loan Programs" },
-  { title: "Mortgage Closing Costs Explained", slug: "mortgage-closing-costs-explained", desc: "A breakdown of lender fees, escrow accounts, and transfer taxes.", category: "Home Buying" },
-  { title: "Average Mortgage Rates by State", slug: "average-mortgage-rates-by-state", desc: "Explore local interest trends and macroeconomic regional variables.", category: "Research & Data" },
-  { title: "Mortgage Rates Guide: Primary Market Drivers", slug: "mortgage-rates-guide", desc: "Analyze the macroeconomic variables, bond yields, and credit spreads that dictate interest rates.", category: "Research & Data" },
-  { title: "Conforming Loan Limits & Regulations", slug: "conforming-loans-guide", desc: "Learn what conforming loans are, FHFA guidelines, and current lending limits.", category: "Loan Programs" },
-  { title: "What is a Jumbo Loan & How to Qualify", slug: "jumbo-loans-guide", desc: "Understand the requirements, interest rates, and guidelines for high-value mortgages.", category: "Loan Programs" },
-  { title: "How Loan Amortization Schedules Work", slug: "loan-amortization-guide", desc: "Demystify principal and interest payments, amortization curves, and equity growth.", category: "Mortgage Math" },
-  { title: "Buying Down Your Interest Rate with Points", slug: "mortgage-points-guide", desc: "Evaluate whether paying upfront discount points makes sense for your ownership horizon.", category: "Mortgage Math" },
-  { title: "How Property Taxes & Escrow Accounts Function", slug: "property-taxes-escrow-guide", desc: "Understand the roles of tax assessments, insurance prepaids, and monthly escrow statements.", category: "Escrow" },
-  { title: "Understanding Front-End and Back-End DTI Ratios", slug: "dti-ratio-explained-guide", desc: "Master the DTI guidelines lenders use to assess your borrowing limit.", category: "Debt Management" },
-  { title: "Bi-Weekly Payments: Shave Years Off Your Mortgage", slug: "biweekly-payments-guide", desc: "Learn how restructuring your payment frequency bypasses interest and shortens terms.", category: "Prepayments" },
-  { title: "Making a Lump Sum Mortgage Prepayment", slug: "lump-sum-prepayment-guide", desc: "Model the impact of a one-time principal paydown on your interest and term.", category: "Prepayments" },
-  { title: "Rate Locks & Float-Down Agreements", slug: "rate-lock-agreements-guide", desc: "Protect your loan pricing against market volatility during mortgage processing.", category: "Interest Rates" },
-  { title: "Refinancing: Cash-Out vs. Rate-and-Term", slug: "equity-and-refinance-guide", desc: "Compare refinance structures to lower interest costs or extract equity.", category: "Refinance" },
-  { title: "Understanding Refinance Closing Costs", slug: "refinance-closing-costs-guide", desc: "Understand the fees, appraisal costs, and reserves required to refinance.", category: "Refinance" },
-  { title: "How HOA Fees Impact Home Purchasing Power", slug: "hoa-fees-affordability-guide", desc: "Analyze the hidden effect of monthly association dues on your debt capacity.", category: "Home Buying" },
-  { title: "Choosing Homeowners Insurance for Your Escrow", slug: "homeowners-insurance-guide", desc: "Learn how hazard insurance premiums affect your escrow buffer and cash flow.", category: "Escrow" },
-  { title: "How Your Credit Score Influences Mortgage APR", slug: "credit-score-mortgage-guide", desc: "Optimize your credit profile to qualify for the best interest rates.", category: "Debt Management" }
-];
+const guides = Object.entries(guidesDatabase).map(([key, value]) => {
+  const slug = key === "first-time" ? "first-time-home-buyer-guide" :
+               key === "pmi-removal" ? "pmi-removal-guide" :
+               key === "fha-vs-conv" ? "fha-vs-conventional-loans" :
+               key === "closing-costs" ? "mortgage-closing-costs-explained" :
+               key === "state-rates" ? "average-mortgage-rates-by-state" :
+               key === "mortgage-rates" ? "mortgage-rates-guide" :
+               key === "conforming-loans" ? "conforming-loans-guide" :
+               key === "jumbo-loans" ? "jumbo-loans-guide" :
+               key === "loan-amortization" ? "loan-amortization-guide" :
+               key === "mortgage-points" ? "mortgage-points-guide" :
+               key === "property-taxes-escrow" ? "property-taxes-escrow-guide" :
+               key === "dti-ratio-explained" ? "dti-ratio-explained-guide" :
+               key === "biweekly-payments" ? "biweekly-payments-guide" :
+               key === "lump-sum-prepayment" ? "lump-sum-prepayment-guide" :
+               key === "rate-lock-agreements" ? "rate-lock-agreements-guide" :
+               key === "equity-and-refinance" ? "equity-and-refinance-guide" :
+               key === "refinance-closing-costs" ? "refinance-closing-costs-guide" :
+               key === "hoa-fees-affordability" ? "hoa-fees-affordability-guide" :
+               key === "homeowners-insurance" ? "homeowners-insurance-guide" :
+               key === "credit-score-mortgage" ? "credit-score-mortgage-guide" : "";
+               
+  return {
+    title: value.title,
+    slug,
+    desc: value.description,
+    category: value.category
+  };
+});
+
 ---
 
 <Layout 

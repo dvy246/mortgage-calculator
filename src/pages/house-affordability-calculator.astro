@@ -12,6 +12,7 @@ import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
 import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import ScenarioComparer from '../components/Calculator/ScenarioComparer.astro';
 import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
@@ -326,6 +327,9 @@ const faqs = [
       faqs={faqs}
     />
 
+    <!-- Scenario Workspace -->
+    <ScenarioComparer type="affordability" title="Affordability Scenario Comparison" subtitle="Compare how different income levels, rates, and down payments affect your buying power." />
+
     <!-- Disclaimer card -->
     <Disclaimer />
   </main>
@@ -367,6 +371,8 @@ const faqs = [
   const hoaInput = document.getElementById('hoa-input') as HTMLInputElement;
 
   // Sync Slider to Input Box and Recalculate
+  let userModified = false;
+
   function setupSync(slider: HTMLInputElement, input: HTMLInputElement, display: HTMLElement | null, formatAsPrice = true) {
     const update = () => {
       input.value = slider.value;
@@ -375,6 +381,7 @@ const faqs = [
           ? `$${parseInt(slider.value).toLocaleString('en-US')}` 
           : slider.value;
       }
+      userModified = true;
       recalculate();
     };
     slider.addEventListener('input', update);
@@ -387,6 +394,7 @@ const faqs = [
           ? `$${Math.round(val).toLocaleString('en-US')}` 
           : String(val);
       }
+      userModified = true;
       recalculate();
     });
   }
@@ -396,7 +404,10 @@ const faqs = [
   setupSync(downSlider, downInput, downDisplay);
 
   [rateInput, termSelect, taxInput, insInput, pmiInput, hoaInput].forEach(control => {
-    control.addEventListener('input', recalculate);
+    control.addEventListener('input', () => {
+      userModified = true;
+      recalculate();
+    });
   });
 
   function recalculate() {
@@ -536,15 +547,36 @@ const faqs = [
       window.updateStressTest(originalPrincipal, interestRate, loanTermYears, result.monthlyPropertyTax + result.monthlyInsurance + result.monthlyPMI + result.monthlyHOA);
     }
 
-    if (window.registerCurrentRunData) {
-      window.registerCurrentRunData({
-        homePrice: aff.comfortableHomePrice,
-        downPayment,
-        interestRate,
-        termYears: loanTermYears,
-        monthlyPayment: result.totalMonthlyPayment,
-        totalInterest: result.totalInterestPaid
-      });
+    if ((window as any).autoCaptureScenario && userModified) {
+      (window as any).autoCaptureScenario(
+        'affordability',
+        {
+          annualIncome,
+          monthlyDebts,
+          downPayment,
+          interestRate,
+          loanTermYears,
+          propertyTaxRate: 1.1,
+          insuranceRate: 0.5,
+          pmiRate: 0.75,
+          hoaFee: 0
+        },
+        {
+          monthlyPayment: result.totalMonthlyPayment,
+          totalInterest: result.totalInterestPaid,
+          totalCost: result.totalPaymentsSum,
+          payoffYears: result.payoffTermMonths / 12,
+          homePrice: aff.comfortableHomePrice,
+          downPayment,
+          interestRate,
+          termYears: loanTermYears,
+          monthlyPI: result.monthlyPrincipalAndInterest,
+          monthlyTax: result.monthlyPropertyTax,
+          monthlyInsurance: result.monthlyInsurance,
+          monthlyPMI: result.monthlyPMI,
+          monthlyHOA: result.monthlyHOA
+        }
+      );
     }
   }
 

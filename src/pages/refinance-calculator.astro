@@ -11,6 +11,7 @@ import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
 import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import ScenarioComparer from '../components/Calculator/ScenarioComparer.astro';
 import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
@@ -235,6 +236,9 @@ const faqs = [
       faqs={faqs}
     />
 
+    <!-- Scenario Workspace -->
+    <ScenarioComparer type="refinance" title="Refinance Scenario Comparison" subtitle="Compare multiple refinance terms side by side to find the optimal break-even point." />
+
     <Disclaimer />
   </main>
 
@@ -264,8 +268,13 @@ const faqs = [
   const closingCostsInput = document.getElementById('closing-costs') as HTMLInputElement;
   const rollCostsCheckbox = document.getElementById('roll-costs') as HTMLInputElement;
 
+  let userModified = false;
+
   [currBalanceInput, currRateInput, currTermInput, currPaymentInput, newRateInput, newTermSelect, closingCostsInput, rollCostsCheckbox].forEach(ctrl => {
-    ctrl.addEventListener('input', recalculate);
+    ctrl.addEventListener('input', () => {
+      userModified = true;
+      recalculate();
+    });
   });
 
   function recalculate() {
@@ -427,16 +436,35 @@ const faqs = [
       window.updateStressTest(refi.newPrincipal, newRate, newTermYears, 0);
     }
 
-    // Register data for comparative save
-    if (window.registerCurrentRunData) {
-      window.registerCurrentRunData({
-        homePrice: refi.newPrincipal,
-        downPayment: 0,
-        interestRate: newRate,
-        termYears: newTermYears,
-        monthlyPayment: refi.newMonthlyPI,
-        totalInterest: result.totalInterestPaid
-      });
+    // Auto-capture scenario for comparison workspace (only on user input changes)
+    if ((window as any).autoCaptureScenario && userModified) {
+      (window as any).autoCaptureScenario(
+        'refinance',
+        {
+          currentBalance,
+          currentRate,
+          currentRemainingYears: currentRemainingYears,
+          currentMonthlyPI,
+          newRate,
+          newTermYears,
+          refiClosingCosts,
+          rollCostsIntoLoan: rollCostsIntoLoan ? 1 : 0
+        },
+        {
+          monthlyPayment: refi.newMonthlyPI,
+          totalInterest: result.totalInterestPaid,
+          totalCost: result.totalPaymentsSum,
+          payoffYears: result.payoffTermMonths / 12,
+          homePrice: refi.newPrincipal,
+          downPayment: 0,
+          interestRate: newRate,
+          termYears: newTermYears,
+          monthlyPI: refi.newMonthlyPI,
+          monthlySavings: refi.monthlySavings,
+          breakEvenMonths: refi.breakEvenMonths > 0 ? refi.breakEvenMonths : undefined,
+          lifetimeSavings: refi.lifetimeSavings
+        }
+      );
     }
   }
 

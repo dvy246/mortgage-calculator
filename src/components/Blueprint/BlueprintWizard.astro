@@ -1,0 +1,416 @@
+---
+import { SCENARIO_LABELS, SCENARIO_ORDER, TIMELINE_LABELS, TIMELINE_ORDER, CREDIT_LABELS, CREDIT_ORDER, PROPERTY_LABELS, PROPERTY_ORDER, EMPLOYMENT_LABELS, EMPLOYMENT_ORDER } from '../../data/blueprint';
+import { stateDatabase } from '../../data/states';
+
+const stateOptions = Object.entries(stateDatabase)
+  .map(([slug, data]) => ({ value: slug, label: data.name }))
+  .sort((a, b) => a.label.localeCompare(b.label));
+
+const stepLabels = ['About You', 'Finances', 'Target', 'Profile'];
+const stepDescriptions = [
+  'Tell us about your home-buying scenario',
+  'Share your financial profile',
+  'Describe your target home',
+  'Complete your profile'
+];
+---
+
+<div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-6" id="blueprint-widget">
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="font-display text-sm font-semibold text-text-main">Mortgage Options Explorer</h2>
+      <p class="text-xs text-text-muted mt-0.5">See how different loan programs compare for your financial profile.</p>
+    </div>
+    <span id="bp-badge" class="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-0.5 text-3xs font-medium text-blue-600 dark:text-blue-400 whitespace-nowrap">Educational Tool</span>
+  </div>
+
+  <!-- Step Indicators -->
+  <div class="flex items-center gap-1.5" id="bp-step-indicators">
+    {stepLabels.map((label, i) => (
+      <div class="flex items-center gap-1.5 flex-1">
+        <div class="flex items-center gap-1.5">
+          <div class="flex items-center justify-center w-6 h-6 rounded-full text-3xs font-semibold transition-colors" id={`bp-step-dot-${i}`} style="background: #e4e4e7; color: #71717a;">
+            {i + 1}
+          </div>
+          <span class="hidden sm:inline text-3xs text-text-muted font-medium" id={`bp-step-label-${i}`}>{label}</span>
+        </div>
+        {i < stepLabels.length - 1 && <div class="flex-1 h-px bg-border-subtle" id={`bp-step-line-${i}`}></div>}
+      </div>
+    ))}
+  </div>
+
+  <!-- Step 1: About You -->
+  <div id="bp-step-0" class="space-y-4">
+    <fieldset class="space-y-3">
+      <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">About You</legend>
+      <div class="space-y-1.5">
+        <label for="bp-scenario" class="text-xs font-medium text-text-muted">What describes your situation?</label>
+        <select id="bp-scenario" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+          {SCENARIO_ORDER.map(s => (
+            <option value={s}>{SCENARIO_LABELS[s]}</option>
+          ))}
+        </select>
+      </div>
+      <div class="space-y-1.5">
+        <label for="bp-timeline" class="text-xs font-medium text-text-muted">When are you planning to move forward?</label>
+        <select id="bp-timeline" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+          {TIMELINE_ORDER.map(t => (
+            <option value={t}>{TIMELINE_LABELS[t]}</option>
+          ))}
+        </select>
+      </div>
+    </fieldset>
+    <div class="flex justify-end">
+      <button id="bp-next-0" class="inline-flex h-8 items-center justify-center rounded-lg bg-brand-primary px-4 text-xs font-semibold text-bg-main transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer">Next</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Finances -->
+  <div id="bp-step-1" class="space-y-4 hidden">
+    <fieldset class="space-y-3">
+      <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Finances</legend>
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center">
+          <label for="bp-income" class="text-xs font-medium text-text-muted">Annual Household Income</label>
+          <span class="font-semibold text-text-main font-tabular text-xs" id="bp-income-display">$95,000</span>
+        </div>
+        <input type="range" id="bp-income" min="25000" max="500000" step="5000" value="95000" class="w-full" aria-label="Annual Household Income" />
+      </div>
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center">
+          <label for="bp-debts" class="text-xs font-medium text-text-muted">Total Monthly Debt Payments</label>
+          <span class="font-semibold text-text-main font-tabular text-xs" id="bp-debts-display">$450</span>
+        </div>
+        <input type="range" id="bp-debts" min="0" max="8000" step="50" value="450" class="w-full" aria-label="Total Monthly Debt Payments" />
+      </div>
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center">
+          <label for="bp-savings" class="text-xs font-medium text-text-muted">Total Savings Available for Home Purchase</label>
+          <span class="font-semibold text-text-main font-tabular text-xs" id="bp-savings-display">$40,000</span>
+        </div>
+        <input type="range" id="bp-savings" min="0" max="500000" step="5000" value="40000" class="w-full" aria-label="Total Savings Available" />
+        <p class="text-3xs text-text-muted">Includes down payment, closing costs, and reserves.</p>
+      </div>
+      <div class="space-y-1.5">
+        <label for="bp-credit" class="text-xs font-medium text-text-muted">Estimated Credit Score Range</label>
+        <select id="bp-credit" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+          {CREDIT_ORDER.map(c => (
+            <option value={c}>{CREDIT_LABELS[c]}</option>
+          ))}
+        </select>
+      </div>
+    </fieldset>
+    <div class="flex justify-between">
+      <button id="bp-back-1" class="inline-flex h-8 items-center justify-center rounded-lg border border-border-input px-4 text-xs font-medium text-text-muted transition-colors hover:text-text-main hover:bg-bg-card-hover cursor-pointer">Back</button>
+      <button id="bp-next-1" class="inline-flex h-8 items-center justify-center rounded-lg bg-brand-primary px-4 text-xs font-semibold text-bg-main transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer">Next</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Target -->
+  <div id="bp-step-2" class="space-y-4 hidden">
+    <fieldset class="space-y-3">
+      <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Your Target Home</legend>
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center">
+          <label for="bp-price" class="text-xs font-medium text-text-muted">Target Home Price Range</label>
+          <span class="font-semibold text-text-main font-tabular text-xs" id="bp-price-display">$350,000</span>
+        </div>
+        <input type="range" id="bp-price" min="100000" max="2000000" step="10000" value="350000" class="w-full" aria-label="Target Home Price Range" />
+      </div>
+      <div class="space-y-1.5">
+        <label for="bp-state" class="text-xs font-medium text-text-muted">State (for property tax context)</label>
+        <select id="bp-state" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+          {stateOptions.map(s => (
+            <option value={s.value} selected={s.value === 'california'}>{s.label}</option>
+          ))}
+        </select>
+      </div>
+    </fieldset>
+    <div class="flex justify-between">
+      <button id="bp-back-2" class="inline-flex h-8 items-center justify-center rounded-lg border border-border-input px-4 text-xs font-medium text-text-muted transition-colors hover:text-text-main hover:bg-bg-card-hover cursor-pointer">Back</button>
+      <button id="bp-next-2" class="inline-flex h-8 items-center justify-center rounded-lg bg-brand-primary px-4 text-xs font-semibold text-bg-main transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer">Next</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Profile -->
+  <div id="bp-step-3" class="space-y-4 hidden">
+    <fieldset class="space-y-3">
+      <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Your Profile</legend>
+      <div class="space-y-1.5">
+        <label for="bp-employment" class="text-xs font-medium text-text-muted">Employment Type</label>
+        <select id="bp-employment" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+          {EMPLOYMENT_ORDER.map(e => (
+            <option value={e}>{EMPLOYMENT_LABELS[e]}</option>
+          ))}
+        </select>
+      </div>
+      <div class="space-y-1.5">
+        <label for="bp-property" class="text-xs font-medium text-text-muted">Property Type You Are Considering</label>
+        <select id="bp-property" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2.5 text-xs text-text-main focus:border-border-focus focus:outline-none">
+          {PROPERTY_ORDER.map(p => (
+            <option value={p}>{PROPERTY_LABELS[p]}</option>
+          ))}
+        </select>
+      </div>
+    </fieldset>
+    <div class="flex justify-between">
+      <button id="bp-back-3" class="inline-flex h-8 items-center justify-center rounded-lg border border-border-input px-4 text-xs font-medium text-text-muted transition-colors hover:text-text-main hover:bg-bg-card-hover cursor-pointer">Back</button>
+      <button id="bp-submit" class="inline-flex h-8 items-center justify-center rounded-lg bg-brand-primary px-4 text-xs font-semibold text-bg-main transition-all hover:opacity-90 active:scale-[0.98] cursor-pointer">See Results</button>
+    </div>
+  </div>
+
+  <!-- Results Container -->
+  <div id="bp-results" class="hidden"></div>
+</div>
+
+<script>
+  import { calculateBlueprint, formatCurrency, DEFAULT_INPUTS } from '../../utils/blueprintEngine';
+
+  const stepIndicators = document.querySelectorAll('[id^="bp-step-dot-"]');
+  const stepLines = document.querySelectorAll('[id^="bp-step-line-"]');
+  const stepLabels = document.querySelectorAll('[id^="bp-step-label-"]');
+
+  function showStep(index: number) {
+    for (let i = 0; i < 4; i++) {
+      const step = document.getElementById(`bp-step-${i}`);
+      if (step) step.classList.toggle('hidden', i !== index);
+    }
+    stepIndicators.forEach((dot, i) => {
+      const isActive = i <= index;
+      const isCurrent = i === index;
+      (dot as HTMLElement).style.background = isActive ? '#3b82f6' : '#e4e4e7';
+      (dot as HTMLElement).style.color = isActive ? 'white' : '#71717a';
+    });
+    stepLines.forEach((line, i) => {
+      (line as HTMLElement).style.background = i < index ? '#3b82f6' : '#e4e4e7';
+    });
+    stepLabels.forEach((label, i) => {
+      (label as HTMLElement).style.color = i <= index ? '#09090b' : '#a1a1aa';
+    });
+  }
+
+  function getInputs() {
+    return {
+      scenario: (document.getElementById('bp-scenario') as HTMLSelectElement)?.value || DEFAULT_INPUTS.scenario,
+      timeline: (document.getElementById('bp-timeline') as HTMLSelectElement)?.value || DEFAULT_INPUTS.timeline,
+      annualIncome: parseFloat((document.getElementById('bp-income') as HTMLInputElement)?.value) || DEFAULT_INPUTS.annualIncome,
+      monthlyDebts: parseFloat((document.getElementById('bp-debts') as HTMLInputElement)?.value) || DEFAULT_INPUTS.monthlyDebts,
+      savings: parseFloat((document.getElementById('bp-savings') as HTMLInputElement)?.value) || DEFAULT_INPUTS.savings,
+      creditRange: (document.getElementById('bp-credit') as HTMLSelectElement)?.value || DEFAULT_INPUTS.creditRange,
+      targetPrice: parseFloat((document.getElementById('bp-price') as HTMLInputElement)?.value) || DEFAULT_INPUTS.targetPrice,
+      state: (document.getElementById('bp-state') as HTMLSelectElement)?.value || DEFAULT_INPUTS.state,
+      employmentType: (document.getElementById('bp-employment') as HTMLSelectElement)?.value || DEFAULT_INPUTS.employmentType,
+      propertyType: (document.getElementById('bp-property') as HTMLSelectElement)?.value || DEFAULT_INPUTS.propertyType
+    };
+  }
+
+  function renderResults() {
+    const inputs = getInputs();
+    const result = calculateBlueprint(inputs);
+    const container = document.getElementById('bp-results');
+    if (!container) return;
+
+    container.classList.remove('hidden');
+
+    const eligible = result.programs.filter(p => p.explore);
+    const other = result.programs.filter(p => !p.explore);
+
+    const dti = inputs.annualIncome > 0
+      ? ((inputs.monthlyDebts / (inputs.annualIncome / 12)) * 100).toFixed(1)
+      : '0.0';
+
+    let html = `
+      <div class="space-y-5" id="bp-report">
+        <div class="flex items-center justify-between">
+          <h3 class="font-display text-sm font-semibold text-text-main">Loan Programs at a Glance</h3>
+          <span class="inline-flex items-center rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-3xs font-medium text-emerald-600 dark:text-emerald-400">${eligible.length} of ${result.programs.length} May Apply</span>
+        </div>
+
+        <div class="flex items-center gap-2 p-3 rounded-lg border border-border-subtle bg-bg-main">
+          <svg class="h-4 w-4 shrink-0 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></svg>
+          <div class="text-3xs text-text-muted space-y-0.5">
+            <span class="block"><strong class="text-text-main">DTI:</strong> ${dti}% &middot; <strong class="text-text-main">Down Payment:</strong> ${formatCurrency(inputs.savings)} (${result.downPaymentPercent.toFixed(1)}% of target)</span>
+            <span class="block"><strong class="text-text-main">Est. Closing Costs:</strong> ${formatCurrency(result.estimatedClosingCostsLow)} — ${formatCurrency(result.estimatedClosingCostsHigh)}</span>
+          </div>
+        </div>`;
+
+    if (eligible.length > 0) {
+      html += `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          ${eligible.map(p => `
+            <div class="rounded-lg border border-border-subtle bg-bg-main p-4 space-y-3 relative overflow-hidden">
+              ${p.slug === 'va' || p.slug === 'usda' ? `
+                <div class="absolute -top-6 -right-6 w-16 h-16 rounded-full ${p.slug === 'va' ? 'bg-blue-500/10' : 'bg-emerald-500/10'}"></div>
+              ` : ''}
+              <div class="flex items-center justify-between">
+                <h4 class="font-display text-xs font-semibold text-text-main">${p.name}</h4>
+                <span class="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-4xs font-medium text-blue-600 dark:text-blue-400">Explore</span>
+              </div>
+              <p class="text-3xs text-text-muted leading-relaxed">${p.description}</p>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div class="space-y-0.5">
+                  <span class="text-3xs text-text-muted block">Down Payment</span>
+                  <span class="text-xs font-semibold font-tabular text-text-main">${p.minDownPaymentPercent}% min</span>
+                  <span class="text-3xs text-text-muted block">${formatCurrency(p.downPaymentAmount)}</span>
+                </div>
+                ${p.hasMI ? `
+                <div class="space-y-0.5">
+                  <span class="text-3xs text-text-muted block">Est. Rate</span>
+                  <span class="text-xs font-semibold font-tabular text-text-main">${p.estimatedRate}</span>
+                  <span class="text-3xs text-text-muted block">Est. ${formatCurrency(p.estimatedMonthlyPayment)}/mo</span>
+                </div>` : `
+                <div class="space-y-0.5">
+                  <span class="text-3xs text-text-muted block">Est. Rate</span>
+                  <span class="text-xs font-semibold font-tabular text-text-main">${p.estimatedRate}</span>
+                  <span class="text-3xs text-text-muted block">Est. ${formatCurrency(p.estimatedMonthlyPayment)}/mo</span>
+                </div>`}
+              </div>
+
+              ${p.hasMI ? `
+              <div class="space-y-0.5">
+                <span class="text-3xs text-text-muted block">${p.miLabel}:</span>
+                <span class="text-3xs text-text-muted">${p.miDetails}</span>
+                ${p.estimatedMonthlyMI > 0 ? `<span class="text-3xs text-text-muted block">Est. ${formatCurrency(p.estimatedMonthlyMI)}/month</span>` : ''}
+              </div>` : `
+              <div class="space-y-0.5">
+                <span class="text-3xs text-text-muted block">${p.miLabel}</span>
+                <span class="text-3xs text-text-muted">${p.miDetails}</span>
+              </div>`}
+
+              <div class="space-y-0.5">
+                <span class="text-3xs text-text-muted block">Typical Rate Context:</span>
+                <span class="text-3xs text-text-muted">${p.typicalRateNote}</span>
+              </div>
+
+              <ul class="space-y-0.5">
+                ${p.keyFeatures.slice(0, 3).map(f => `
+                  <li class="flex items-start gap-1.5 text-3xs text-text-muted">
+                    <svg class="h-3 w-3 shrink-0 mt-0.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    <span>${f}</span>
+                  </li>
+                `).join('')}
+              </ul>
+
+              ${p.guideSlug ? `
+                <a href="/guides/${p.guideSlug}" class="inline-flex items-center gap-1 text-3xs font-medium text-blue-500 hover:text-blue-600 transition-colors">
+                  Learn more about ${p.shortName}
+                  <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </a>` : ''}
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    if (other.length > 0) {
+      html += `
+        <div class="space-y-2">
+          <h4 class="font-display text-xs font-semibold text-text-main">Less Common for Your Profile</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            ${other.map(p => `
+              <div class="rounded-lg border border-border-subtle bg-bg-main p-3 space-y-1.5 opacity-70">
+                <div class="flex items-center justify-between">
+                  <h5 class="text-xs font-semibold text-text-main">${p.name}</h5>
+                  <span class="inline-flex items-center rounded-full border border-zinc-500/20 bg-zinc-500/10 px-2 py-0.5 text-4xs font-medium text-zinc-600 dark:text-zinc-400">Review</span>
+                </div>
+                <p class="text-3xs text-text-muted">${p.note}</p>
+                ${p.minDownPaymentPercent > 0 ? `
+                  <span class="text-3xs text-text-muted block">Typical down payment: ${p.minDownPaymentPercent}% (${formatCurrency(p.downPaymentAmount)})</span>` : ''}
+                ${p.guideSlug ? `
+                  <a href="/guides/${p.guideSlug}" class="inline-flex items-center gap-1 text-3xs font-medium text-blue-500 hover:text-blue-600 transition-colors">
+                    Learn more
+                    <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                  </a>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+    }
+
+    html += `
+        <div class="space-y-3">
+          <h4 class="font-display text-xs font-semibold text-text-main">Common Preparation Topics</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            ${result.preparationTopics.map(t => `
+              <div class="flex items-start gap-2.5 p-3 rounded-lg border border-border-subtle bg-bg-main">
+                <svg class="h-4 w-4 shrink-0 mt-0.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="${t.icon}" /></svg>
+                <div class="space-y-0.5 min-w-0">
+                  <span class="block text-xs font-semibold text-text-main">${t.title}</span>
+                  <span class="block text-3xs text-text-muted leading-relaxed">${t.description}</span>
+                  ${t.guideUrl ? `
+                    <a href="${t.guideUrl}" class="inline-flex items-center gap-1 text-3xs font-medium text-blue-500 hover:text-blue-600 transition-colors mt-0.5">
+                      Read the guide
+                      <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+                    </a>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-border-subtle bg-bg-main p-3 space-y-2">
+          <div class="flex items-start gap-2">
+            <svg class="h-4 w-4 shrink-0 mt-0.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+            <div class="text-3xs text-text-muted space-y-1">
+              <p><strong>Educational comparison:</strong> This tool shows how different loan programs typically compare based on standard guidelines. Loan availability, terms, and rates vary by lender, location, and individual financial profile. Review specific loan details with a licensed mortgage professional.</p>
+              <p><strong>Not financial advice:</strong> This is not a loan pre-approval, rate lock, or commitment to lend. Consult a qualified mortgage advisor for a personalized assessment of your borrowing options.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <a href="/house-affordability-calculator" class="inline-flex h-7 items-center justify-center rounded-lg border border-border-input px-3 text-3xs font-medium text-text-muted hover:text-text-main hover:bg-bg-card-hover transition-colors">
+            Affordability Calculator
+          </a>
+          <a href="/mortgage-readiness-score" class="inline-flex h-7 items-center justify-center rounded-lg border border-border-input px-3 text-3xs font-medium text-text-muted hover:text-text-main hover:bg-bg-card-hover transition-colors">
+            Readiness Score
+          </a>
+          <a href="/compare/" class="inline-flex h-7 items-center justify-center rounded-lg border border-border-input px-3 text-3xs font-medium text-text-muted hover:text-text-main hover:bg-bg-card-hover transition-colors">
+            Loan Comparisons
+          </a>
+          <a href="/rent-vs-buy-calculator" class="inline-flex h-7 items-center justify-center rounded-lg border border-border-input px-3 text-3xs font-medium text-text-muted hover:text-text-main hover:bg-bg-card-hover transition-colors">
+            Rent vs Buy
+          </a>
+        </div>
+      </div>`;
+
+    container.innerHTML = html;
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  const nextButtons = [0, 1, 2].map(i => document.getElementById(`bp-next-${i}`));
+  const backButtons = [1, 2, 3].map(i => document.getElementById(`bp-back-${i}`));
+  const submitBtn = document.getElementById('bp-submit');
+
+  nextButtons.forEach((btn, i) => {
+    btn?.addEventListener('click', () => showStep(i + 1));
+  });
+  backButtons.forEach((btn, i) => {
+    btn?.addEventListener('click', () => showStep(i - 1));
+  });
+  submitBtn?.addEventListener('click', renderResults);
+
+  // Format display values
+  function formatPrice(val: number): string {
+    return '$' + Math.round(val).toLocaleString('en-US');
+  }
+
+  document.getElementById('bp-income')?.addEventListener('input', function(this: HTMLInputElement) {
+    const d = document.getElementById('bp-income-display');
+    if (d) d.textContent = formatPrice(parseFloat(this.value));
+  });
+  document.getElementById('bp-debts')?.addEventListener('input', function(this: HTMLInputElement) {
+    const d = document.getElementById('bp-debts-display');
+    if (d) d.textContent = formatPrice(parseFloat(this.value));
+  });
+  document.getElementById('bp-savings')?.addEventListener('input', function(this: HTMLInputElement) {
+    const d = document.getElementById('bp-savings-display');
+    if (d) d.textContent = formatPrice(parseFloat(this.value));
+  });
+  document.getElementById('bp-price')?.addEventListener('input', function(this: HTMLInputElement) {
+    const d = document.getElementById('bp-price-display');
+    if (d) d.textContent = formatPrice(parseFloat(this.value));
+  });
+
+  showStep(0);
+</script>

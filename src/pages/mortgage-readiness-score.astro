@@ -1,0 +1,226 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ReadinessDashboard from '../components/MortgageReadiness/ReadinessDashboard.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const faqs = [
+  {
+    question: "What is a mortgage readiness score?",
+    answer: "A mortgage readiness score is an educational estimate that compares your financial profile against common home-buying guidelines used across the mortgage industry. It aggregates five dimensions — income stability, debt levels, savings position, credit profile, and market context — into a single reference score. This is not a credit score or a pre-approval decision. It is a self-assessment tool designed to help you understand where your financial profile falls relative to general lending benchmarks."
+  },
+  {
+    question: "Is this readiness score the same as a credit score?",
+    answer: "No. A credit score (such as FICO or VantageScore) is a standardized metric calculated by credit bureaus based on your borrowing and repayment history. This readiness score is a broader educational estimate that incorporates employment factors, savings levels, debt-to-income ratios, and credit tiers alongside each other. Lenders evaluate your complete financial profile — not just a single number — when reviewing mortgage applications."
+  },
+  {
+    question: "What is considered a good readiness score?",
+    answer: "Scores above 85 are generally associated with profiles that align well with common lending guidelines across multiple dimensions. Scores between 65 and 85 typically indicate areas of strength alongside areas that may benefit from attention. Scores below 65 commonly reflect profiles where several dimensions differ from general benchmarks — a typical starting point for many prospective buyers."
+  },
+  {
+    question: "How is the debt-to-income (DTI) ratio calculated?",
+    answer: "The DTI ratio shown in this tool divides your total monthly debt payments by your gross monthly income. For example, if your monthly debts total $1,500 and your monthly income is $6,000, your DTI is 25%. Conventional loan guidelines often reference a 36% back-end DTI threshold, though individual loan programs and lenders may apply different standards."
+  },
+  {
+    question: "Do I need a 20% down payment to buy a home?",
+    answer: "A 20% down payment eliminates the need for Private Mortgage Insurance (PMI) on conventional loans, but many loan programs accept lower down payments. FHA loans allow as little as 3.5% down, and conventional loans may allow 3% to 5% down for qualified buyers. VA and USDA loans may offer zero-down options for eligible borrowers. Each option has different cost trade-offs over the life of the loan."
+  },
+  {
+    question: "Will this tool tell me if I qualify for a mortgage?",
+    answer: "This tool provides an educational estimate and is not a loan qualification or pre-approval decision. Mortgage qualification depends on many factors that vary by lender, loan program, and jurisdiction — including accurate credit reports, debt verification, asset documentation, property appraisal, and underwriting guidelines. Consult a licensed mortgage professional for a personalized assessment of your borrowing options."
+  },
+  {
+    question: "How can I improve my readiness score?",
+    answer: "Common factors that align with higher readiness scores include: increasing your down payment savings, reducing existing debt balances, improving your credit profile by making consistent on-time payments, maintaining stable employment, and building an emergency fund that covers several months of housing expenses. General lending guidelines may consider a back-end DTI below 36%, a down payment of at least 3% to 20% depending on the loan program, and a credit score of 620 or higher for most loan types."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Mortgage Readiness Score Calculator",
+      "url": "https://mortgagesintel.com/mortgage-readiness-score",
+      "description": "An interactive educational tool that estimates your mortgage readiness across five dimensions: income stability, debt health, savings position, credit readiness, and market context.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="Mortgage Readiness Score – Educational Home Buying Assessment"
+  description="Estimate your mortgage readiness score across five dimensions: income, debt, savings, credit, and market context. An interactive educational tool for prospective home buyers."
+  canonicalUrl="/mortgage-readiness-score"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="readiness" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full border border-blue-500/20 bg-blue-500/10 px-2.5 py-0.5 text-3xs font-medium text-blue-600 dark:text-blue-400">Educational Tool</span>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Mortgage Readiness Score</h1>
+      <p class="text-xs text-text-muted max-w-2xl">
+        See how your financial profile compares against common home-buying guidelines across five dimensions:
+        income stability, debt health, savings position, credit readiness, and market context.
+        This is an educational estimate — not a credit check or loan decision.
+      </p>
+    </div>
+
+    <ReadinessDashboard />
+
+    <AdSlot format="horizontal" slot="3001" class="my-4" />
+
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 sm:p-6 space-y-5">
+      <h2 class="font-display text-base font-semibold text-text-main">How the Five Dimensions Are Estimated</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/10 text-blue-500 text-3xs font-bold">1</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Income &amp; Employment</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Evaluates employment type, job stability, and income level. Full-time employment with longer tenure
+            at current income levels generally aligns well with common lending guidelines. Self-employed and
+            contract workers may have additional documentation requirements.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-violet-500/10 text-violet-500 text-3xs font-bold">2</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Debt Health</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Measures your Debt-to-Income (DTI) ratio — your monthly debt payments divided by gross monthly income.
+            Conventional loan guidelines often reference a 36% back-end DTI threshold, though specific
+            programs and lenders may evaluate this differently.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-cyan-500/10 text-cyan-500 text-3xs font-bold">3</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Savings Position</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Considers your down payment as a percentage of your target home price and your emergency fund
+            reserves. A larger down payment generally correlates with broader loan program access, while
+            emergency reserves help cover unexpected homeownership expenses after closing.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-500 text-3xs font-bold">4</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Credit Readiness</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Uses your self-identified credit score tier. Credit scores influence the interest rates and loan
+            programs available to borrowers. Higher credit tiers are generally associated with broader access
+            to favorable loan terms across the mortgage market.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-lg border border-border-subtle bg-bg-main space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-zinc-500/10 text-zinc-500 text-3xs font-bold">5</span>
+            <h3 class="font-display text-xs font-semibold text-text-main">Market Context</h3>
+          </div>
+          <p class="text-3xs text-text-muted leading-relaxed">
+            Accounts for geographic and market-level variables that affect the home-buying landscape,
+            such as local price-to-income ratios and property tax environments. This dimension uses
+            neutral national baselines and will be enhanced with state-specific data over time.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 sm:p-6 space-y-3">
+      <h2 class="font-display text-sm font-semibold text-text-main">Understanding Your Results</h2>
+      <div class="space-y-2 text-xs text-text-muted leading-relaxed">
+        <p>
+          Your readiness score is an educational reference that reflects how your self-reported financial profile
+          compares against general home-buying guidelines. It is not a credit score, a pre-qualification,
+          or a guarantee of loan approval.
+        </p>
+        <p>
+          The four score categories — <strong>Strong</strong> (85+), <strong>Developing</strong> (65–84),
+          <strong>Building</strong> (40–64), and <strong>Early Stage</strong> (below 40) — are broad descriptors
+          meant to help you understand where your profile falls relative to commonly referenced thresholds.
+          Individual lenders, loan programs, and local markets may apply different criteria.
+        </p>
+        <p>
+          We encourage you to use this tool as a starting point for conversation with a qualified mortgage
+          professional who can provide a personalized assessment based on your full financial picture.
+        </p>
+      </div>
+    </div>
+
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 sm:p-6 space-y-4">
+      <h2 class="font-display text-sm font-semibold text-text-main">Related Tools</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <a href="/house-affordability-calculator" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">House Affordability Calculator</span>
+            <span class="block text-3xs text-text-muted truncate">Calculate your home buying budget using DTI rules</span>
+          </div>
+        </a>
+        <a href="/mortgage-payoff-calculator" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">Mortgage Payoff Calculator</span>
+            <span class="block text-3xs text-text-muted truncate">Full amortization schedule and payoff timeline</span>
+          </div>
+        </a>
+        <a href="/compare/" class="flex items-center gap-3 p-3 rounded-lg border border-border-subtle bg-bg-main transition-colors hover:bg-bg-card-hover">
+          <svg class="h-5 w-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+          <div class="min-w-0">
+            <span class="block text-xs font-semibold text-text-main truncate">Comparison Tools</span>
+            <span class="block text-3xs text-text-muted truncate">Compare loan types, terms, and strategies</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <MortgageGuide
+      title="Mortgage Readiness"
+      subtitle="Understanding where you stand in the home-buying process"
+      whatItDoes="This readiness assessment tool provides an educational estimate of how your financial profile compares against common home-buying guidelines. It is designed to help prospective buyers understand the multi-dimensional nature of mortgage readiness — from income stability and debt levels to savings, credit, and market factors. Unlike a simple affordability calculator that only considers income and debt, this tool provides a broader perspective across five distinct dimensions."
+      whenToUse="This tool is most useful as a starting point in your home-buying journey — before you begin touring properties, talking to lenders, or comparing loan programs. Getting a broad sense of your financial alignment with common guidelines early on can help you identify which areas of your financial profile may benefit from attention before you engage with a lender or real estate agent."
+      howItWorks="The assessment aggregates five dimension scores using a weighted model. Income stability accounts for 20% of the total, debt health for 25%, savings position for 25%, credit readiness for 20%, and market context for 10%. Each dimension is scored on a 0–100 scale based on how your self-reported inputs compare against commonly referenced industry thresholds. The weighted average produces your overall readiness score. This methodology is transparent and you can see how each dimension contributes to your total."
+      mistakes="A common misunderstanding is that a single number — such as a credit score or income level — determines mortgage readiness. In practice, lenders evaluate multiple factors together. Another frequent gap is underestimating the role of cash reserves after closing. Many prospective buyers focus exclusively on the down payment without accounting for closing costs (typically 2–5% of the purchase price) and post-closing emergency funds. Finally, remembering that the guidelines referenced in this tool are generalizations — individual lenders, loan programs, and local markets often apply different criteria."
+      faqs={faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <Footer />
+</Layout>

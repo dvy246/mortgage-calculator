@@ -1,0 +1,339 @@
+---
+import { DEFAULT_INPUTS } from '../../utils/rentVsBuy';
+---
+
+<div class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-6" id="rvb-dashboard">
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="font-display text-sm font-semibold text-text-main">Compare Rent vs Buy</h2>
+      <p class="text-xs text-text-muted mt-0.5">Adjust assumptions below to see how the math compares over time.</p>
+    </div>
+    <span id="rvb-outcome-badge" class="inline-flex items-center rounded-full px-2.5 py-0.5 text-3xs font-medium border border-border-subtle bg-bg-main text-text-muted whitespace-nowrap">Adjust inputs...</span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Form Column -->
+    <div class="space-y-5">
+      <fieldset class="space-y-3">
+        <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Buying a Home</legend>
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center">
+            <label for="rvb-price" class="text-xs font-medium text-text-muted">Home Price</label>
+            <span class="font-semibold text-text-main font-tabular text-xs" id="rvb-price-display">$350,000</span>
+          </div>
+          <input type="range" id="rvb-price" min="100000" max="1000000" step="10000" value="350000" aria-label="Home price" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="rvb-down" class="text-xs font-medium text-text-muted">Down Payment</label>
+            <select id="rvb-down" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main focus:border-border-focus focus:outline-none">
+              <option value="3">3%</option>
+              <option value="5">5%</option>
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+              <option value="20" selected>20%</option>
+              <option value="25">25%</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label for="rvb-rate" class="text-xs font-medium text-text-muted">Interest Rate</label>
+            <div class="flex gap-1 items-center">
+              <input type="number" id="rvb-rate" value="6.7" step="0.1" min="2" max="12" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              <span class="text-xs text-text-muted">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="rvb-tax" class="text-xs font-medium text-text-muted">Property Tax</label>
+            <div class="flex gap-1 items-center">
+              <input type="number" id="rvb-tax" value="1.1" step="0.1" min="0" max="3" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              <span class="text-xs text-text-muted">%</span>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label for="rvb-insurance" class="text-xs font-medium text-text-muted">Insurance/yr</label>
+            <input type="number" id="rvb-insurance" value="1800" step="100" min="0" max="10000" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="rvb-maintenance" class="text-xs font-medium text-text-muted">Maintenance</label>
+            <div class="flex gap-1 items-center">
+              <input type="number" id="rvb-maintenance" value="1" step="0.25" min="0" max="4" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              <span class="text-xs text-text-muted">%/yr</span>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label for="rvb-hoa" class="text-xs font-medium text-text-muted">HOA/mo</label>
+            <input type="number" id="rvb-hoa" value="0" step="25" min="0" max="2000" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="space-y-3">
+        <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Renting</legend>
+        <div class="space-y-1.5">
+          <div class="flex justify-between items-center">
+            <label for="rvb-rent" class="text-xs font-medium text-text-muted">Monthly Rent</label>
+            <span class="font-semibold text-text-main font-tabular text-xs" id="rvb-rent-display">$2,000</span>
+          </div>
+          <input type="range" id="rvb-rent" min="500" max="6000" step="50" value="2000" aria-label="Monthly rent" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="rvb-rent-inc" class="text-xs font-medium text-text-muted">Rent Increase/yr</label>
+            <div class="flex gap-1 items-center">
+              <input type="number" id="rvb-rent-inc" value="3" step="0.5" min="0" max="10" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              <span class="text-xs text-text-muted">%</span>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label for="rvb-appreciation" class="text-xs font-medium text-text-muted">Home Apprec.</label>
+            <div class="flex gap-1 items-center">
+              <input type="number" id="rvb-appreciation" value="3.5" step="0.5" min="0" max="10" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              <span class="text-xs text-text-muted">%/yr</span>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset class="space-y-3">
+        <legend class="font-display text-xs font-semibold text-text-main border-b border-border-subtle pb-1.5 w-full">Financial Assumptions</legend>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="rvb-inv-return" class="text-xs font-medium text-text-muted">Investment Return</label>
+            <div class="flex gap-1 items-center">
+              <input type="number" id="rvb-inv-return" value="7" step="0.5" min="0" max="15" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main font-tabular focus:border-border-focus focus:outline-none" />
+              <span class="text-xs text-text-muted">%/yr</span>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label for="rvb-horizon" class="text-xs font-medium text-text-muted">Time Horizon</label>
+            <select id="rvb-horizon" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main focus:border-border-focus focus:outline-none">
+              <option value="3">3 years</option>
+              <option value="5">5 years</option>
+              <option value="7" selected>7 years</option>
+              <option value="10">10 years</option>
+              <option value="15">15 years</option>
+              <option value="20">20 years</option>
+              <option value="30">30 years</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label for="rvb-tax-rate" class="text-xs font-medium text-text-muted">Tax Bracket</label>
+            <select id="rvb-tax-rate" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main focus:border-border-focus focus:outline-none">
+              <option value="10">10%</option>
+              <option value="12">12%</option>
+              <option value="22" selected>22%</option>
+              <option value="24">24%</option>
+              <option value="32">32%</option>
+              <option value="35">35%</option>
+            </select>
+          </div>
+          <div class="space-y-1.5">
+            <label for="rvb-filing" class="text-xs font-medium text-text-muted">Filing Status</label>
+            <select id="rvb-filing" class="h-8 w-full rounded-lg border border-border-input bg-bg-input px-2 text-xs text-text-main focus:border-border-focus focus:outline-none">
+              <option value="single" selected>Single</option>
+              <option value="married">Married Joint</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- Results Column -->
+    <div class="space-y-5">
+      <div id="rvb-results" class="space-y-4">
+        <div class="rounded-lg border border-border-subtle bg-bg-main p-4 text-center" id="rvb-empty-state">
+          <p class="text-xs text-text-muted">Adjust inputs above to compare renting vs buying over your chosen time horizon.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { calculateRentVsBuy, formatCurrency } from '../../utils/rentVsBuy';
+
+  const els = {
+    price: document.getElementById('rvb-price') as HTMLInputElement,
+    priceDisplay: document.getElementById('rvb-price-display'),
+    down: document.getElementById('rvb-down') as HTMLSelectElement,
+    rate: document.getElementById('rvb-rate') as HTMLInputElement,
+    tax: document.getElementById('rvb-tax') as HTMLInputElement,
+    insurance: document.getElementById('rvb-insurance') as HTMLInputElement,
+    maintenance: document.getElementById('rvb-maintenance') as HTMLInputElement,
+    hoa: document.getElementById('rvb-hoa') as HTMLInputElement,
+    rent: document.getElementById('rvb-rent') as HTMLInputElement,
+    rentDisplay: document.getElementById('rvb-rent-display'),
+    rentInc: document.getElementById('rvb-rent-inc') as HTMLInputElement,
+    appreciation: document.getElementById('rvb-appreciation') as HTMLInputElement,
+    invReturn: document.getElementById('rvb-inv-return') as HTMLInputElement,
+    horizon: document.getElementById('rvb-horizon') as HTMLSelectElement,
+    taxRate: document.getElementById('rvb-tax-rate') as HTMLSelectElement,
+    filing: document.getElementById('rvb-filing') as HTMLSelectElement,
+    results: document.getElementById('rvb-results'),
+    badge: document.getElementById('rvb-outcome-badge')
+  };
+
+  function getInputs() {
+    return {
+      homePrice: parseFloat(els.price.value) || 350000,
+      downPaymentPercent: parseFloat(els.down.value) || 20,
+      interestRate: parseFloat(els.rate.value) || 6.7,
+      loanTermYears: 30,
+      propertyTaxRate: parseFloat(els.tax.value) || 1.1,
+      insuranceAnnual: parseFloat(els.insurance.value) || 1800,
+      maintenancePercent: parseFloat(els.maintenance.value) || 1,
+      hoaMonthly: parseFloat(els.hoa.value) || 0,
+      closingCostPercent: 3,
+      sellingCostPercent: 6,
+      pmiRate: 0.8,
+      monthlyRent: parseFloat(els.rent.value) || 2000,
+      rentIncreasePercent: parseFloat(els.rentInc.value) || 3,
+      renterInsuranceMonthly: 20,
+      securityDepositMonths: 1,
+      homeAppreciation: parseFloat(els.appreciation.value) || 3.5,
+      investmentReturn: parseFloat(els.invReturn.value) || 7,
+      timeHorizonYears: parseInt(els.horizon.value) || 7,
+      marginalTaxRate: parseInt(els.taxRate.value) || 22,
+      itemizeDeductions: false,
+      filingStatus: (els.filing.value || 'single') as 'single' | 'married'
+    };
+  }
+
+  function recalculate() {
+    const inputs = getInputs();
+    const result = calculateRentVsBuy(inputs);
+
+    const win = result.recommendedAction;
+    if (els.badge) {
+      const colors: Record<string, string> = {
+        buy: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+        rent: 'border-blue-500/20 bg-blue-500/10 text-blue-600 dark:text-blue-400',
+        depends: 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+      };
+      els.badge.textContent = win === 'buy' ? 'Buying may be favored'
+        : win === 'rent' ? 'Renting may be favored'
+        : 'Depends on priorities';
+      els.badge.className = `inline-flex items-center rounded-full px-2.5 py-0.5 text-3xs font-medium border ${colors[win]}`;
+    }
+
+    if (els.results) {
+      els.results.innerHTML = buildResultsHTML(result, inputs);
+    }
+  }
+
+  function buildResultsHTML(result: any, inputs: any): string {
+    const t = result.totals;
+    const buyCheaper = result.buyState === 'cheaper';
+    const rentCheaper = result.rentState === 'cheaper';
+    const breakEvenStr = result.breakEvenYear
+      ? `${result.breakEvenYear} year${result.breakEvenYear !== 1 ? 's' : ''}`
+      : result.neverBreaksEven ? 'Never within this horizon' : 'Beyond this horizon';
+
+    const buyMonthly = formatCurrency(Math.round(result.buyFirstYearPITI));
+    const rentMonthly = formatCurrency(Math.round(result.rentFirstYearMonthly));
+
+    const buyWin = result.recommendedAction === 'buy';
+    const rentWin = result.recommendedAction === 'rent';
+    const depends = result.recommendedAction === 'depends';
+
+    return `
+      <div class="grid grid-cols-2 gap-3">
+        <div class="rounded-lg border ${buyCheaper ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-border-subtle bg-bg-main'} p-3 space-y-1.5">
+          <div class="flex items-center gap-1.5">
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-emerald-500/10 text-emerald-500 text-3xs font-bold font-display">B</span>
+            <span class="text-3xs font-semibold text-text-muted uppercase tracking-wider">Buy</span>
+          </div>
+          <div class="text-base font-bold font-tabular text-text-main">${buyMonthly}<span class="text-xs font-normal text-text-muted">/mo</span></div>
+          <div class="text-3xs text-text-muted">PITI + maintenance</div>
+          <div class="border-t border-border-subtle pt-1.5 mt-1.5 space-y-0.5 text-3xs text-text-muted">
+            <div class="flex justify-between"><span>Net cost (${inputs.timeHorizonYears}y)</span><span class="font-tabular font-semibold text-text-main">${formatCurrency(Math.round(t.buyTotalCost))}</span></div>
+            <div class="flex justify-between"><span>Net worth at exit</span><span class="font-tabular font-semibold text-text-main">${formatCurrency(Math.round(t.buySellingProceeds))}</span></div>
+          </div>
+        </div>
+        <div class="rounded-lg border ${rentCheaper ? 'border-blue-500/30 bg-blue-500/5' : 'border-border-subtle bg-bg-main'} p-3 space-y-1.5">
+          <div class="flex items-center gap-1.5">
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-blue-500/10 text-blue-500 text-3xs font-bold font-display">R</span>
+            <span class="text-3xs font-semibold text-text-muted uppercase tracking-wider">Rent</span>
+          </div>
+          <div class="text-base font-bold font-tabular text-text-main">${rentMonthly}<span class="text-xs font-normal text-text-muted">/mo</span></div>
+          <div class="text-3xs text-text-muted">Rent + insurance</div>
+          <div class="border-t border-border-subtle pt-1.5 mt-1.5 space-y-0.5 text-3xs text-text-muted">
+            <div class="flex justify-between"><span>Total paid (${inputs.timeHorizonYears}y)</span><span class="font-tabular font-semibold text-text-main">${formatCurrency(Math.round(t.rentTotalCost))}</span></div>
+            <div class="flex justify-between"><span>Portfolio (invested savings)</span><span class="font-tabular font-semibold text-text-main">${formatCurrency(Math.round(t.rentPortfolioAfterTax))}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-border-subtle bg-bg-main p-3 text-center">
+        <div class="text-3xs text-text-muted">Break-even: buying becomes cheaper after</div>
+        <div class="text-lg font-bold font-tabular text-text-main mt-0.5">${breakEvenStr}</div>
+      </div>
+
+      <div class="space-y-1">
+        <h3 class="font-display text-xs font-semibold text-text-main">Year-by-Year Comparison</h3>
+        <div class="rounded-lg border border-border-subtle bg-bg-main overflow-hidden">
+          <div class="max-h-48 overflow-y-auto">
+            <table class="w-full text-3xs">
+              <thead class="sticky top-0 bg-bg-card">
+                <tr class="border-b border-border-subtle text-text-muted">
+                  <th class="text-left px-2 py-1.5 font-medium">Year</th>
+                  <th class="text-right px-2 py-1.5 font-medium">Buy Cost</th>
+                  <th class="text-right px-2 py-1.5 font-medium">Rent Cost</th>
+                  <th class="text-right px-2 py-1.5 font-medium">Buy Net Worth</th>
+                  <th class="text-right px-2 py-1.5 font-medium">Rent Portfolio</th>
+                  <th class="text-right px-2 py-1.5 font-medium">Advantage</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${result.annualData.map((d: any) => {
+                  const adv = d.buyAdvantage;
+                  const advClass = adv <= 0 ? 'text-emerald-500 font-semibold' : 'text-text-muted';
+                  const advLabel = adv <= 0 ? 'Buy ahead' : 'Rent ahead';
+                  return `<tr class="border-b border-border-subtle/50 hover:bg-bg-card-hover/50">
+                    <td class="px-2 py-1.5 text-text-main font-medium">${d.year}</td>
+                    <td class="px-2 py-1.5 text-right font-tabular">${formatCurrency(Math.round(d.buy.totalOutOfPocket))}</td>
+                    <td class="px-2 py-1.5 text-right font-tabular">${formatCurrency(Math.round(d.rent.totalPaid))}</td>
+                    <td class="px-2 py-1.5 text-right font-tabular">${formatCurrency(Math.round(d.buy.sellingProceedsAfterTax))}</td>
+                    <td class="px-2 py-1.5 text-right font-tabular">${formatCurrency(Math.round(d.rent.portfolioAfterTax))}</td>
+                    <td class="px-2 py-1.5 text-right font-tabular ${advClass}">${advLabel}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-border-subtle bg-bg-main p-3 space-y-1">
+        <div class="flex items-center gap-1.5 text-3xs text-text-muted">
+          <svg class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>Educational comparison based on estimates you provide. Tax calculations are simplified federal estimates. Consult a qualified professional for personalized advice.</span>
+        </div>
+      </div>
+    `;
+  }
+
+  els.price.addEventListener('input', () => {
+    if (els.priceDisplay) els.priceDisplay.textContent = formatCurrency(parseFloat(els.price.value));
+    recalculate();
+  });
+  els.rent.addEventListener('input', () => {
+    if (els.rentDisplay) els.rentDisplay.textContent = formatCurrency(parseFloat(els.rent.value));
+    recalculate();
+  });
+
+  const bindEvents = [
+    els.down, els.rate, els.tax, els.insurance, els.maintenance, els.hoa,
+    els.rentInc, els.appreciation, els.invReturn, els.horizon, els.taxRate, els.filing
+  ];
+  bindEvents.forEach(el => el.addEventListener('change', recalculate));
+  bindEvents.forEach(el => el.addEventListener('input', recalculate));
+
+  recalculate();
+</script>

@@ -11,6 +11,7 @@ import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
 import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import ScenarioComparer from '../components/Calculator/ScenarioComparer.astro';
 import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
@@ -257,6 +258,25 @@ const faqs = [
       faqs={faqs}
     />
 
+    <!-- Scenario Workspace -->
+    <ScenarioComparer type="extra-payment" title="Prepayment Strategy Comparison" subtitle="Compare different extra payment strategies side by side to maximize interest savings." />
+
+    <!-- Related Comparisons -->
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-3">
+      <h4 class="font-display text-xs font-semibold text-text-main">Explore Related Comparisons</h4>
+      <div class="flex flex-wrap gap-2 text-xs">
+        <a href="/compare/extra-payment-mortgage-comparison" class="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-3 py-1.5 text-blue-500 font-medium hover:bg-blue-500/20 transition-colors border border-blue-500/20">
+          Extra Payment vs Standard
+        </a>
+        <a href="/compare/15-vs-30-year-mortgage" class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-3 py-1.5 text-emerald-500 font-medium hover:bg-emerald-500/20 transition-colors border border-emerald-500/20">
+          15-Year vs 30-Year
+        </a>
+        <a href="/compare/buying-mortgage-points-analysis" class="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-3 py-1.5 text-amber-500 font-medium hover:bg-amber-500/20 transition-colors border border-amber-500/20">
+          Points Analysis
+        </a>
+      </div>
+    </div>
+
     <!-- Disclaimer card -->
     <Disclaimer />
   </main>
@@ -302,10 +322,13 @@ const faqs = [
     }
   });
 
+  let userModified = false;
+
   function syncInputs(slider: HTMLInputElement, input: HTMLInputElement, display: HTMLElement | null) {
     const update = () => {
       input.value = slider.value;
       if (display) display.textContent = `$${parseInt(slider.value).toLocaleString('en-US')}`;
+      userModified = true;
       recalculate();
     };
     slider.addEventListener('input', update);
@@ -314,6 +337,7 @@ const faqs = [
       val = Math.min(parseFloat(slider.max), Math.max(parseFloat(slider.min), val));
       slider.value = String(val);
       if (display) display.textContent = `$${Math.round(val).toLocaleString('en-US')}`;
+      userModified = true;
       recalculate();
     });
   }
@@ -322,7 +346,10 @@ const faqs = [
   syncInputs(extraMonthlySlider, extraMonthlyInput, extraMonthlyDisplay);
 
   [downInput, rateInput, termSelect, extraAnnualInput, extraOnetimeInput, onetimeMonthInput].forEach(ctrl => {
-    ctrl.addEventListener('input', recalculate);
+    ctrl.addEventListener('input', () => {
+      userModified = true;
+      recalculate();
+    });
   });
 
   function recalculate() {
@@ -459,16 +486,42 @@ const faqs = [
       window.updateStressTest(originalPrincipal, interestRate, loanTermYears, accResult.monthlyPropertyTax + accResult.monthlyInsurance + accResult.monthlyPMI + accResult.monthlyHOA);
     }
 
-    // Register data for comparative save
-    if (window.registerCurrentRunData) {
-      window.registerCurrentRunData({
-        homePrice,
-        downPayment,
-        interestRate,
-        termYears: loanTermYears,
-        monthlyPayment: accResult.totalMonthlyPayment,
-        totalInterest: accResult.totalInterestPaid
-      });
+    // Auto-capture scenario for comparison workspace (only on user input changes)
+    if ((window as any).autoCaptureScenario && userModified) {
+      const origPrincipal = Math.max(0, homePrice - downPayment);
+      (window as any).autoCaptureScenario(
+        'extra-payment',
+        {
+          homePrice,
+          downPayment,
+          interestRate,
+          loanTermYears,
+          propertyTaxRate: 1.1,
+          insuranceRate: 0.5,
+          pmiRate: 0.75,
+          hoaFee: 0,
+          extraMonthly,
+          extraAnnual,
+          extraOneTimeVal,
+          oneTimeMonth
+        },
+        {
+          monthlyPayment: accResult.totalMonthlyPayment,
+          totalInterest: accResult.totalInterestPaid,
+          totalCost: accResult.totalPaymentsSum,
+          payoffYears: accResult.payoffTermMonths / 12,
+          homePrice,
+          downPayment,
+          interestRate,
+          termYears: loanTermYears,
+          monthlyPI: accResult.monthlyPrincipalAndInterest,
+          monthlyTax: accResult.monthlyPropertyTax,
+          monthlyInsurance: accResult.monthlyInsurance,
+          monthlyPMI: accResult.monthlyPMI,
+          interestSaved: interestSaved,
+          yearsSaved: parseFloat(yearsSaved)
+        }
+      );
     }
   }
 

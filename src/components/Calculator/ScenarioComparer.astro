@@ -1,177 +1,428 @@
 ---
+interface Props {
+  type?: 'mortgage' | 'refinance' | 'extra-payment' | 'affordability' | 'all';
+  title?: string;
+  subtitle?: string;
+  showShareButton?: boolean;
+  comparisonPageScenarios?: string;
+}
+
+const {
+  type = 'all',
+  title = 'Mortgage Scenario Workspace',
+  subtitle = 'Build, compare, and share multiple mortgage scenarios side by side.',
+  showShareButton = true,
+  comparisonPageScenarios = ''
+} = Astro.props;
 ---
-<div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6" id="compare-anchor">
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+<div
+  class="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-6 space-y-5"
+  id="scenario-workspace"
+  data-type={type}
+  data-comparison-scenarios={comparisonPageScenarios}
+>
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
     <div>
-      <h3 class="font-display text-sm font-semibold text-text-main">Compare Saved Scenarios</h3>
-      <p class="text-xs text-text-muted mt-1">Add your current calculation to compare side-by-side options.</p>
+      <h3 class="font-display text-sm font-semibold text-text-main">{title}</h3>
+      <p class="text-xs text-text-muted mt-0.5">{subtitle}</p>
     </div>
-    <div class="flex flex-col sm:flex-row gap-2">
-      <input 
-        type="text" 
-        placeholder="Scenario Name (e.g. 15-Yr Fixed)..." 
-        class="h-8 rounded-md border border-border-input bg-bg-input px-3 text-xs text-text-main placeholder-text-muted focus:border-border-focus focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent" 
-        id="scenario-name-input"
-        autocomplete="off"
-      />
-      <button 
-        class="inline-flex h-8 items-center justify-center rounded-md bg-blue-600 px-4 text-xs font-semibold text-white hover:bg-blue-500 active:scale-[0.98] transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-        id="save-scenario-btn"
+    <div class="flex flex-wrap gap-2">
+      <button
+        id="share-scenarios-btn"
+        class="inline-flex h-8 items-center justify-center rounded-md border border-border-input bg-bg-main px-3 text-xs font-semibold text-text-muted hover:text-text-main hover:border-border-focus transition-all cursor-pointer gap-1.5"
       >
-        Save Current
+        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+        Share
+      </button>
+      <button
+        id="clear-scenarios-btn"
+        class="inline-flex h-8 items-center justify-center rounded-md border border-border-input bg-bg-main px-3 text-xs font-semibold text-text-muted hover:text-rose-500 hover:border-rose-300 transition-all cursor-pointer"
+      >
+        Clear All
       </button>
     </div>
   </div>
 
-  <div class="overflow-x-auto">
-    <table class="w-full text-left text-xs border-collapse">
+  <div id="share-toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-bg-main border border-border-subtle rounded-lg shadow-xl px-5 py-3 text-xs font-semibold text-text-main animate-fade-in">
+    Link copied to clipboard
+  </div>
+
+  <div class="overflow-x-auto -mx-4 sm:-mx-0">
+    <table class="w-full text-left text-xs border-collapse min-w-[800px]">
       <thead>
-        <tr class="border-b border-border-subtle text-text-muted font-medium pb-2">
-          <th class="py-2 pr-4">Scenario Name</th>
-          <th class="py-2">Purchase Price</th>
-          <th class="py-2">Down Pmt</th>
-          <th class="py-2">APR</th>
-          <th class="py-2">Term</th>
-          <th class="py-2">Monthly Est.</th>
-          <th class="py-2">Total Interest</th>
-          <th class="py-2 text-right">Action</th>
+        <tr class="border-b border-border-subtle text-text-muted font-medium">
+          <th class="py-2.5 pr-3 sticky left-0 bg-bg-card z-10">Scenario</th>
+          <th class="py-2.5 px-3 whitespace-nowrap">Type</th>
+          <th class="py-2.5 px-3 whitespace-nowrap">Home Price</th>
+          <th class="py-2.5 px-3 whitespace-nowrap">Down %</th>
+          <th class="py-2.5 px-3 whitespace-nowrap">Rate</th>
+          <th class="py-2.5 px-3 whitespace-nowrap">Term</th>
+          <th class="py-2.5 px-3 whitespace-nowrap text-right">Monthly</th>
+          <th class="py-2.5 px-3 whitespace-nowrap text-right">Total Interest</th>
+          <th class="py-2.5 px-3 whitespace-nowrap text-right">Total Cost</th>
+          <th class="py-2.5 px-3 whitespace-nowrap text-right">Payoff</th>
+          <th class="py-2.5 px-3 whitespace-nowrap text-center">Actions</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-border-subtle text-text-main font-medium font-tabular" id="scenarios-tbody">
-        <!-- Rendered dynamically -->
+        <tr id="no-scenarios-row">
+          <td colspan="11" class="py-10 text-center text-text-muted border border-dashed border-border-subtle rounded-lg">
+            <div class="flex flex-col items-center gap-2">
+              <svg class="h-8 w-8 text-text-muted/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
+              <span class="text-sm font-display font-semibold">No scenarios yet</span>
+              <span class="text-2xs text-text-muted">Use any calculator to generate scenarios, or load a shared comparison.</span>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
-    <div class="text-center py-6 text-text-muted border border-dashed border-border-subtle rounded-lg mt-2 hidden" id="no-scenarios-msg">
-      No scenarios saved yet. Use the input above to lock in options and compare.
-    </div>
+  </div>
+
+  <div class="flex items-center gap-4 text-3xs text-text-muted pt-2 border-t border-border-subtle">
+    <span class="flex items-center gap-1">
+      <span class="h-2 w-2 rounded-full bg-emerald-500"></span> Best value
+    </span>
+    <span>Scenarios saved locally in your browser.</span>
   </div>
 </div>
 
+<style>
+  .animate-fade-in {
+    animation: fadeInUp 0.3s ease-out;
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translate(-50%, 8px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .best-value {
+    color: #10b981;
+    font-weight: 700;
+  }
+  :global(.dark) .best-value {
+    color: #34d399;
+  }
+</style>
+
 <script>
-  interface SavedScenario {
-    id: string;
-    name: string;
-    homePrice: number;
-    downPayment: number;
-    interestRate: number;
-    termYears: number;
-    monthlyPayment: number;
-    totalInterest: number;
-  }
+  import {
+    getScenarios,
+    saveScenarios,
+    deleteScenario,
+    duplicateScenario,
+    scenariosToHash,
+    loadFromURL,
+    clearAllScenarios,
+    formatCurrency,
+    formatPercent,
+    formatYears,
+    type Scenario,
+    type ScenarioType
+  } from '../../utils/scenarioState';
 
-  // Load scenarios from localStorage
-  function getScenarios(): SavedScenario[] {
-    try {
-      const data = localStorage.getItem('mi_saved_scenarios');
-      return data ? JSON.parse(data) : [];
-    } catch (e) {
-      return [];
+  const workspace = document.getElementById('scenario-workspace');
+  const tbody = document.getElementById('scenarios-tbody');
+  const noRow = document.getElementById('no-scenarios-row');
+  const shareBtn = document.getElementById('share-scenarios-btn');
+  const clearBtn = document.getElementById('clear-scenarios-btn');
+  const toast = document.getElementById('share-toast');
+
+  const filterType = workspace?.getAttribute('data-type') || 'all';
+  const comparisonData = workspace?.getAttribute('data-comparison-scenarios') || '';
+
+  function getActiveScenarios(): Scenario[] {
+    const all = getScenarios();
+    if (filterType && filterType !== 'all') {
+      return all.filter(s => s.type === filterType);
     }
+    return all;
   }
 
-  // Save scenarios to localStorage
-  function saveScenarios(scenarios: SavedScenario[]) {
-    try {
-      localStorage.setItem('mi_saved_scenarios', JSON.stringify(scenarios));
-    } catch (e) {
-      // Fail silently
+  function findBest(metrics: { id: string; val: number; lowerBetter: boolean }[]): Set<string> {
+    const best = new Set<string>();
+    for (const m of metrics) {
+      if (m.val === 0) continue;
+      const candidates = metrics.filter(x => x.val > 0);
+      if (candidates.length < 2) continue;
+      const bestMetric = candidates.reduce((a, b) => m.lowerBetter ? (a.val < b.val ? a : b) : (a.val > b.val ? a : b));
+      best.add(bestMetric.id);
     }
+    return best;
   }
 
-  window.renderScenariosTable = function() {
-    const tbody = document.getElementById('scenarios-tbody');
-    const noMsg = document.getElementById('no-scenarios-msg');
-    const scenarios = getScenarios();
-    
-    if (!tbody || !noMsg) return;
-    
+  function renderScenarios() {
+    if (!tbody || !noRow) return;
+
+    let scenarios = getActiveScenarios();
+
+    // If we have comparison data and no scenarios, load comparison data
+    if (scenarios.length === 0 && comparisonData) {
+      try {
+        const parsed = JSON.parse(comparisonData);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          scenarios = parsed;
+          // Save to localStorage so user can modify
+          saveScenarios(scenarios);
+        }
+      } catch (e) {
+        // Invalid JSON
+      }
+    }
+
     tbody.innerHTML = '';
-    
+
     if (scenarios.length === 0) {
-      noMsg.classList.remove('hidden');
+      const emptyRow = document.createElement('tr');
+      emptyRow.innerHTML = `<td colspan="11" class="py-10 text-center text-text-muted">
+        <div class="flex flex-col items-center gap-2">
+          <svg class="h-8 w-8 text-text-muted/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" /></svg>
+          <span class="text-sm font-display font-semibold">No scenarios yet</span>
+          <span class="text-2xs text-text-muted">Use any calculator to generate scenarios, or load a shared comparison.</span>
+        </div>
+      </td>`;
+      tbody.appendChild(emptyRow);
       return;
-    } else {
-      noMsg.classList.add('hidden');
     }
+
+    // Compute best values
+    const monthlyMetrics = scenarios.map(s => ({ id: s.id, val: s.outputs.monthlyPayment, lowerBetter: true }));
+    const interestMetrics = scenarios.map(s => ({ id: s.id, val: s.outputs.totalInterest, lowerBetter: true }));
+    const costMetrics = scenarios.map(s => ({ id: s.id, val: s.outputs.totalCost, lowerBetter: true }));
+    const payoffMetrics = scenarios.map(s => ({ id: s.id, val: s.outputs.payoffYears, lowerBetter: true }));
+
+    const bestMonthly = findBest(monthlyMetrics);
+    const bestInterest = findBest(interestMetrics);
+    const bestCost = findBest(costMetrics);
+    const bestPayoff = findBest(payoffMetrics);
 
     scenarios.forEach(sc => {
       const tr = document.createElement('tr');
-      tr.className = 'hover:bg-bg-card-hover transition-colors border-b border-border-subtle';
+      tr.className = 'hover:bg-bg-card-hover transition-colors';
+      tr.id = `scenario-row-${sc.id}`;
+
+      const isBestMonthly = bestMonthly.has(sc.id);
+      const isBestInterest = bestInterest.has(sc.id);
+      const isBestCost = bestCost.has(sc.id);
+      const isBestPayoff = bestPayoff.has(sc.id);
+
+      const monthlyCls = isBestMonthly ? 'best-value' : '';
+      const interestCls = isBestInterest ? 'best-value' : '';
+      const costCls = isBestCost ? 'best-value' : '';
+      const payoffCls = isBestPayoff ? 'best-value' : '';
+
+      const typeLabels: Record<string, string> = {
+        mortgage: 'Mortgage',
+        refinance: 'Refinance',
+        'extra-payment': 'Extra Pmt',
+        affordability: 'Affordability'
+      };
+
       tr.innerHTML = `
-        <td class="py-3 pr-4 font-display font-medium text-text-main">${sc.name}</td>
-        <td class="py-3 font-semibold text-text-main">$${Math.round(sc.homePrice).toLocaleString('en-US')}</td>
-        <td class="py-3 text-text-muted">$${Math.round(sc.downPayment).toLocaleString('en-US')} (${Math.round((sc.downPayment / sc.homePrice) * 100)}%)</td>
-        <td class="py-3 text-text-muted">${sc.interestRate.toFixed(2)}%</td>
-        <td class="py-3 text-text-muted">${sc.termYears} yrs</td>
-        <td class="py-3 text-blue-600 dark:text-blue-400 font-semibold">$${Math.round(sc.monthlyPayment).toLocaleString('en-US')}</td>
-        <td class="py-3 text-rose-600 dark:text-rose-400 font-semibold">$${Math.round(sc.totalInterest).toLocaleString('en-US')}</td>
-        <td class="py-3 text-right">
-          <button 
-            class="text-2xs text-rose-500 hover:text-rose-400 font-semibold transition-colors delete-scenario-btn cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent rounded px-1" 
+        <td class="py-3 pr-3 sticky left-0 bg-bg-card z-10">
+          <input 
+            type="text" 
+            value="${escapeHtml(sc.name)}" 
+            class="scenario-name-input w-28 sm:w-36 bg-transparent border-b border-transparent hover:border-border-input focus:border-border-focus focus:outline-none text-xs font-display font-semibold text-text-main px-0 py-0.5 transition-colors"
             data-id="${sc.id}"
-            aria-label="Delete Scenario ${sc.name}"
-          >
-            Remove
-          </button>
+          />
+        </td>
+        <td class="py-3 px-3">
+          <span class="inline-flex items-center rounded-full bg-blue-500/10 px-2 py-0.5 text-4xs font-medium text-blue-500 border border-blue-500/20 whitespace-nowrap">
+            ${typeLabels[sc.type] || 'Mortgage'}
+          </span>
+        </td>
+        <td class="py-3 px-3 text-text-muted">${sc.outputs.homePrice ? formatCurrency(sc.outputs.homePrice) : '-'}</td>
+        <td class="py-3 px-3 text-text-muted">${sc.outputs.downPayment !== undefined && sc.outputs.homePrice ? Math.round((sc.outputs.downPayment / sc.outputs.homePrice) * 100) + '%' : '-'}</td>
+        <td class="py-3 px-3 text-text-muted">${sc.outputs.interestRate ? sc.outputs.interestRate.toFixed(2) + '%' : '-'}</td>
+        <td class="py-3 px-3 text-text-muted">${sc.outputs.termYears ? sc.outputs.termYears + ' yr' : '-'}</td>
+        <td class="py-3 px-3 text-right font-semibold ${monthlyCls}">${formatCurrency(sc.outputs.monthlyPayment)}</td>
+        <td class="py-3 px-3 text-right font-semibold ${interestCls}">${formatCurrency(sc.outputs.totalInterest)}</td>
+        <td class="py-3 px-3 text-right font-semibold ${costCls}">${formatCurrency(sc.outputs.totalCost)}</td>
+        <td class="py-3 px-3 text-right font-semibold ${payoffCls}">${formatYears(sc.outputs.payoffYears)}</td>
+        <td class="py-3 px-3 text-center">
+          <div class="flex items-center justify-center gap-1.5">
+            <button 
+              class="duplicate-btn p-1.5 rounded-md text-text-muted hover:text-brand-accent hover:bg-bg-main transition-colors cursor-pointer" 
+              data-id="${sc.id}"
+              title="Duplicate Scenario"
+              aria-label="Duplicate ${escapeHtml(sc.name)}"
+            >
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+            </button>
+            <button 
+              class="delete-btn p-1.5 rounded-md text-text-muted hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer" 
+              data-id="${sc.id}"
+              title="Delete Scenario"
+              aria-label="Delete ${escapeHtml(sc.name)}"
+            >
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            </button>
+          </div>
         </td>
       `;
+
       tbody.appendChild(tr);
     });
 
-    // Bind delete buttons
-    document.querySelectorAll('.delete-scenario-btn').forEach(btn => {
+    // Bind inline name edits
+    document.querySelectorAll('.scenario-name-input').forEach(inp => {
+      inp.addEventListener('change', (e) => {
+        const target = e.currentTarget as HTMLInputElement;
+        const id = target.getAttribute('data-id');
+        if (!id) return;
+        const list = getScenarios();
+        const sc = list.find(s => s.id === id);
+        if (sc) {
+          sc.name = target.value || 'Unnamed';
+          saveScenarios(list);
+        }
+      });
+    });
+
+    // Bind duplicate buttons
+    document.querySelectorAll('.duplicate-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLButtonElement;
         const id = target.getAttribute('data-id');
         if (id) {
-          const list = getScenarios().filter(sc => sc.id !== id);
-          saveScenarios(list);
-          window.renderScenariosTable();
+          duplicateScenario(id);
+          renderScenarios();
         }
       });
     });
-  };
 
-  // Expose current run registration
-  let currentRunData: Omit<SavedScenario, 'id' | 'name'> | null = null;
-  window.registerCurrentRunData = function(data: Omit<SavedScenario, 'id' | 'name'>) {
-    currentRunData = data;
-  };
-
-  // Handle Save Scenario Action
-  const nameInput = document.getElementById('scenario-name-input') as HTMLInputElement;
-  const saveBtn = document.getElementById('save-scenario-btn');
-
-  if (saveBtn && nameInput) {
-    saveBtn.addEventListener('click', () => {
-      const name = nameInput.value.trim();
-      if (!name) {
-        alert("Please enter a name for this scenario.");
-        return;
-      }
-      
-      if (!currentRunData) {
-        alert("Please calculate a mortgage first by adjusting inputs.");
-        return;
-      }
-
-      const list = getScenarios();
-      const newScenario: SavedScenario = {
-        id: Math.random().toString(36).substr(2, 9),
-        name,
-        ...currentRunData
-      };
-
-      list.push(newScenario);
-      saveScenarios(list);
-      
-      nameInput.value = '';
-      window.renderScenariosTable();
+    // Bind delete buttons
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLButtonElement;
+        const id = target.getAttribute('data-id');
+        if (id) {
+          deleteScenario(id);
+          renderScenarios();
+        }
+      });
     });
   }
 
-  // Initial load
+  function escapeHtml(str: string): string {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Share button
+  if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+      const scenarios = getActiveScenarios();
+      if (scenarios.length === 0) {
+        showToast('Add scenarios first before sharing');
+        return;
+      }
+      const hash = scenariosToHash(scenarios);
+      if (!hash) {
+        showToast('Too many scenarios to share via URL');
+        return;
+      }
+      const url = window.location.origin + window.location.pathname + hash;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Link copied to clipboard');
+      }).catch(() => {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Link copied to clipboard');
+      });
+    });
+  }
+
+  // Clear button
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      if (getActiveScenarios().length === 0) return;
+      if (confirm('Clear all saved scenarios?')) {
+        clearAllScenarios();
+        renderScenarios();
+      }
+    });
+  }
+
+  function showToast(msg: string) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.remove('hidden');
+    setTimeout(() => {
+      toast.classList.add('hidden');
+    }, 2500);
+  }
+
+  // Expose pushScenario for calculator pages
+  (window as any).pushScenario = function(scenario: Scenario) {
+    const list = getScenarios();
+    list.push(scenario);
+    saveScenarios(list);
+    renderScenarios();
+  };
+
+  // Expose getScenarios for other components
+  (window as any).getSavedScenarios = function(): Scenario[] {
+    return getActiveScenarios();
+  };
+
+  // Expose autoCapture for calculator pages (generates name, auto-saves)
+  (window as any).autoCaptureScenario = function(
+    type: ScenarioType,
+    inputs: Record<string, number | boolean | string>,
+    outputs: Record<string, number | undefined>
+  ) {
+    const list = getScenarios();
+    const count = list.filter(s => s.type === type).length + 1;
+    const now = Date.now();
+    const scenario: Scenario = {
+      id: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 11),
+      name: `${type === 'refinance' ? 'Refinance' : type === 'extra-payment' ? 'Extra Payment' : type === 'affordability' ? 'Affordability' : 'Mortgage'} ${count}`,
+      type,
+      inputs: { ...inputs },
+      outputs: {
+        monthlyPayment: outputs.monthlyPayment || 0,
+        totalInterest: outputs.totalInterest || 0,
+        totalCost: outputs.totalCost || 0,
+        payoffYears: outputs.payoffYears || 30,
+        monthlyPI: outputs.monthlyPI,
+        homePrice: outputs.homePrice,
+        downPayment: outputs.downPayment,
+        interestRate: outputs.interestRate,
+        termYears: outputs.termYears,
+        monthlyTax: outputs.monthlyTax,
+        monthlyInsurance: outputs.monthlyInsurance,
+        monthlyPMI: outputs.monthlyPMI,
+        monthlyHOA: outputs.monthlyHOA,
+        pmiCancellationMonth: outputs.pmiCancellationMonth,
+        equityAt5yr: outputs.equityAt5yr,
+        interestSaved: outputs.interestSaved,
+        yearsSaved: outputs.yearsSaved,
+        monthlySavings: outputs.monthlySavings,
+        breakEvenMonths: outputs.breakEvenMonths,
+        lifetimeSavings: outputs.lifetimeSavings
+      },
+      createdAt: now
+    };
+    list.push(scenario);
+    saveScenarios(list);
+    renderScenarios();
+  };
+
+  // Initial render
   document.addEventListener('DOMContentLoaded', () => {
-    window.renderScenariosTable();
+    // Check URL hash first
+    const hashScenarios = loadFromURL();
+    if (hashScenarios && hashScenarios.length > 0) {
+      saveScenarios(hashScenarios);
+      window.location.hash = '';
+    }
+    renderScenarios();
   });
 </script>

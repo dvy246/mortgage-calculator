@@ -11,6 +11,7 @@ import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
 import PrintModal from '../components/Calculator/PrintModal.astro';
 import MortgageReport from '../components/Calculator/MortgageReport.astro';
 import FormulaDrawer from '../components/Calculator/FormulaDrawer.astro';
+import ScenarioComparer from '../components/Calculator/ScenarioComparer.astro';
 import AdSlot from '../components/AdSlot.astro';
 
 const faqs = [
@@ -302,6 +303,28 @@ const faqs = [
       faqs={faqs}
     />
 
+    <!-- Scenario Workspace -->
+    <ScenarioComparer type="mortgage" title="Mortgage Scenario Comparison" subtitle="Compare different loan terms, rates, and down payments side by side." />
+
+    <!-- Related Comparisons -->
+    <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-3">
+      <h4 class="font-display text-xs font-semibold text-text-main">Explore Related Comparisons</h4>
+      <div class="flex flex-wrap gap-2 text-xs">
+        <a href="/compare/15-vs-30-year-mortgage" class="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-3 py-1.5 text-blue-500 font-medium hover:bg-blue-500/20 transition-colors border border-blue-500/20">
+          15-Year vs 30-Year
+        </a>
+        <a href="/compare/fha-vs-conventional-loans" class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-3 py-1.5 text-emerald-500 font-medium hover:bg-emerald-500/20 transition-colors border border-emerald-500/20">
+          FHA vs Conventional
+        </a>
+        <a href="/compare/arm-vs-fixed-rate-mortgage" class="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-3 py-1.5 text-amber-500 font-medium hover:bg-amber-500/20 transition-colors border border-amber-500/20">
+          ARM vs Fixed
+        </a>
+        <a href="/compare/extra-payment-mortgage-comparison" class="inline-flex items-center gap-1 rounded-full bg-violet-500/10 px-3 py-1.5 text-violet-500 font-medium hover:bg-violet-500/20 transition-colors border border-violet-500/20">
+          Extra Payments
+        </a>
+      </div>
+    </div>
+
     <!-- Disclaimer card -->
     <Disclaimer />
   </main>
@@ -390,8 +413,13 @@ const faqs = [
     downSlider.dispatchEvent(new Event('input'));
   });
 
+  let userModified = false;
+
   [rateInput, termSelect, taxInput, insInput, pmiInput, hoaInput].forEach(ctrl => {
-    ctrl.addEventListener('input', recalculate);
+    ctrl.addEventListener('input', () => {
+      userModified = true;
+      recalculate();
+    });
   });
 
   function recalculate() {
@@ -520,16 +548,39 @@ const faqs = [
       window.updateStressTest(originalPrincipal, interestRate, loanTermYears, result.monthlyPropertyTax + result.monthlyInsurance + result.monthlyPMI + result.monthlyHOA);
     }
 
-    // Register data for comparative save
-    if (window.registerCurrentRunData) {
-      window.registerCurrentRunData({
-        homePrice,
-        downPayment,
-        interestRate,
-        termYears: loanTermYears,
-        monthlyPayment: result.totalMonthlyPayment,
-        totalInterest: result.totalInterestPaid
-      });
+    // Auto-capture on user input changes only
+    if ((window as any).autoCaptureScenario && userModified) {
+      (window as any).autoCaptureScenario(
+        'mortgage',
+        {
+          homePrice,
+          downPayment,
+          interestRate,
+          loanTermYears,
+          propertyTaxRate: 1.1,
+          insuranceRate: 0.5,
+          pmiRate: 0.75,
+          hoaFee: 0,
+          extraMonthly: 0,
+          extraAnnual: 0
+        },
+        {
+          monthlyPayment: result.totalMonthlyPayment,
+          totalInterest: result.totalInterestPaid,
+          totalCost: result.totalPaymentsSum,
+          payoffYears: result.payoffTermMonths / 12,
+          homePrice,
+          downPayment,
+          interestRate,
+          termYears: loanTermYears,
+          monthlyPI: result.monthlyPrincipalAndInterest,
+          monthlyTax: result.monthlyPropertyTax,
+          monthlyInsurance: result.monthlyInsurance,
+          monthlyPMI: result.monthlyPMI,
+          monthlyHOA: result.monthlyHOA,
+          pmiCancellationMonth: result.pmiCancellationMonth > 0 ? result.pmiCancellationMonth : undefined
+        }
+      );
     }
   }
 
