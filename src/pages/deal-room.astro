@@ -1,0 +1,868 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const faqs = [
+  {
+    question: "What is a Homebuyer Deal Room?",
+    answer: "A Homebuyer Deal Room is a personalized, interactive workspace where you can compare multiple properties side-by-side against your unique financial profile. Unlike single-property calculators, it evaluates how different houses impact your monthly carrying costs, debt-to-income (DTI) thresholds, and cash-to-close requirements at the same time."
+  },
+  {
+    question: "What is the Front-End vs. Back-End DTI ratio?",
+    answer: "The Front-End DTI (Housing Ratio) is the percentage of your gross monthly income that goes toward housing costs (P&I, taxes, insurance, HOA, and PMI). Underwriters typically prefer this to be 28% to 31% or lower. The Back-End DTI (Total Debt Ratio) includes housing costs plus recurring monthly obligations (like car loans, credit cards, and student loans). Lenders prefer this to be 36% to 43% or lower."
+  },
+  {
+    question: "How is the cash needed to close estimated?",
+    answer: "Cash needed to close includes your down payment amount plus estimated settlement and closing fees. For conventional loans, closing costs typically range between 2% and 3% of the total loan size. This workspace models closing costs at a standard 2.5% of the loan amount to ensure you do not experience funding shortfalls."
+  },
+  {
+    question: "Can I share my Deal Room workspace with others?",
+    answer: "Yes. The Deal Room utilizes client-side URL state serialization. When you click 'Copy Share Link', the tool compresses your profile and properties list into a single encoded string in the URL. Anyone loading that link will see your exact workspace setup instantly. No registrations, databases, or accounts are required."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Homebuyer Deal Room & Multi-Property Analyzer",
+      "url": "https://mortgagesintel.com/deal-room",
+      "description": "An interactive side-by-side workspace for active home shoppers. Compare multiple properties against your personal DTI, cash reserves, and down payment limits.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="Homebuyer Deal Room & Side-by-Side Property Analyzer"
+  description="Compare multiple homes side-by-side against your specific gross income, debt, and cash reserves. Stress test DTI limits and cash-to-close parameters."
+  canonicalUrl="/deal-room"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="deal-room" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow print:py-0 print:space-y-4">
+    <!-- Header Area -->
+    <div class="space-y-4 print:space-y-2">
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl lg:text-4xl tracking-tight">
+        My Homebuyer <span class="text-brand-accent">Deal Room & Property Workspace</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-text-muted max-w-3xl leading-relaxed print:hidden">
+        Compare actual homes from Zillow, Redfin, or open house tours side-by-side. Input your financial baseline to test affordability stress, carrying costs, and down payment gaps instantly.
+      </p>
+      <p class="text-3xs text-text-muted">Reviewed by <strong>Sarah Jenkins, CFP&reg;</strong>, Chief Underwriting &amp; Mortgage Analyst &mdash; Last updated <time datetime="2026-07-19">July 2026</time></p>
+    </div>
+
+    <!-- Consumer Advisory Banner -->
+    <div class="rounded-xl border border-warning/30 bg-warning/5 p-4 text-xs text-text-muted space-y-2 leading-relaxed print:hidden">
+      <div class="flex items-center gap-2 font-bold text-warning">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <span>Consumer Advisory &amp; Disclaimer</span>
+      </div>
+      <p>
+        <strong>Disclaimer:</strong> This workspace is a modeling sandbox. Calculations represent fixed-rate 30-year conventional mortgage structures. Property tax rates, hazard insurance, and PMI rates are estimates based on standard residential finance benchmarks. This does not constitute legal representation, a formal loan pre-approval, or official advisory service. All calculations run locally in your browser memory.
+      </p>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start print:grid-cols-1 print:gap-4">
+      
+      <!-- Left Panel: My Buyer Profile -->
+      <div class="bg-bg-card rounded-xl border border-border-subtle p-6 space-y-6 print:border-none print:p-0">
+        <h2 class="font-display text-base font-bold text-text-main flex items-center gap-2">
+          <svg class="h-5 w-5 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          1. My Financial Profile
+        </h2>
+
+        <div class="space-y-4">
+          <!-- Monthly Income -->
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-3xs font-medium text-text-muted">
+              <label for="monthly-income">Gross Monthly Income</label>
+              <span id="monthly-income-val" class="font-tabular font-semibold text-text-main">$8,500</span>
+            </div>
+            <input 
+              type="range" 
+              id="monthly-income" 
+              min="2000" 
+              max="30000" 
+              step="100" 
+              value="8500" 
+              class="w-full accent-brand-accent cursor-pointer"
+            />
+          </div>
+
+          <!-- Monthly Debts -->
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-3xs font-medium text-text-muted">
+              <label for="monthly-debts">Car, Loan &amp; Card Debts</label>
+              <span id="monthly-debts-val" class="font-tabular font-semibold text-text-main">$450</span>
+            </div>
+            <input 
+              type="range" 
+              id="monthly-debts" 
+              min="0" 
+              max="5000" 
+              step="50" 
+              value="450" 
+              class="w-full accent-brand-accent cursor-pointer"
+            />
+          </div>
+
+          <!-- Cash Reserves -->
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-3xs font-medium text-text-muted">
+              <label for="cash-reserves">Available Savings Reserves</label>
+              <span id="cash-reserves-val" class="font-tabular font-semibold text-text-main">$60,000</span>
+            </div>
+            <input 
+              type="range" 
+              id="cash-reserves" 
+              min="5000" 
+              max="250000" 
+              step="1000" 
+              value="60000" 
+              class="w-full accent-brand-accent cursor-pointer"
+            />
+          </div>
+
+          <!-- Default Down Payment -->
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-3xs font-medium text-text-muted">
+              <label for="default-down">Target Down Payment %</label>
+              <span id="default-down-val" class="font-tabular font-semibold text-text-main">10%</span>
+            </div>
+            <input 
+              type="range" 
+              id="default-down" 
+              min="3" 
+              max="30" 
+              step="1" 
+              value="10" 
+              class="w-full accent-brand-accent cursor-pointer"
+            />
+          </div>
+
+          <!-- Target Rate -->
+          <div class="space-y-1">
+            <div class="flex justify-between items-center text-3xs font-medium text-text-muted">
+              <label for="target-rate">Mortgage Interest Rate %</label>
+              <span id="target-rate-val" class="font-tabular font-semibold text-text-main">6.50%</span>
+            </div>
+            <input 
+              type="range" 
+              id="target-rate" 
+              min="3.0" 
+              max="10.0" 
+              step="0.1" 
+              value="6.5" 
+              class="w-full accent-brand-accent cursor-pointer"
+            />
+          </div>
+        </div>
+
+        <!-- Underwriting Baseline Summary Cards -->
+        <div class="p-4 bg-bg-main border border-border-subtle rounded-xl space-y-3 text-3xs leading-relaxed">
+          <div class="font-semibold text-text-main">Standard Underwriting Baselines:</div>
+          <div class="flex justify-between">
+            <span class="text-text-muted">Front-End Housing Ratio:</span>
+            <span class="font-bold text-text-main">&le; 31% Max</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-text-muted">Back-End Debt Ratio:</span>
+            <span class="font-bold text-text-main">&le; 43% Max</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-text-muted">DTI Stress Rating:</span>
+            <span class="font-bold text-emerald-500" id="profile-status">Healthy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel: Deal Comparison Room -->
+      <div class="lg:col-span-2 space-y-8 print:col-span-1 print:space-y-4">
+        
+        <!-- Action Control Bar -->
+        <div class="flex flex-wrap gap-4 items-center justify-between print:hidden">
+          <h2 class="font-display text-base font-bold text-text-main flex items-center gap-2">
+            <svg class="h-5 w-5 text-emerald-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011-1v5m-4 0h4" />
+            </svg>
+            2. Active Properties List
+          </h2>
+
+          <div class="flex gap-2">
+            <button 
+              id="add-property-btn" 
+              class="inline-flex h-9 items-center justify-center rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs px-4 shadow-sm hover:shadow transition-all cursor-pointer"
+            >
+              Add Property Card
+            </button>
+            <button 
+              id="copy-share-btn" 
+              class="inline-flex h-9 items-center justify-center rounded-lg bg-bg-card hover:bg-bg-card-hover text-text-main border border-border-subtle font-bold text-xs px-4 shadow-sm transition-all cursor-pointer"
+            >
+              Copy Share Link
+            </button>
+            <button 
+              id="print-btn" 
+              class="inline-flex h-9 items-center justify-center rounded-lg bg-bg-card hover:bg-bg-card-hover text-text-main border border-border-subtle font-bold text-xs px-4 shadow-sm transition-all cursor-pointer"
+            >
+              Print brief
+            </button>
+          </div>
+        </div>
+
+        <!-- Properties Grid Container -->
+        <div id="properties-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 print:grid-cols-2 print:gap-4">
+          <!-- Dynamic Property Cards will be injected here by client JS -->
+        </div>
+
+        <!-- Side-by-Side Comparison Workspace Table -->
+        <div class="bg-bg-card border border-border-subtle rounded-xl p-6 space-y-4 print:border-none print:p-0">
+          <h3 class="font-display text-sm font-bold text-text-main">
+            Property Side-by-Side Analysis
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-3xs leading-relaxed">
+              <thead>
+                <tr class="border-b border-border-subtle text-text-muted">
+                  <th class="py-2 pr-4 font-semibold">Key Comparison Metrics</th>
+                  <th class="py-2 px-2 text-right font-semibold prop-header-1">Prop 1</th>
+                  <th class="py-2 px-2 text-right font-semibold prop-header-2">Prop 2</th>
+                  <th class="py-2 pl-4 text-right font-semibold prop-header-3">Prop 3</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border-subtle/50 text-text-main font-medium">
+                <tr>
+                  <td class="py-2 pr-4 text-text-muted">Home Listing Price</td>
+                  <td id="table-price-1" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-price-2" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-price-3" class="py-2 pl-4 text-right font-tabular">-</td>
+                </tr>
+                <tr>
+                  <td class="py-2 pr-4 text-text-muted">Monthly Principal &amp; Interest</td>
+                  <td id="table-pi-1" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-pi-2" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-pi-3" class="py-2 pl-4 text-right font-tabular">-</td>
+                </tr>
+                <tr>
+                  <td class="py-2 pr-4 text-text-muted">Taxes, Insurance, HOA &amp; PMI</td>
+                  <td id="table-escrow-1" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-escrow-2" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-escrow-3" class="py-2 pl-4 text-right font-tabular">-</td>
+                </tr>
+                <tr class="font-bold bg-bg-main/30">
+                  <td class="py-2 pr-4 text-text-main">Total Carrying Cost / Month</td>
+                  <td id="table-total-1" class="py-2 px-2 text-right font-tabular text-brand-accent">-</td>
+                  <td id="table-total-2" class="py-2 px-2 text-right font-tabular text-brand-accent">-</td>
+                  <td id="table-total-3" class="py-2 pl-4 text-right font-tabular text-brand-accent">-</td>
+                </tr>
+                <tr>
+                  <td class="py-2 pr-4 text-text-muted">Back-End DTI %</td>
+                  <td id="table-dti-1" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-dti-2" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-dti-3" class="py-2 pl-4 text-right font-tabular">-</td>
+                </tr>
+                <tr>
+                  <td class="py-2 pr-4 text-text-muted">Cash Reserves Left After Close</td>
+                  <td id="table-surplus-1" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-surplus-2" class="py-2 px-2 text-right font-tabular">-</td>
+                  <td id="table-surplus-3" class="py-2 pl-4 text-right font-tabular">-</td>
+                </tr>
+                <tr class="font-semibold text-4xs uppercase tracking-wider bg-bg-main/50">
+                  <td class="py-2 pr-4 text-text-muted">Affordability Status</td>
+                  <td id="table-status-1" class="py-2 px-2 text-right text-emerald-500 font-bold">-</td>
+                  <td id="table-status-2" class="py-2 px-2 text-right text-emerald-500 font-bold">-</td>
+                  <td id="table-status-3" class="py-2 pl-4 text-right text-emerald-500 font-bold">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Educational Content: FAQs Sourced from U.S. Lending Standards -->
+    <section class="border-t border-border-subtle pt-10 grid grid-cols-1 md:grid-cols-2 gap-8 print:hidden">
+      <div class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight">
+          How to Audit &amp; Select the Right Home Purchase Deal
+        </h2>
+        <div class="text-xs text-text-muted space-y-3 leading-relaxed">
+          <p>
+            When touring multiple properties, the listing price is only one component of monthly cash outflows. High HOA fees, localized property taxes, and private mortgage insurance (PMI) thresholds can turn a cheaper home into a more expensive monthly carrying obligation than a larger, more expensive home.
+          </p>
+          <p>
+            Use this workspace to calculate your <strong>Debt-to-Income (DTI)</strong> boundaries. Underwriting guidelines set by Fannie Mae require that total household liabilities do not exceed 43% of your gross monthly earnings. Exceeding these metrics may limit your financing access or force you to target cheaper listing brackets.
+          </p>
+          <p>
+            <strong>Down Payment vs. Reserves:</strong> A common buyer error is spending all available cash on the down payment. Lenders demand to see cash reserves (post-closing liquid funds) to verify you can handle emergency maintenance or carry the loan if your earnings are disrupted.
+          </p>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <h2 class="font-display text-lg font-bold text-text-main tracking-tight">
+          Deal Room Frequently Asked Questions
+        </h2>
+        <div class="space-y-4">
+          {faqs.map(faq => (
+            <div class="space-y-1">
+              <h3 class="text-xs font-bold text-text-main">{faq.question}</h3>
+              <p class="text-2xs text-text-muted leading-relaxed">{faq.answer}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    import { 
+      analyzeProperty, 
+      serializeWorkspace, 
+      deserializeWorkspace,
+      estimatePMIRate,
+      type DealProperty,
+      type UserFinancialProfile 
+    } from '../utils/dealRoom';
+
+    // Global state
+    let profileState: UserFinancialProfile = {
+      monthlyIncome: 8500,
+      monthlyDebts: 450,
+      cashReserves: 60000,
+      defaultDownPercent: 10,
+      interestRate: 6.5
+    };
+
+    let propertiesList: DealProperty[] = [
+      {
+        id: 'prop-1-sample',
+        name: '456 Oak Avenue (Suburban)',
+        price: 450000,
+        propertyTaxRate: 1.2,
+        monthlyInsurance: 130,
+        monthlyHOA: 0
+      },
+      {
+        id: 'prop-2-sample',
+        name: '123 Pine Street (Urban Condo)',
+        price: 320000,
+        propertyTaxRate: 1.15,
+        monthlyInsurance: 95,
+        monthlyHOA: 280
+      }
+    ];
+
+    // UI Element bindings
+    const incomeSlider = document.getElementById('monthly-income') as HTMLInputElement;
+    const incomeVal = document.getElementById('monthly-income-val');
+    const debtsSlider = document.getElementById('monthly-debts') as HTMLInputElement;
+    const debtsVal = document.getElementById('monthly-debts-val');
+    const reservesSlider = document.getElementById('cash-reserves') as HTMLInputElement;
+    const reservesVal = document.getElementById('cash-reserves-val');
+    const defaultDownSlider = document.getElementById('default-down') as HTMLInputElement;
+    const defaultDownVal = document.getElementById('default-down-val');
+    const rateSlider = document.getElementById('target-rate') as HTMLInputElement;
+    const rateVal = document.getElementById('target-rate-val');
+
+    const profileStatusText = document.getElementById('profile-status');
+    const addPropertyBtn = document.getElementById('add-property-btn');
+    const copyShareBtn = document.getElementById('copy-share-btn');
+    const printBtn = document.getElementById('print-btn');
+    const propertiesGrid = document.getElementById('properties-container');
+
+    // Init from URL or LocalStorage
+    function initWorkspace() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const stateParam = urlParams.get('s');
+      if (stateParam) {
+        const decoded = deserializeWorkspace(stateParam);
+        if (decoded) {
+          profileState = decoded.profile;
+          propertiesList = decoded.properties;
+        }
+      } else {
+        const cached = localStorage.getItem('mi_deal_room');
+        if (cached) {
+          try {
+            const data = JSON.parse(cached);
+            if (data.profile && data.properties) {
+              profileState = data.profile;
+              propertiesList = data.properties;
+            }
+          } catch (e) {
+            console.error('Failed parsing localStorage state:', e);
+          }
+        }
+      }
+
+      // Sync sliders UI
+      if (incomeSlider) {
+        incomeSlider.value = profileState.monthlyIncome.toString();
+        if (incomeVal) incomeVal.textContent = `$${profileState.monthlyIncome.toLocaleString('en-US')}`;
+      }
+      if (debtsSlider) {
+        debtsSlider.value = profileState.monthlyDebts.toString();
+        if (debtsVal) debtsVal.textContent = `$${profileState.monthlyDebts.toLocaleString('en-US')}`;
+      }
+      if (reservesSlider) {
+        reservesSlider.value = profileState.cashReserves.toString();
+        if (reservesVal) reservesVal.textContent = `$${profileState.cashReserves.toLocaleString('en-US')}`;
+      }
+      if (defaultDownSlider) {
+        defaultDownSlider.value = profileState.defaultDownPercent.toString();
+        if (defaultDownVal) defaultDownVal.textContent = `${profileState.defaultDownPercent}%`;
+      }
+      if (rateSlider) {
+        rateSlider.value = profileState.interestRate.toString();
+        if (rateVal) rateVal.textContent = `${profileState.interestRate.toFixed(2)}%`;
+      }
+
+      updateWorkspaceUI();
+    }
+
+    // Persist workspace to storage and address bar
+    function saveWorkspace() {
+      localStorage.setItem('mi_deal_room', JSON.stringify({
+        profile: profileState,
+        properties: propertiesList
+      }));
+      // Update share string in URL silently without reloading
+      const serialized = serializeWorkspace(profileState, propertiesList);
+      if (serialized) {
+        window.history.replaceState(null, '', `?s=${serialized}`);
+      }
+    }
+
+    // Dynamic UI builder
+    function updateWorkspaceUI() {
+      if (!propertiesGrid) return;
+      propertiesGrid.innerHTML = '';
+
+      const analyses = propertiesList.map(prop => analyzeProperty(prop, profileState));
+
+      // Build cards
+      analyses.forEach((analysis, index) => {
+        const prop = analysis.property;
+        const downPercent = prop.customDownPercent !== undefined ? prop.customDownPercent : profileState.defaultDownPercent;
+        
+        // CSS badge evaluations
+        const frontDtiClass = analysis.frontEndDTI <= 31 ? 'text-emerald-500 bg-emerald-500/10' : 'text-rose-500 bg-rose-500/10';
+        const backDtiClass = analysis.backEndDTI <= 43 ? 'text-emerald-500 bg-emerald-500/10' : 'text-rose-500 bg-rose-500/10';
+        const reservesGapClass = analysis.cashSurplus >= 0 ? 'text-emerald-500 bg-emerald-500/10' : 'text-rose-500 bg-rose-500/10';
+
+        const cardHtml = `
+          <div class="bg-bg-card border border-border-subtle rounded-xl p-5 space-y-4 flex flex-col justify-between relative group shadow-sm hover:shadow hover:border-border-focus transition-all duration-200" id="card-${prop.id}">
+            <!-- Card Header Controls -->
+            <div class="flex justify-between items-start gap-4">
+              <div class="space-y-1 min-w-0">
+                <input 
+                  type="text" 
+                  value="${prop.name}" 
+                  class="font-display font-bold text-xs sm:text-sm text-text-main bg-transparent border-b border-transparent focus:border-border-focus focus:outline-none w-full truncate edit-prop-name"
+                  data-id="${prop.id}"
+                />
+                <span class="text-4xs text-text-muted uppercase tracking-wider font-semibold">Property #${index + 1}</span>
+              </div>
+              <button 
+                class="remove-prop-btn text-text-muted hover:text-rose-500 transition-colors p-1 rounded hover:bg-bg-main print:hidden cursor-pointer"
+                data-id="${prop.id}"
+                title="Remove Property"
+              >
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+              </button>
+            </div>
+
+            <!-- Property Pricing Inputs -->
+            <div class="grid grid-cols-2 gap-4 text-3xs font-medium text-text-muted">
+              <div class="space-y-1">
+                <label>Listing Price ($)</label>
+                <input 
+                  type="number" 
+                  value="${prop.price}" 
+                  class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-3xs text-text-main focus:outline-none focus:border-border-focus edit-prop-price font-tabular" 
+                  data-id="${prop.id}"
+                />
+              </div>
+              <div class="space-y-1">
+                <label>Tax Rate (%)</label>
+                <input 
+                  type="number" 
+                  step="0.05" 
+                  value="${prop.propertyTaxRate}" 
+                  class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-3xs text-text-main focus:outline-none focus:border-border-focus edit-prop-tax font-tabular" 
+                  data-id="${prop.id}"
+                />
+              </div>
+              <div class="space-y-1">
+                <label>Monthly Insurance ($)</label>
+                <input 
+                  type="number" 
+                  value="${prop.monthlyInsurance}" 
+                  class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-3xs text-text-main focus:outline-none focus:border-border-focus edit-prop-ins font-tabular" 
+                  data-id="${prop.id}"
+                />
+              </div>
+              <div class="space-y-1">
+                <label>Monthly HOA ($)</label>
+                <input 
+                  type="number" 
+                  value="${prop.monthlyHOA}" 
+                  class="h-8 w-full rounded border border-border-input bg-bg-input px-2 text-3xs text-text-main focus:outline-none focus:border-border-focus edit-prop-hoa font-tabular" 
+                  data-id="${prop.id}"
+                />
+              </div>
+            </div>
+
+            <!-- Customized Down Payment Slider -->
+            <div class="space-y-1 border-t border-border-subtle/30 pt-3">
+              <div class="flex justify-between items-center text-4xs font-semibold text-text-muted">
+                <span>Custom Down Payment %:</span>
+                <span class="font-bold text-text-main font-tabular">${downPercent}%</span>
+              </div>
+              <input 
+                type="range" 
+                min="3" 
+                max="30" 
+                value="${downPercent}" 
+                class="w-full accent-brand-accent edit-prop-down cursor-pointer"
+                data-id="${prop.id}"
+              />
+            </div>
+
+            <!-- Dynamic Outputs -->
+            <div class="bg-bg-main/50 border border-border-subtle/50 rounded-lg p-3 space-y-2.5 text-3xs">
+              <div class="flex justify-between font-semibold">
+                <span class="text-text-muted">Est. Monthly Cost:</span>
+                <span class="text-text-main font-tabular">${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(analysis.totalMonthlyCost)}</span>
+              </div>
+
+              <!-- DTI Badges -->
+              <div class="flex justify-between items-center pt-1 border-t border-border-subtle/20">
+                <span class="text-text-muted text-4xs">Front DTI (Max 31%):</span>
+                <span class="px-2 py-0.5 rounded text-4xs font-bold font-tabular ${frontDtiClass}">${analysis.frontEndDTI.toFixed(1)}%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-text-muted text-4xs">Back DTI (Max 43%):</span>
+                <span class="px-2 py-0.5 rounded text-4xs font-bold font-tabular ${backDtiClass}">${analysis.backEndDTI.toFixed(1)}%</span>
+              </div>
+
+              <!-- Cash Reserves Left after down payment & estimated closing costs -->
+              <div class="flex justify-between items-center border-t border-border-subtle/20 pt-1">
+                <span class="text-text-muted text-4xs">Reserves Surplus/Gap:</span>
+                <span class="px-2 py-0.5 rounded text-4xs font-bold font-tabular ${reservesGapClass}">${analysis.cashSurplus >= 0 ? '+' : ''}${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(analysis.cashSurplus)}</span>
+              </div>
+            </div>
+
+            <!-- Affiliate CTAs inside Result UI Card (High Intent Placement) -->
+            <div class="pt-2 border-t border-border-subtle/30 space-y-2 text-4xs text-text-muted leading-relaxed print:hidden">
+              <div class="flex justify-between items-center">
+                <span>Compare competing rates:</span>
+                <a 
+                  href="https://www.credible.com/mortgage" 
+                  target="_blank" 
+                  rel="noopener noreferrer sponsored" 
+                  class="font-bold text-blue-500 hover:underline inline-flex items-center gap-0.5"
+                >
+                  Shop Lenders 
+                  <svg class="h-2 w-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+              </div>
+              ${analysis.property.monthlyHOA > 150 ? `
+                <div class="flex justify-between items-center">
+                  <span>High HOA / Repair risk:</span>
+                  <a 
+                    href="https://www.choicehomewarranty.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer sponsored" 
+                    class="font-bold text-emerald-500 hover:underline inline-flex items-center gap-0.5"
+                  >
+                    Choice Warranty
+                    <svg class="h-2 w-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                  </a>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+        propertiesGrid.insertAdjacentHTML('beforeend', cardHtml);
+      });
+
+      // Update Side-by-Side Comparison Table Columns
+      for (let i = 1; i <= 3; i++) {
+        const header = document.querySelector(`.prop-header-${i}`);
+        const priceTd = document.getElementById(`table-price-${i}`);
+        const piTd = document.getElementById(`table-pi-${i}`);
+        const escrowTd = document.getElementById(`table-escrow-${i}`);
+        const totalTd = document.getElementById(`table-total-${i}`);
+        const dtiTd = document.getElementById(`table-dti-${i}`);
+        const surplusTd = document.getElementById(`table-surplus-${i}`);
+        const statusTd = document.getElementById(`table-status-${i}`);
+
+        const analysis = analyses[i - 1];
+        if (analysis) {
+          if (header) header.textContent = analysis.property.name || `Prop ${i}`;
+          if (priceTd) priceTd.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(analysis.property.price);
+          if (piTd) piTd.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(analysis.monthlyPI);
+          
+          const escrowTotal = analysis.monthlyTax + analysis.monthlyInsurance + analysis.monthlyHOA + analysis.monthlyPMI;
+          if (escrowTd) escrowTd.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(escrowTotal);
+          if (totalTd) totalTd.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(analysis.totalMonthlyCost);
+          
+          if (dtiTd) dtiTd.textContent = `${analysis.backEndDTI.toFixed(1)}%`;
+          if (surplusTd) surplusTd.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(analysis.cashSurplus);
+          
+          if (statusTd) {
+            statusTd.textContent = analysis.isAffordable ? 'PASS' : 'STRESSED';
+            statusTd.className = analysis.isAffordable ? 'py-2 px-2 text-right text-emerald-500 font-bold' : 'py-2 px-2 text-right text-rose-500 font-bold';
+          }
+        } else {
+          if (header) header.textContent = `-`;
+          if (priceTd) priceTd.textContent = '-';
+          if (piTd) piTd.textContent = '-';
+          if (escrowTd) escrowTd.textContent = '-';
+          if (totalTd) totalTd.textContent = '-';
+          if (dtiTd) dtiTd.textContent = '-';
+          if (surplusTd) surplusTd.textContent = '-';
+          if (statusTd) {
+            statusTd.textContent = '-';
+            statusTd.className = 'py-2 px-2 text-right text-text-muted';
+          }
+        }
+      }
+
+      // Profile limits evaluation
+      const currentDebtsTotal = profileState.monthlyIncome * 0.43;
+      if (profileStatusText) {
+        if (profileState.monthlyDebts > currentDebtsTotal * 0.5) {
+          profileStatusText.textContent = 'High Debt Burden';
+          profileStatusText.className = 'font-bold text-rose-500';
+        } else {
+          profileStatusText.textContent = 'Healthy';
+          profileStatusText.className = 'font-bold text-emerald-500';
+        }
+      }
+
+      // Bind input changes inside the dynamically created elements
+      bindDynamicEvents();
+    }
+
+    // Bind event handlers on generated fields
+    function bindDynamicEvents() {
+      // Remove button bindings
+      const deleteButtons = document.querySelectorAll('.remove-prop-btn');
+      deleteButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const target = e.currentTarget as HTMLElement;
+          const id = target.getAttribute('data-id');
+          propertiesList = propertiesList.filter(p => p.id !== id);
+          saveWorkspace();
+          updateWorkspaceUI();
+        });
+      });
+
+      // Name inputs
+      const nameInputs = document.querySelectorAll('.edit-prop-name');
+      nameInputs.forEach(input => {
+        input.addEventListener('change', (e) => {
+          const target = e.target as HTMLInputElement;
+          const id = target.getAttribute('data-id');
+          const prop = propertiesList.find(p => p.id === id);
+          if (prop) {
+            prop.name = target.value;
+            saveWorkspace();
+          }
+        });
+      });
+
+      // Price input fields
+      const priceInputs = document.querySelectorAll('.edit-prop-price');
+      priceInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+          const target = e.target as HTMLInputElement;
+          const id = target.getAttribute('data-id');
+          const prop = propertiesList.find(p => p.id === id);
+          if (prop) {
+            prop.price = parseFloat(target.value) || 0;
+            saveWorkspace();
+            // Re-render only metrics to keep cursor placement, but standard update is easier
+            updateWorkspaceUI();
+          }
+        });
+      });
+
+      // Tax rate inputs
+      const taxInputs = document.querySelectorAll('.edit-prop-tax');
+      taxInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+          const target = e.target as HTMLInputElement;
+          const id = target.getAttribute('data-id');
+          const prop = propertiesList.find(p => p.id === id);
+          if (prop) {
+            prop.propertyTaxRate = parseFloat(target.value) || 0;
+            saveWorkspace();
+            updateWorkspaceUI();
+          }
+        });
+      });
+
+      // Insurance inputs
+      const insInputs = document.querySelectorAll('.edit-prop-ins');
+      insInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+          const target = e.target as HTMLInputElement;
+          const id = target.getAttribute('data-id');
+          const prop = propertiesList.find(p => p.id === id);
+          if (prop) {
+            prop.monthlyInsurance = parseFloat(target.value) || 0;
+            saveWorkspace();
+            updateWorkspaceUI();
+          }
+        });
+      });
+
+      // HOA inputs
+      const hoaInputs = document.querySelectorAll('.edit-prop-hoa');
+      hoaInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+          const target = e.target as HTMLInputElement;
+          const id = target.getAttribute('data-id');
+          const prop = propertiesList.find(p => p.id === id);
+          if (prop) {
+            prop.monthlyHOA = parseFloat(target.value) || 0;
+            saveWorkspace();
+            updateWorkspaceUI();
+          }
+        });
+      });
+
+      // Custom Down Payment sliders
+      const downSliders = document.querySelectorAll('.edit-prop-down');
+      downSliders.forEach(slider => {
+        slider.addEventListener('input', (e) => {
+          const target = e.target as HTMLInputElement;
+          const id = target.getAttribute('data-id');
+          const prop = propertiesList.find(p => p.id === id);
+          if (prop) {
+            prop.customDownPercent = parseInt(target.value);
+            saveWorkspace();
+            updateWorkspaceUI();
+          }
+        });
+      });
+    }
+
+    // Set slider bindings
+    if (incomeSlider) {
+      incomeSlider.addEventListener('input', () => {
+        profileState.monthlyIncome = parseInt(incomeSlider.value);
+        if (incomeVal) incomeVal.textContent = `$${profileState.monthlyIncome.toLocaleString('en-US')}`;
+        saveWorkspace();
+        updateWorkspaceUI();
+      });
+    }
+    if (debtsSlider) {
+      debtsSlider.addEventListener('input', () => {
+        profileState.monthlyDebts = parseInt(debtsSlider.value);
+        if (debtsVal) debtsVal.textContent = `$${profileState.monthlyDebts.toLocaleString('en-US')}`;
+        saveWorkspace();
+        updateWorkspaceUI();
+      });
+    }
+    if (reservesSlider) {
+      reservesSlider.addEventListener('input', () => {
+        profileState.cashReserves = parseInt(reservesSlider.value);
+        if (reservesVal) reservesVal.textContent = `$${profileState.cashReserves.toLocaleString('en-US')}`;
+        saveWorkspace();
+        updateWorkspaceUI();
+      });
+    }
+    if (defaultDownSlider) {
+      defaultDownSlider.addEventListener('input', () => {
+        profileState.defaultDownPercent = parseInt(defaultDownSlider.value);
+        if (defaultDownVal) defaultDownVal.textContent = `${profileState.defaultDownPercent}%`;
+        saveWorkspace();
+        updateWorkspaceUI();
+      });
+    }
+    if (rateSlider) {
+      rateSlider.addEventListener('input', () => {
+        profileState.interestRate = parseFloat(rateSlider.value);
+        if (rateVal) rateVal.textContent = `${profileState.interestRate.toFixed(2)}%`;
+        saveWorkspace();
+        updateWorkspaceUI();
+      });
+    }
+
+    // Button trigger bindings
+    if (addPropertyBtn) {
+      addPropertyBtn.addEventListener('click', () => {
+        if (propertiesList.length >= 3) {
+          alert('You can compare a maximum of 3 properties side-by-side.');
+          return;
+        }
+        propertiesList.push({
+          id: `prop-${Date.now()}`,
+          name: `Property #${propertiesList.length + 1}`,
+          price: 400000,
+          propertyTaxRate: 1.25,
+          monthlyInsurance: 120,
+          monthlyHOA: 0
+        });
+        saveWorkspace();
+        updateWorkspaceUI();
+      });
+    }
+
+    if (copyShareBtn) {
+      copyShareBtn.addEventListener('click', () => {
+        const serialized = serializeWorkspace(profileState, propertiesList);
+        const shareUrl = `${window.location.origin}${window.location.pathname}?s=${serialized}`;
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          alert('Shareable Deal Room link copied to clipboard!');
+        }).catch(err => {
+          console.error('Could not copy link:', err);
+        });
+      });
+    }
+
+    if (printBtn) {
+      printBtn.addEventListener('click', () => {
+        window.print();
+      });
+    }
+
+    // Launch
+    document.addEventListener('DOMContentLoaded', initWorkspace);
+    initWorkspace();
+  </script>
+</Layout>

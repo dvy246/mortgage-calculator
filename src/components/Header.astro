@@ -17,6 +17,7 @@ interface SearchItem {
 const searchIndex: SearchItem[] = [];
 
 const calcItems: SearchItem[] = [
+  { title: "Homebuyer Deal Room", url: "/deal-room", category: "Calculator", description: "Interactive side-by-side comparison workspace for active home shoppers" },
   { title: "Mortgage Options Explorer", url: "/mortgage-blueprint", category: "Calculator", description: "Compare conventional, FHA, VA, USDA, and jumbo loans side by side" },
   { title: "Rent vs Buy Calculator", url: "/rent-vs-buy-calculator", category: "Calculator", description: "Compare renting vs buying with break-even analysis and after-tax estimates" },
   { title: "Mortgage Readiness Score", url: "/mortgage-readiness-score", category: "Calculator", description: "5-dimension readiness estimate — income, debt, savings, credit, market" },
@@ -121,6 +122,12 @@ const searchIndexJson = JSON.stringify(searchIndex);
           </div>
         </div>
 
+        <a href="/deal-room" class={`px-3 py-1.5 rounded-md transition-colors hover:text-text-main ${activeSlug === 'deal-room' ? 'text-text-main bg-bg-card-hover border border-border-subtle' : 'hover:bg-bg-card-hover/50'}`}>
+          <span class="inline-flex items-center gap-1.5">
+            Deal Room
+            <span class="inline-flex items-center rounded-full bg-blue-500/10 px-1.5 py-0.5 text-4xs font-medium text-blue-500 border border-blue-500/20 animate-pulse">New</span>
+          </span>
+        </a>
         <a href="/mortgage-blueprint" class={`px-3 py-1.5 rounded-md transition-colors hover:text-text-main ${activeSlug === 'blueprint' ? 'text-text-main bg-bg-card-hover border border-border-subtle' : 'hover:bg-bg-card-hover/50'}`}>
           <span class="inline-flex items-center gap-1.5">
             Options Explorer
@@ -197,6 +204,9 @@ const searchIndexJson = JSON.stringify(searchIndex);
         <a href={calc.url} class="px-3 py-2 rounded-md transition-colors hover:text-text-main hover:bg-bg-card-hover">{calc.title}</a>
       ))}
       <hr class="border-border-subtle my-2" />
+      <a href="/deal-room" class="px-3 py-2 rounded-md transition-colors hover:text-text-main hover:bg-bg-card-hover">
+        Deal Room <span class="text-4xs text-blue-500 font-semibold animate-pulse">New</span>
+      </a>
       <a href="/mortgage-blueprint" class="px-3 py-2 rounded-md transition-colors hover:text-text-main hover:bg-bg-card-hover">
         Options Explorer <span class="text-4xs text-blue-500 font-semibold">New</span>
       </a>
