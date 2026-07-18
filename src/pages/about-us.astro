@@ -2,9 +2,40 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+
+const schemaMarkup = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://mortgagesintel.com/#organization",
+      "name": "Mortgage Intelligence",
+      "url": "https://mortgagesintel.com",
+      "description": "A privacy-first mortgage planning platform providing educational calculators and financial modeling tools for US homebuyers.",
+      "sameAs": ["https://mortgagesintel.com"]
+    },
+    {
+      "@type": "Person",
+      "@id": "https://mortgagesintel.com/#sarah-jenkins",
+      "name": "Sarah Jenkins",
+      "jobTitle": "Chief Underwriting & Mortgage Analyst",
+      "description": "Certified Financial Planner with over 14 years in residential mortgage underwriting and private wealth advisory.",
+      "hasCredential": { "@type": "EducationalOccupationalCredential", "credentialCategory": "CFP®" },
+      "worksFor": { "@id": "https://mortgagesintel.com/#organization" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://mortgagesintel.com/#marcus-vance",
+      "name": "Marcus Vance",
+      "jobTitle": "Senior Credit & Loan Policy Advisor",
+      "description": "12+ years analyzing credit policies, loan-level price adjustments (LLPAs), and regional property tax structures. Former mortgage compliance auditor.",
+      "worksFor": { "@id": "https://mortgagesintel.com/#organization" }
+    }
+  ]
+});
 ---
 
-<Layout title="About Us - Mortgage Intelligence" description="Learn about the mission, values, editorial standards, and the mortgage underwriting experts behind the Mortgage Intelligence Platform." canonicalUrl="/about-us">
+<Layout title="About Us - Mortgage Intelligence" description="Learn about the mission, values, editorial standards, and the mortgage underwriting experts behind the Mortgage Intelligence Platform." canonicalUrl="/about-us" schemaMarkup={schemaMarkup}>
   <Header activeSlug="about" />
 
   <main class="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8 space-y-12 flex-grow">
@@ -71,12 +102,12 @@ import Footer from '../components/Footer.astro';
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Bio 1: Sarah Jenkins -->
-          <div class="bg-bg-card p-5 rounded-xl border border-border-subtle flex flex-col space-y-4">
+          <div class="bg-bg-card p-5 rounded-xl border border-border-subtle flex flex-col space-y-4" itemscope itemtype="https://schema.org/Person">
             <div>
-              <h3 class="font-display font-bold text-sm text-text-main">Sarah Jenkins, CFP®</h3>
-              <p class="text-4xs uppercase tracking-wider text-brand-accent font-semibold mt-0.5">Chief Underwriting & Mortgage Analyst</p>
+              <h3 class="font-display font-bold text-sm text-text-main" itemprop="name">Sarah Jenkins, CFP®</h3>
+              <p class="text-4xs uppercase tracking-wider text-brand-accent font-semibold mt-0.5" itemprop="jobTitle">Chief Underwriting & Mortgage Analyst</p>
             </div>
-            <p class="text-2xs text-text-muted leading-relaxed">
+            <p class="text-2xs text-text-muted leading-relaxed" itemprop="description">
               Sarah Jenkins is a Certified Financial Planner with over 14 years of experience in residential mortgage underwriting and private wealth advisory. She previously worked as a senior loan officer at premier retail banking institutions, managing mortgage originations and credit risk assessments. Sarah specializes in debt-to-income (DTI) optimization, loan structure comparisons, and first-time home buyer educational outreach.
             </p>
             <div class="text-3xs text-text-muted font-medium pt-2 border-t border-border-subtle/30">
@@ -85,12 +116,12 @@ import Footer from '../components/Footer.astro';
           </div>
 
           <!-- Bio 2: Marcus Vance -->
-          <div class="bg-bg-card p-5 rounded-xl border border-border-subtle flex flex-col space-y-4">
+          <div class="bg-bg-card p-5 rounded-xl border border-border-subtle flex flex-col space-y-4" itemscope itemtype="https://schema.org/Person">
             <div>
-              <h3 class="font-display font-bold text-sm text-text-main">Marcus Vance</h3>
-              <p class="text-4xs uppercase tracking-wider text-brand-accent font-semibold mt-0.5">Senior Credit & Loan Policy Advisor</p>
+              <h3 class="font-display font-bold text-sm text-text-main" itemprop="name">Marcus Vance</h3>
+              <p class="text-4xs uppercase tracking-wider text-brand-accent font-semibold mt-0.5" itemprop="jobTitle">Senior Credit & Loan Policy Advisor</p>
             </div>
-            <p class="text-2xs text-text-muted leading-relaxed">
+            <p class="text-2xs text-text-muted leading-relaxed" itemprop="description">
               Marcus Vance has spent more than 12 years analyzing credit policies, loan-level price adjustments (LLPAs), and regional property tax structures. As a former mortgage compliance auditor, he audits financial models to guarantee that calculators adhere strictly to Federal Housing Finance Agency (FHFA) conforming guidelines and FHA underwriting standards. Marcus holds a degree in finance and economics.
             </p>
             <div class="text-3xs text-text-muted font-medium pt-2 border-t border-border-subtle/30">

@@ -47,8 +47,9 @@ const absoluteCanonical = `${siteUrl}${canonicalUrl || cleanPath}`;
     <!-- SEO Meta Tags -->
     <title>{title} | Mortgage Intelligence</title>
     <meta name="description" content={description} />
-    <meta name="keywords" content="mortgage, mortgage calculator, mortgage payment calculator, mortgage interest rates, simple mortgage calculator, free mortgage calculator, google mortgage calculator, monthly mortgage calculator, commercial mortgage calculator, reverse mortgage calculator, mortgage calculator with extra payments, mortgage calculator california, house mortgage calculator, mortgage calculator with taxes, mortgage calculator amortization, house mortgage, house mortgage payment calculator, house mortgage rates calculator, calculate house mortgage, house mortgage rate, 500 000 house mortgage payment, best house mortgage rates, house cost calculator, monthly house cost calculator, total house cost calculator" />
+    <meta name="robots" content="index, follow" />
     {absoluteCanonical && <link rel="canonical" href={absoluteCanonical} />}
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
     
     {schemaMarkup && <script type="application/ld+json" set:html={schemaMarkup}></script>}
     
@@ -86,6 +87,7 @@ const absoluteCanonical = `${siteUrl}${canonicalUrl || cleanPath}`;
     <meta name="generator" content={Astro.generator} />
 
     <!-- Google AdSense -->
+    <!-- TODO BEFORE LAUNCH: Replace ca-pub-XXXXXXXXXXXXXXXX with your real AdSense publisher ID from https://adsense.google.com -->
     <script is:inline async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   </head>
   <body class="bg-bg-main text-text-main min-h-screen flex flex-col antialiased">
