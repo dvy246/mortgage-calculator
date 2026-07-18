@@ -1,0 +1,348 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+
+const faqs = [
+  {
+    question: "What is seller financing?",
+    answer: "Seller financing (also known as owner financing) occurs when the seller of a home acts as the lender, extending credit to the buyer to cover the purchase price, minus any down payment. The buyer makes monthly payments directly to the seller."
+  },
+  {
+    question: "What is a balloon payment in owner financing?",
+    answer: "A balloon payment is a large, lump-sum payment due at the end of a designated short-term period (typically 3, 5, or 10 years). While monthly payments are calculated on a longer 30-year amortization schedule, the remaining loan balance must be paid in full when the balloon term expires."
+  },
+  {
+    question: "How do buyers pay the balloon payment?",
+    answer: "Buyers typically pay the balloon payment by refinancing the home into a traditional bank mortgage or selling the property before the balloon date. If the buyer's credit score improves or interest rates fall, refinancing is usually the preferred method."
+  },
+  {
+    question: "What interest rate is typical for seller financing?",
+    answer: "Interest rates for seller financing are usually higher than prevailing bank rates, often by 1% to 3%. Sellers charge a premium to compensate for the higher default risk and the lack of liquidity."
+  },
+  {
+    question: "How is a balloon payment calculated?",
+    answer: "A balloon payment is the remaining principal balance of the loan at the maturity date. It is calculated by running a standard amortization schedule (e.g. 30 years) and identifying the outstanding balance after the chosen number of monthly payments have been made."
+  },
+  {
+    question: "What happens if a buyer cannot pay the balloon payment?",
+    answer: "If the buyer cannot refinance or pay the balloon payment at maturity, the seller can declare a default and initiate foreclosure proceedings to reclaim ownership of the property, potentially keeping all payments made to date."
+  },
+  {
+    question: "What is a Contract for Deed vs. a Deed of Trust?",
+    answer: "In a Contract for Deed (or Land Contract), the seller retains legal title to the property until the loan is fully paid off. Under a Deed of Trust, the buyer receives the property deed at closing, and a neutral trustee holds a lien on the home to secure the seller's loan."
+  },
+  {
+    question: "Who pays property taxes in seller financing?",
+    answer: "The buyer is responsible for property taxes and homeowners insurance. Agreements should specify if the buyer pays these directly to tax authorities and insurers or sends escrow funds to the seller monthly."
+  },
+  {
+    question: "Do buyers need to qualify for owner financing?",
+    answer: "Qualification criteria are set by the seller. Some sellers require credit scores, bank statements, and income verification, while others may offer financing with no credit checks in exchange for a larger down payment."
+  },
+  {
+    question: "Should a seller financing agreement be reviewed by a lawyer?",
+    answer: "Yes. Seller financing agreements must be drafted and reviewed by a licensed real estate attorney in your state. State laws heavily regulate owner financing, interest rate limits (usury laws), and foreclosure procedures."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Seller Financing Amortization & Balloon Payment Calculator",
+      "url": "https://mortgagesintel.com/seller-financing-calculator",
+      "description": "Amortize seller-financed mortgages, track balloon payment amounts and dates, and assess refinancing eligibility guidelines.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="Seller Financing Amortization & Balloon Payment Calculator"
+  description="Model owner-financed mortgages. Calculate monthly payments, balloon maturity balances, cumulative interest, and evaluate refinance qualification criteria."
+  canonicalUrl="/seller-financing-calculator"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="seller-financing-calculator" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full border border-brand-accent/20 bg-brand-accent/10 px-2.5 py-0.5 text-3xs font-medium text-brand-accent">Flagship Utility</span>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Seller Financing Amortization & Balloon Payment Calculator</h1>
+      <p class="text-xs text-text-muted max-w-3xl">
+        Map the financial structure of an owner-financed home purchase. Estimate monthly P&I, project balloon payment size at maturity, and check refinance likelihood.
+      </p>
+      <p class="text-3xs text-text-muted">Reviewed by <strong>Marcus Vance</strong>, Senior Credit &amp; Loan Policy Advisor &mdash; Last updated <time datetime="2026-07-19">July 2026</time></p>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Left Inputs -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">Financing Terms</h2>
+          
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label for="purchase-price" class="text-xs font-semibold text-text-muted">Purchase Price</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="purchase-price" value="300000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="down-payment" class="text-xs font-semibold text-text-muted">Down Payment to Seller</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="down-payment" value="60000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="interest-rate" class="text-xs font-semibold text-text-muted">Seller Interest Rate</label>
+                <div class="relative">
+                  <input type="number" id="interest-rate" value="7.5" step="0.1" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="amort-years" class="text-xs font-semibold text-text-muted">Amortization Period</label>
+                <select id="amort-years" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold focus:outline-none">
+                  <option value="30">30 Years</option>
+                  <option value="15">15 Years</option>
+                  <option value="20">20 Years</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="balloon-years" class="text-xs font-semibold text-text-muted">Balloon Term</label>
+                <select id="balloon-years" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold focus:outline-none">
+                  <option value="5">5 Years</option>
+                  <option value="3">3 Years</option>
+                  <option value="7">7 Years</option>
+                  <option value="10">10 Years</option>
+                </select>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="credit-score" class="text-xs font-semibold text-text-muted">Buyer Credit Score</label>
+                <input type="number" id="credit-score" value="660" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Results -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6 shadow-sm">
+          <h2 class="font-display text-base font-semibold text-text-main border-b border-border-subtle pb-4">Balloon Payment Schedule</h2>
+
+          <!-- Highlights Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Monthly P&I Payment</span>
+              <span id="monthly-pi" class="block text-xl font-bold text-text-main">$1,678</span>
+              <span class="block text-4xs text-text-muted">Paid to seller monthly</span>
+            </div>
+
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Balloon Amount Due</span>
+              <span id="balloon-amount" class="block text-xl font-bold text-rose-500">$223,500</span>
+              <span id="balloon-due-label" class="block text-4xs text-text-muted">Due at Year 5</span>
+            </div>
+
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Refinance Likelihood</span>
+              <span id="refi-likelihood" class="block text-xl font-bold text-brand-accent">Medium</span>
+              <span class="block text-4xs text-text-muted">Based on credit score</span>
+            </div>
+          </div>
+
+          <!-- Progress Bar showing balloon maturity timeline -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-semibold text-text-muted">
+              <span>Maturity Timeline Progress</span>
+              <span id="timeline-label">0 of 5 Years</span>
+            </div>
+            <div class="h-3 w-full bg-bg-main rounded-full overflow-hidden border border-border-subtle">
+              <div id="timeline-bar" class="bg-rose-500 h-full" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <!-- Total Cumulative Costs Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-border-subtle">
+                  <th class="py-2 text-text-muted font-semibold">Accumulated Metric</th>
+                  <th class="py-2 text-text-main font-semibold">Value at Balloon Date</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border-subtle text-text-muted font-tabular">
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Loan Balance Financed</td>
+                  <td id="table-loan-amount" class="py-2">$240,000</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Cumulative Monthly Payments Paid</td>
+                  <td id="table-cumulative-payments" class="py-2">$100,684</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Interest Paid to Seller</td>
+                  <td id="table-interest-paid" class="py-2">$84,184</td>
+                </tr>
+                <tr class="font-bold text-text-main bg-bg-main">
+                  <td class="py-3 px-2 rounded-l">Remaining Principal Due (Balloon)</td>
+                  <td id="table-balloon-due" class="py-3 px-2 rounded-r">$223,500</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="rounded-xl border border-border-subtle bg-bg-main p-4 text-xs text-text-muted leading-relaxed">
+            <p id="refi-guideline">
+              <strong>Refinance Guideline:</strong> To prepare for the balloon payment, standard conventional refinancing will require a credit score above 620 and a maximum DTI of 43%.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational section -->
+    <MortgageGuide
+      title="Seller Financing & Balloon Payments"
+      subtitle="Structuring owner-financed real estate purchases"
+      whatItDoes="This calculator details the amortization schedule of seller-financed loans. It highlights the monthly payment, cumulative interest, and the balloon payment due at maturity."
+      whenToUse="Use this tool when structuring an owner-financing agreement for a property purchase, helping both buyers and sellers understand the exact lump sum needed at maturity."
+      howItWorks="We calculate the initial loan balance (Purchase Price - Down Payment). The P&I payment is amortized over your chosen long-term amortization period. The outstanding balance is tracked and reported at your specified balloon years."
+      mistakes="A common mistake is forgetting that balloon payments require refinancing. If credit score or market conditions degrade, refinancing can be difficult. Always ensure you have a fallback option. Furthermore, both parties should hire a real estate attorney to draft legally compliant agreements."
+      faqs={faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateSellerFinancing } from '../utils/sellerFinancing';
+
+  function updateCalculations() {
+    const purchasePrice = parseFloat((document.getElementById('purchase-price') as HTMLInputElement).value) || 0;
+    const downPayment = parseFloat((document.getElementById('down-payment') as HTMLInputElement).value) || 0;
+    const interestRate = parseFloat((document.getElementById('interest-rate') as HTMLInputElement).value) || 0;
+    const amortYearsSelect = document.getElementById('amort-years') as HTMLSelectElement;
+    const amortYears = parseFloat(amortYearsSelect.value) || 30;
+    const balloonYearsSelect = document.getElementById('balloon-years') as HTMLSelectElement;
+    const balloonYears = parseFloat(balloonYearsSelect.value) || 5;
+    const creditScore = parseFloat((document.getElementById('credit-score') as HTMLInputElement).value) || 660;
+
+    const results = calculateSellerFinancing({
+      purchasePrice,
+      downPayment,
+      interestRate,
+      amortizationYears: amortYears,
+      balloonYears,
+      buyerCreditScore: creditScore
+    });
+
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+    // Update Highlights
+    const monthlyPiEl = document.getElementById('monthly-pi');
+    if (monthlyPiEl) monthlyPiEl.textContent = fmt.format(results.monthlyPI);
+
+    const balloonAmtEl = document.getElementById('balloon-amount');
+    if (balloonAmtEl) balloonAmtEl.textContent = fmt.format(results.balloonPaymentSize);
+
+    const balloonDueLabel = document.getElementById('balloon-due-label');
+    if (balloonDueLabel) balloonDueLabel.textContent = `Due at Year ${balloonYears}`;
+
+    const refiLikelihoodEl = document.getElementById('refi-likelihood');
+    if (refiLikelihoodEl) {
+      refiLikelihoodEl.textContent = results.refinanceLikelihood;
+      if (results.refinanceLikelihood === 'High') {
+        refiLikelihoodEl.className = 'block text-xl font-bold text-emerald-500';
+      } else if (results.refinanceLikelihood === 'Medium') {
+        refiLikelihoodEl.className = 'block text-xl font-bold text-brand-accent';
+      } else {
+        refiLikelihoodEl.className = 'block text-xl font-bold text-rose-500';
+      }
+    }
+
+    // Update Progress Bar
+    const timelineBar = document.getElementById('timeline-bar');
+    const timelineLabel = document.getElementById('timeline-label');
+    if (timelineBar && timelineLabel) {
+      timelineLabel.textContent = `${balloonYears} Years to Maturity`;
+      timelineBar.style.width = '100%';
+    }
+
+    // Update table elements
+    const tableLoanAmt = document.getElementById('table-loan-amount');
+    if (tableLoanAmt) tableLoanAmt.textContent = fmt.format(results.loanAmount);
+
+    const tableCumulativePayments = document.getElementById('table-cumulative-payments');
+    if (tableCumulativePayments) tableCumulativePayments.textContent = fmt.format(results.totalPaymentsPaid);
+
+    const tableInterestPaid = document.getElementById('table-interest-paid');
+    if (tableInterestPaid) tableInterestPaid.textContent = fmt.format(results.totalInterestPaid);
+
+    const tableBalloonDue = document.getElementById('table-balloon-due');
+    if (tableBalloonDue) tableBalloonDue.textContent = fmt.format(results.balloonPaymentSize);
+
+    // Update refinance guidelines
+    const guidelineEl = document.getElementById('refi-guideline');
+    if (guidelineEl) {
+      if (results.refinanceLikelihood === 'High') {
+        guidelineEl.innerHTML = `<strong>Refinance Guideline:</strong> Your credit score of <strong>${creditScore}</strong> is in the strong range. Refinancing your <strong>${fmt.format(results.balloonPaymentSize)}</strong> balloon payment through traditional mortgage channels is highly feasible at maturity.`;
+      } else if (results.refinanceLikelihood === 'Medium') {
+        guidelineEl.innerHTML = `<strong>Refinance Guideline:</strong> Your credit score of <strong>${creditScore}</strong> is fair. You may qualify for refinance programs, but raising it to 680+ will reduce your rates significantly before maturity.`;
+      } else {
+        guidelineEl.innerHTML = `<strong>Refinance Guideline:</strong> Your credit score of <strong>${creditScore}</strong> presents refinance challenges. Consider working on credit rehabilitation and expanding down payment reserves before your balloon payment matures.`;
+      }
+    }
+  }
+
+  // Bind events
+  const inputs = ['purchase-price', 'down-payment', 'interest-rate', 'amort-years', 'balloon-years', 'credit-score'];
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateCalculations);
+  });
+
+  // Init
+  updateCalculations();
+</script>

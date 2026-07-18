@@ -1,0 +1,379 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+
+const faqs = [
+  {
+    question: "What is a mortgage recast?",
+    answer: "A mortgage recast occurs when you pay a lump sum of principal toward your home loan, and the lender re-amortizes the remaining balance. This lowers your monthly payment while keeping your original interest rate and term unchanged."
+  },
+  {
+    question: "How does a recast differ from refinancing?",
+    answer: "Refinancing replaces your current mortgage with an entirely new loan, changing your interest rate, term, and lender, which requires closing costs. Recasting keeps your original mortgage intact, only recalculating payments for a nominal fee."
+  },
+  {
+    question: "What is the typical fee for a mortgage recast?",
+    answer: "Most loan servicers charge a flat administrative fee for recasting, typically ranging from $150 to $300. This is significantly cheaper than refinancing closing costs, which run between 2% and 5% of the loan amount."
+  },
+  {
+    question: "Does a mortgage recast shorten the loan term?",
+    answer: "No. A recast does not shorten your loan term. If you have 22 years remaining on a 30-year mortgage, you will still have 22 years remaining after recasting. The key difference is your mandatory monthly payment size will be reduced."
+  },
+  {
+    question: "Is a credit check required to recast a mortgage?",
+    answer: "No. Because you are not applying for a new loan, lenders do not require a credit pull, income verification, or property appraisals to complete a recast. You must simply meet their minimum lump-sum requirements."
+  },
+  {
+    question: "Do all mortgage types support recasting?",
+    answer: "Most conventional loans back by Fannie Mae and Freddie Mac support recasting. However, FHA, VA, and USDA loans do not officially allow recasting. Additionally, jumbo loans have varying rules depending on the investor."
+  },
+  {
+    question: "Will my property escrow account change after recasting?",
+    answer: "No. Your property tax and homeowners insurance escrow obligations remain the same. The recast only recalculates the principal and interest (P&I) portion of your monthly mortgage payment."
+  },
+  {
+    question: "How much principal must I pay to qualify for a recast?",
+    answer: "Most mortgage servicers require a minimum lump-sum principal payment of $5,000 or 10% of the remaining loan balance, though exact requirements vary. Check with your servicer for their specific terms."
+  },
+  {
+    question: "Can I recast multiple times on the same mortgage?",
+    answer: "Yes. Many lenders allow you to recast multiple times over the life of your mortgage, provided you pay their fee and meet the minimum principal payment guidelines each time."
+  },
+  {
+    question: "Is interest rate reduced during a recast?",
+    answer: "No. Your interest rate remains exactly the same. The interest savings from recasting come solely from the reduction in the total outstanding principal balance upon which interest is compounded."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Mortgage Recast vs. Refinance Analyzer",
+      "url": "https://mortgagesintel.com/mortgage-recast-calculator",
+      "description": "Analyze if recasting your mortgage or refinancing is the more cost-effective strategy to reduce your monthly housing payments.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="Mortgage Recast vs. Refinance Analyzer"
+  description="Compare mortgage recasting side-by-side with refinancing. Calculate payment reductions, administrative fees, interest savings, and break-even timelines."
+  canonicalUrl="/mortgage-recast-calculator"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="mortgage-recast-calculator" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full border border-brand-accent/20 bg-brand-accent/10 px-2.5 py-0.5 text-3xs font-medium text-brand-accent">Flagship Utility</span>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Mortgage Recast vs. Refinance Analyzer</h1>
+      <p class="text-xs text-text-muted max-w-3xl">
+        Decide between a mortgage recast or refinancing. Model the impact of a principal lump sum, compare fee overheads, and see which strategy yields higher savings.
+      </p>
+      <p class="text-3xs text-text-muted">Reviewed by <strong>Marcus Vance</strong>, Senior Credit &amp; Loan Policy Advisor &mdash; Last updated <time datetime="2026-07-19">July 2026</time></p>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Left Inputs -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">Current Mortgage Status</h2>
+          
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label for="current-balance" class="text-xs font-semibold text-text-muted">Current Mortgage Balance</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="current-balance" value="350000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="current-rate" class="text-xs font-semibold text-text-muted">Current Interest Rate</label>
+                <div class="relative">
+                  <input type="number" id="current-rate" value="5.5" step="0.01" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="remaining-term-months" class="text-xs font-semibold text-text-muted">Months Remaining</label>
+                <div class="relative">
+                  <input type="number" id="remaining-term-months" value="240" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">mos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">Recast & Refinance Targets</h2>
+          
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="lump-sum" class="text-xs font-semibold text-text-muted">Lump-Sum Payment</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="lump-sum" value="50000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="recast-fee" class="text-xs font-semibold text-text-muted">Recast Fee</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="recast-fee" value="250" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="refinance-rate" class="text-xs font-semibold text-text-muted">Refinance Rate</label>
+                <div class="relative">
+                  <input type="number" id="refinance-rate" value="4.75" step="0.01" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="refi-costs" class="text-xs font-semibold text-text-muted">Refi Closing Costs</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="refi-costs" value="6000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Results -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6 shadow-sm">
+          <h2 class="font-display text-base font-semibold text-text-main border-b border-border-subtle pb-4">Strategy Evaluation &amp; Payment Reductions</h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Recast Card -->
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-3xs font-semibold text-text-muted uppercase">Mortgage Recast</span>
+                <span class="text-3xs font-bold text-emerald-500">Low Cost</span>
+              </div>
+              <span id="recast-payment" class="block text-xl font-bold text-text-main">$1,992/mo</span>
+              <div class="text-3xs text-text-muted space-y-1">
+                <div class="flex justify-between">
+                  <span>Payment Savings:</span>
+                  <span id="recast-savings" class="font-bold text-emerald-500">-$332/mo</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Payback Period:</span>
+                  <span id="recast-payback" class="font-bold">1 month</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Refinance Card -->
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-3xs font-semibold text-text-muted uppercase">Full Refinance</span>
+                <span class="text-3xs font-bold text-brand-accent">Interest Drop</span>
+              </div>
+              <span id="refi-payment" class="block text-xl font-bold text-text-main">$2,263/mo</span>
+              <div class="text-3xs text-text-muted space-y-1">
+                <div class="flex justify-between">
+                  <span>Payment Savings:</span>
+                  <span id="refi-savings" class="font-bold text-emerald-500">-$61/mo</span>
+                </div>
+                <div class="flex justify-between">
+                  <span>Payback Period:</span>
+                  <span id="refi-payback" class="font-bold">98 months</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Side-by-Side Comparison -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-border-subtle">
+                  <th class="py-2 text-text-muted font-semibold">Metric</th>
+                  <th class="py-2 text-text-main font-semibold">Mortgage Recast</th>
+                  <th class="py-2 text-text-main font-semibold">Refinance Path</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border-subtle text-text-muted font-tabular">
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Upfront Cost / Fees</td>
+                  <td id="table-recast-fee" class="py-2">$250</td>
+                  <td id="table-refi-costs" class="py-2">$6,000</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">New Outstanding Balance</td>
+                  <td id="table-recast-balance" class="py-2">$300,000</td>
+                  <td id="table-refi-balance" class="py-2">$350,000</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Interest Rate</td>
+                  <td id="table-recast-rate" class="py-2">5.50%</td>
+                  <td id="table-refi-rate" class="py-2">4.75%</td>
+                </tr>
+                <tr class="font-bold text-text-main bg-bg-main">
+                  <td class="py-3 px-2 rounded-l">Total Lifetime Interest</td>
+                  <td id="table-recast-interest" class="py-3">$178,122</td>
+                  <td id="table-refi-interest" class="py-3 px-2 rounded-r">$193,120</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="rounded-xl border border-border-subtle bg-bg-main p-4 text-xs text-text-muted leading-relaxed">
+            <p id="recast-verdict">
+              <strong>Verdict:</strong> Recasting is favored because you save on high upfront refinance closing fees while leveraging your lump sum to reduce monthly principal immediately.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational section -->
+    <MortgageGuide
+      title="Mortgage Recasting vs Refinancing"
+      subtitle="Deciding between principal curtailment and interest rate modifications"
+      whatItDoes="This comparison calculator helps you model the outcomes of recasting your mortgage with a lump-sum payment vs. refinancing your current balance into a new loan."
+      whenToUse="Use this tool when you have extra cash (e.g. inheritance, work bonuses, or proceeds from selling another asset) and want to lower your monthly payments for the lowest overhead fees."
+      howItWorks="We calculate your current baseline monthly P&I. For recasting, we subtract your lump sum from the balance and re-amortize the remaining balance over your original term and rate. For refinancing, we compute a new mortgage payment based on your current balance, refinance rate, and new term, then subtract closing costs to find the payback period."
+      mistakes="A common mistake is recasting a high-interest mortgage when refinance rates are significantly lower. Another error is thinking that a recast shortens the term: your maturity date remains exactly the same. Finally, check with your servicer, as FHA and VA loans do not support administrative recasting."
+      faqs={faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateRecast } from '../utils/mortgageRecast';
+
+  function updateCalculations() {
+    const currentBalance = parseFloat((document.getElementById('current-balance') as HTMLInputElement).value) || 0;
+    const currentRate = parseFloat((document.getElementById('current-rate') as HTMLInputElement).value) || 0;
+    const remainingTerm = parseFloat((document.getElementById('remaining-term-months') as HTMLInputElement).value) || 0;
+    const lumpSum = parseFloat((document.getElementById('lump-sum') as HTMLInputElement).value) || 0;
+    const recastFee = parseFloat((document.getElementById('recast-fee') as HTMLInputElement).value) || 0;
+    const refinanceRate = parseFloat((document.getElementById('refinance-rate') as HTMLInputElement).value) || 0;
+    const refiCosts = parseFloat((document.getElementById('refi-costs') as HTMLInputElement).value) || 0;
+
+    const results = calculateRecast({
+      currentBalance,
+      currentRate,
+      remainingTermMonths: remainingTerm,
+      lumpSum,
+      recastFee,
+      refinanceRate,
+      refinanceLoanTermYears: 30, // baseline
+      refinanceClosingCosts: refiCosts
+    });
+
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+    // Update highlights
+    const recastPayEl = document.getElementById('recast-payment');
+    if (recastPayEl) recastPayEl.textContent = fmt.format(results.recastMonthlyPI) + '/mo';
+
+    const recastSaveEl = document.getElementById('recast-savings');
+    if (recastSaveEl) recastSaveEl.textContent = '-' + fmt.format(results.recastMonthlySavings) + '/mo';
+
+    const recastPaybackEl = document.getElementById('recast-payback');
+    if (recastPaybackEl) {
+      recastPaybackEl.textContent = isFinite(results.recastBreakevenMonths) ? `${results.recastBreakevenMonths} mo` : 'N/A';
+    }
+
+    const refiPayEl = document.getElementById('refi-payment');
+    if (refiPayEl) refiPayEl.textContent = fmt.format(results.refinanceMonthlyPI) + '/mo';
+
+    const refiSaveEl = document.getElementById('refi-savings');
+    if (refiSaveEl) refiSaveEl.textContent = '-' + fmt.format(results.refinanceMonthlySavings) + '/mo';
+
+    const refiPaybackEl = document.getElementById('refi-payback');
+    if (refiPaybackEl) {
+      refiPaybackEl.textContent = isFinite(results.refinanceBreakevenMonths) ? `${results.refinanceBreakevenMonths} mo` : 'N/A';
+    }
+
+    // Update table elements
+    const tableRecastFee = document.getElementById('table-recast-fee');
+    if (tableRecastFee) tableRecastFee.textContent = fmt.format(recastFee);
+    const tableRefiCosts = document.getElementById('table-refi-costs');
+    if (tableRefiCosts) tableRefiCosts.textContent = fmt.format(refiCosts);
+
+    const tableRecastBal = document.getElementById('table-recast-balance');
+    if (tableRecastBal) tableRecastBal.textContent = fmt.format(results.recastNewBalance);
+    const tableRefiBal = document.getElementById('table-refi-balance');
+    if (tableRefiBal) tableRefiBal.textContent = fmt.format(results.refinanceBalance);
+
+    const tableRecastRate = document.getElementById('table-recast-rate');
+    if (tableRecastRate) tableRecastRate.textContent = currentRate.toFixed(2) + '%';
+    const tableRefiRate = document.getElementById('table-refi-rate');
+    if (tableRefiRate) tableRefiRate.textContent = refinanceRate.toFixed(2) + '%';
+
+    const tableRecastInt = document.getElementById('table-recast-interest');
+    if (tableRecastInt) tableRecastInt.textContent = fmt.format(results.recastTotalInterest);
+    const tableRefiInt = document.getElementById('table-refi-interest');
+    if (tableRefiInt) tableRefiInt.textContent = fmt.format(results.refinanceTotalInterest);
+
+    // Update verdict copy
+    const verdictEl = document.getElementById('recast-verdict');
+    if (verdictEl) {
+      if (results.winner === 'recast') {
+        verdictEl.innerHTML = `<strong>Verdict:</strong> Recasting is mathematically favored here. It allows you to reduce monthly obligations by <strong>${fmt.format(results.recastMonthlySavings)}</strong> for a one-time fee of only <strong>${fmt.format(recastFee)}</strong>, yielding higher net savings than refinancing.`;
+      } else if (results.winner === 'refinance') {
+        verdictEl.innerHTML = `<strong>Verdict:</strong> Refinancing is favored here. The drop in interest rate to <strong>${refinanceRate.toFixed(2)}%</strong> overcomes the closing costs, generating long-term compound savings despite no immediate lump-sum reduction.`;
+      } else {
+        verdictEl.innerHTML = `<strong>Verdict:</strong> The calculations are relatively close. Consider whether you prefer to preserve liquid capital (recast) or lower your interest multiplier long-term (refinance).`;
+      }
+    }
+  }
+
+  // Bind events
+  const inputs = ['current-balance', 'current-rate', 'remaining-term-months', 'lump-sum', 'recast-fee', 'refinance-rate', 'refi-costs'];
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateCalculations);
+  });
+
+  // Init
+  updateCalculations();
+</script>

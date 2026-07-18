@@ -1,0 +1,413 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+
+const faqs = [
+  {
+    question: "What is an assumable mortgage?",
+    answer: "An assumable mortgage allows a buyer to take over the seller's existing home loan rate, repayment schedule, and remaining principal balance. The buyer steps into the seller's shoes, bypassing current high market interest rates."
+  },
+  {
+    question: "Which types of mortgages are assumable?",
+    answer: "Generally, government-backed mortgages (FHA, VA, and USDA loans) are legally assumable under federal guidelines. Conventional mortgages (backed by Fannie Mae or Freddie Mac) typically contain a 'due-on-sale' clause and are not assumable by new buyers."
+  },
+  {
+    question: "What is the 'Cash Gap' in a loan assumption?",
+    answer: "The cash gap is the difference between the agreed home purchase price and the remaining principal balance of the assumed mortgage. The buyer must cover this gap either with liquid cash or by obtaining a second mortgage at current market rates."
+  },
+  {
+    question: "How does a second mortgage help cover the cash gap?",
+    answer: "If the cash gap is larger than your available savings, you can finance the difference with a second mortgage. Because this second loan will have current market rates, your overall monthly payments will reflect a blended interest rate of both loans."
+  },
+  {
+    question: "Do buyers need to qualify to assume a mortgage?",
+    answer: "Yes. Buyers must meet the credit, debt-to-income (DTI), and income requirements of the loan's current servicer. The lender must formally approve the assumption before the transfer of ownership occurs."
+  },
+  {
+    question: "What is a Release of Liability (VA Form 26-6381)?",
+    answer: "For VA loans, the seller must obtain a formal Release of Liability from the lender. This document ensures the seller is no longer financially responsible for the loan if the buyer defaults in the future."
+  },
+  {
+    question: "Will assuming a VA loan impact the seller's VA entitlement?",
+    answer: "Yes, unless the buyer is also an eligible veteran with sufficient entitlement who agrees to substitute their entitlement for the seller's, the seller's VA entitlement remains tied to the property until the assumed loan is fully paid off."
+  },
+  {
+    question: "What fees are associated with assuming a home loan?",
+    answer: "Lenders typically charge assumption fees. For VA loans, the fee is capped at $300 plus credit report fees. FHA loan assumption fees are generally capped at $500. Additionally, normal title search, escrow, and recording fees will apply."
+  },
+  {
+    question: "How long does the loan assumption process take?",
+    answer: "The assumption process takes longer than a standard home purchase, often ranging from 45 to 90 days. Lenders handle assumptions in specialized departments, which can result in longer processing timelines."
+  },
+  {
+    question: "Is there a prepayment penalty on assumed mortgages?",
+    answer: "No. Under federal regulations, FHA, VA, and USDA loans do not have prepayment penalties. You can make extra principal payments at any time to accelerate your payoff timeline."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Assumable Mortgage Savings & Cash Gap Calculator",
+      "url": "https://mortgagesintel.com/assumable-mortgage-calculator",
+      "description": "Calculate your cash gap and total interest savings when assuming a seller's lower interest rate mortgage vs obtaining a new home loan.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="Assumable Mortgage Savings & Cash Gap Calculator"
+  description="Calculate the cash gap and blended interest rate when assuming an existing FHA, VA, or USDA home loan compared to current market-rate mortgages."
+  canonicalUrl="/assumable-mortgage-calculator"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="assumable-mortgage-calculator" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full border border-brand-accent/20 bg-brand-accent/10 px-2.5 py-0.5 text-3xs font-medium text-brand-accent">Flagship Utility</span>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Assumable Mortgage Savings & Cash Gap Calculator</h1>
+      <p class="text-xs text-text-muted max-w-3xl">
+        Evaluate the savings of taking over a seller's low-rate FHA, VA, or USDA mortgage. Calculate the exact equity cash gap, model secondary financing options, and discover your blended interest rate.
+      </p>
+      <p class="text-3xs text-text-muted">Reviewed by <strong>Sarah Jenkins</strong>, Director of Underwriting &mdash; Last updated <time datetime="2026-07-19">July 2026</time></p>
+    </div>
+
+    <!-- Main Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Left Inputs -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">Property & Assumed Loan Details</h2>
+          
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label for="purchase-price" class="text-xs font-semibold text-text-muted">Agreement Purchase Price</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="purchase-price" value="450000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="assumed-balance" class="text-xs font-semibold text-text-muted">Seller's Remaining Loan Balance</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="assumed-balance" value="300000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="existing-rate" class="text-xs font-semibold text-text-muted">Seller's Rate</label>
+                <div class="relative">
+                  <input type="number" id="existing-rate" value="3.25" step="0.01" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="remaining-term" class="text-xs font-semibold text-text-muted">Remaining Term</label>
+                <div class="relative">
+                  <input type="number" id="remaining-term" value="264" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">months</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">Market Options & Second Mortgage</h2>
+          
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="market-rate" class="text-xs font-semibold text-text-muted">New Mortgage Rate</label>
+                <div class="relative">
+                  <input type="number" id="market-rate" value="6.5" step="0.01" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="new-term" class="text-xs font-semibold text-text-muted">New Loan Term</label>
+                <select id="new-term" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold focus:outline-none">
+                  <option value="30">30 Years</option>
+                  <option value="15">15 Years</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="second-rate" class="text-xs font-semibold text-text-muted">2nd Mortgage Rate</label>
+                <div class="relative">
+                  <input type="number" id="second-rate" value="8.5" step="0.01" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="second-term" class="text-xs font-semibold text-text-muted">2nd Mortgage Term</label>
+                <select id="second-term" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold focus:outline-none">
+                  <option value="15">15 Years</option>
+                  <option value="10">10 Years</option>
+                  <option value="20">20 Years</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Results -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-border-subtle pb-4">
+            <h2 class="font-display text-base font-semibold text-text-main">Assumption vs. New Loan Assessment</h2>
+            <div id="savings-badge" class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500">Savings Available</div>
+          </div>
+
+          <!-- Highlight Figures -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Equity Cash Gap</span>
+              <span id="gap-display" class="block text-xl font-bold text-text-main">$150,000</span>
+              <span class="block text-4xs text-text-muted">Down payment or 2nd mortgage</span>
+            </div>
+
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Blended Rate</span>
+              <span id="blended-rate-display" class="block text-xl font-bold text-brand-accent">4.99%</span>
+              <span class="block text-4xs text-text-muted">Assumed + 2nd mortgage combined</span>
+            </div>
+
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Monthly Savings</span>
+              <span id="savings-display" class="block text-xl font-bold text-emerald-500">+$245.50</span>
+              <span class="block text-4xs text-text-muted">Compare to all-new mortgage</span>
+            </div>
+          </div>
+
+          <!-- Visual Progress Chart -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-semibold text-text-muted">
+              <span>Weighted Blended Rate Comparison</span>
+              <span id="bar-percentage-label">4.99% vs 6.50%</span>
+            </div>
+            <div class="h-3 w-full bg-bg-main rounded-full overflow-hidden border border-border-subtle flex">
+              <div id="rate-bar" class="bg-brand-accent h-full" style="width: 76%;"></div>
+              <div class="bg-border-subtle flex-grow h-full"></div>
+            </div>
+          </div>
+
+          <!-- Dynamic Side-by-Side Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-border-subtle">
+                  <th class="py-2 text-text-muted font-semibold">Cost Component</th>
+                  <th class="py-2 text-text-main font-semibold">Assumable Option</th>
+                  <th class="py-2 text-text-main font-semibold">All-New Mortgage</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border-subtle text-text-muted font-tabular">
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Loan Balance / Principal</td>
+                  <td id="table-assumed-principal" class="py-2">$300,000</td>
+                  <td id="table-new-principal" class="py-2">$450,000</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Base Interest Rate</td>
+                  <td id="table-assumed-rate" class="py-2">3.25%</td>
+                  <td id="table-new-rate" class="py-2">6.50%</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Primary P&I Payment</td>
+                  <td id="table-assumed-pi" class="py-2">$1,450.00</td>
+                  <td id="table-new-pi" class="py-2">$2,844.00</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Second Mortgage P&I</td>
+                  <td id="table-second-pi" class="py-2">$1,148.00</td>
+                  <td class="py-2">$0.00</td>
+                </tr>
+                <tr class="font-bold text-text-main bg-bg-main">
+                  <td class="py-3 px-2 rounded-l">Total Monthly Carrying Cost</td>
+                  <td id="table-total-assumed" class="py-3">$2,598.00</td>
+                  <td id="table-total-new" class="py-3 px-2 rounded-r">$2,844.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Lifetime Metrics -->
+          <div class="rounded-xl border border-border-subtle bg-bg-main p-4 text-xs text-text-muted leading-relaxed">
+            <p>
+              By choosing the assumable mortgage path, you will pay <strong id="lifetime-interest-savings" class="text-emerald-500">$84,320 less interest</strong> over the remaining life of the seller's mortgage, even when factoring in the cost of a higher-rate second mortgage.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational section -->
+    <MortgageGuide
+      title="Assumable Mortgage Savings"
+      subtitle="How to evaluate FHA, VA, and USDA loan assumptions"
+      whatItDoes="This calculator maps the financial outcome of assuming an existing mortgage at its historical rate vs. applying for a new mortgage. It highlights the cash difference (the seller's equity) and models blended payments if you finance the gap."
+      whenToUse="Use this utility when shopping for homes listed with assumable FHA, VA, or USDA loans. It is perfect for buyers trying to determine if the interest savings outweigh the down payment requirements of covering the seller's equity."
+      howItWorks="We calculate the baseline payment on the seller's current loan balance and remaining months. Then, we determine the cash gap (Purchase Price - Assumed Loan Balance). If you take a second mortgage to cover this gap, the tool runs a parallel amortization schedule for the second mortgage and displays the weighted blended interest rate."
+      mistakes="A common mistake is assuming that any home loan can be taken over. Conventional loans cannot be assumed. Another mistake is ignoring the cash gap: if the seller owns $200,000 of equity, you must have that in cash or a second loan. Finally, ensure the seller receives a formal 'Release of Liability' to protect their credit after assumption."
+      faqs={faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateAssumableMortgage } from '../utils/assumableMortgage';
+
+  function updateCalculations() {
+    const purchasePrice = parseFloat((document.getElementById('purchase-price') as HTMLInputElement).value) || 0;
+    const remainingBalance = parseFloat((document.getElementById('assumed-balance') as HTMLInputElement).value) || 0;
+    const existingRate = parseFloat((document.getElementById('existing-rate') as HTMLInputElement).value) || 0;
+    const remainingTerm = parseFloat((document.getElementById('remaining-term') as HTMLInputElement).value) || 0;
+    const marketRate = parseFloat((document.getElementById('market-rate') as HTMLInputElement).value) || 0;
+    const newTermSelect = document.getElementById('new-term') as HTMLSelectElement;
+    const newTermYears = parseFloat(newTermSelect.value) || 30;
+    const secondRate = parseFloat((document.getElementById('second-rate') as HTMLInputElement).value) || 0;
+    const secondTermSelect = document.getElementById('second-term') as HTMLSelectElement;
+    const secondTermYears = parseFloat(secondTermSelect.value) || 15;
+
+    const results = calculateAssumableMortgage({
+      purchasePrice,
+      remainingBalance,
+      existingRate,
+      remainingTermMonths: remainingTerm,
+      marketRate,
+      newLoanTermYears: newTermYears,
+      secondMortgageRate: secondRate,
+      secondMortgageTermYears: secondTermYears,
+      annualPropertyTax: 0,
+      annualInsurance: 0
+    });
+
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+    const fmtPct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Update highlights
+    const gapEl = document.getElementById('gap-display');
+    if (gapEl) gapEl.textContent = fmt.format(results.cashGap);
+
+    const blendedEl = document.getElementById('blended-rate-display');
+    if (blendedEl) blendedEl.textContent = (results.blendedRate).toFixed(2) + '%';
+
+    const savingsEl = document.getElementById('savings-display');
+    if (savingsEl) {
+      if (results.monthlySavings > 0) {
+        savingsEl.textContent = '+' + fmt.format(results.monthlySavings) + '/mo';
+        savingsEl.className = 'block text-xl font-bold text-emerald-500';
+      } else {
+        savingsEl.textContent = fmt.format(Math.abs(results.monthlySavings)) + '/mo';
+        savingsEl.className = 'block text-xl font-bold text-rose-500';
+      }
+    }
+
+    const badgeEl = document.getElementById('savings-badge');
+    if (badgeEl) {
+      if (results.monthlySavings > 0) {
+        badgeEl.textContent = 'Savings Available';
+        badgeEl.className = 'rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500';
+      } else {
+        badgeEl.textContent = 'Assumption Costs More';
+        badgeEl.className = 'rounded-full bg-rose-500/10 px-3 py-1 text-xs font-bold text-rose-500';
+      }
+    }
+
+    // Update Progress bar
+    const rateBar = document.getElementById('rate-bar');
+    const pctLabel = document.getElementById('bar-percentage-label');
+    if (rateBar && pctLabel) {
+      const pct = Math.max(10, Math.min(100, (results.blendedRate / marketRate) * 100));
+      rateBar.style.width = pct + '%';
+      pctLabel.textContent = `${results.blendedRate.toFixed(2)}% blended vs ${marketRate.toFixed(2)}% market`;
+    }
+
+    // Update Table values
+    const taPrincipal = document.getElementById('table-assumed-principal');
+    if (taPrincipal) taPrincipal.textContent = fmt.format(remainingBalance);
+    const tnPrincipal = document.getElementById('table-new-principal');
+    if (tnPrincipal) tnPrincipal.textContent = fmt.format(purchasePrice);
+
+    const taRate = document.getElementById('table-assumed-rate');
+    if (taRate) taRate.textContent = existingRate.toFixed(2) + '%';
+    const tnRate = document.getElementById('table-new-rate');
+    if (tnRate) tnRate.textContent = marketRate.toFixed(2) + '%';
+
+    const taPi = document.getElementById('table-assumed-pi');
+    if (taPi) taPi.textContent = fmt.format(results.assumedMonthlyPI);
+    const tnPi = document.getElementById('table-new-pi');
+    if (tnPi) tnPi.textContent = fmt.format(results.newMarketMonthlyPI);
+
+    const tsPi = document.getElementById('table-second-pi');
+    if (tsPi) tsPi.textContent = fmt.format(results.secondMortgageMonthlyPI);
+
+    const tTotalAssumed = document.getElementById('table-total-assumed');
+    if (tTotalAssumed) tTotalAssumed.textContent = fmt.format(results.totalMonthlyAssumed);
+    const tTotalNew = document.getElementById('table-total-new');
+    if (tTotalNew) tTotalNew.textContent = fmt.format(results.totalMonthlyNew);
+
+    const lifetimeSavingsEl = document.getElementById('lifetime-interest-savings');
+    if (lifetimeSavingsEl) {
+      if (results.lifetimeInterestSavings > 0) {
+        lifetimeSavingsEl.textContent = `${fmt.format(results.lifetimeInterestSavings)} less interest`;
+        lifetimeSavingsEl.className = 'text-emerald-500 font-bold';
+      } else {
+        lifetimeSavingsEl.textContent = `${fmt.format(Math.abs(results.lifetimeInterestSavings))} more interest`;
+        lifetimeSavingsEl.className = 'text-rose-500 font-bold';
+      }
+    }
+  }
+
+  // Bind events
+  const inputs = ['purchase-price', 'assumed-balance', 'existing-rate', 'remaining-term', 'market-rate', 'new-term', 'second-rate', 'second-term'];
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateCalculations);
+  });
+
+  // Init
+  updateCalculations();
+</script>

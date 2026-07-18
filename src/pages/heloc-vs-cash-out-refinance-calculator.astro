@@ -1,0 +1,372 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+
+const faqs = [
+  {
+    question: "What is a blended mortgage rate?",
+    answer: "A blended mortgage rate is the weighted average interest rate of multiple loans on a single property (typically your first mortgage plus a second mortgage or HELOC). It represents your true overall cost of borrowing across all balances."
+  },
+  {
+    question: "When should I choose a HELOC over a cash-out refinance?",
+    answer: "A HELOC is generally better if you have a very low interest rate on your first mortgage (e.g., under 4%) and only need to borrow a moderate amount of equity. A cash-out refinance makes sense if current market rates are lower than your first mortgage rate, or if you need to borrow a large sum for a long period."
+  },
+  {
+    question: "What are the closing costs for a cash-out refinance?",
+    answer: "Cash-out refinance closing costs typically range between 2% and 5% of the new total loan amount. These fees cover appraisals, title insurance, loan origination, and underwriting."
+  },
+  {
+    question: "Are HELOC interest rates fixed or adjustable?",
+    answer: "Most HELOCs have variable interest rates tied to the prime rate, meaning your monthly payments can fluctuate. However, some lenders offer hybrid HELOCs that allow you to lock in a fixed rate on specific drawn balances."
+  },
+  {
+    question: "How much equity can I withdraw with a HELOC or cash-out refinance?",
+    answer: "Lenders typically limit your total loan-to-value (LTV) ratio to 80% or 85% of your home's appraised value. This means you must retain at least 15% to 20% equity in the property after borrowing."
+  },
+  {
+    question: "Is the interest on a HELOC tax-deductible?",
+    answer: "Under IRS rules, HELOC interest is only tax-deductible if the funds are used to buy, build, or substantially improve the home that secures the loan. Interest is not deductible if used for personal expenses like credit card debt or vacations."
+  },
+  {
+    question: "What credit score is needed for a HELOC?",
+    answer: "Lenders generally require a credit score of at least 680 to qualify for a HELOC, though scores of 740 or higher are typically needed to secure the lowest rates and highest LTV ratios."
+  },
+  {
+    question: "What DTI ratio is required for home equity borrowing?",
+    answer: "Underwriters typically look for a back-end debt-to-income (DTI) ratio of 43% or lower, including your first mortgage, proposed HELOC payment, and all other monthly debts."
+  },
+  {
+    question: "Can I get a HELOC if I have a second mortgage?",
+    answer: "Usually no. Lenders rarely permit a third lien on a home. To get a HELOC, you would typically need to pay off the existing second mortgage or consolidate it into a new loan structure."
+  },
+  {
+    question: "What happens if I default on a HELOC?",
+    answer: "Because a HELOC is secured by your home, defaulting can result in foreclosure, just like a primary mortgage. The lender has the legal right to seize the property to recover their funds."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "HELOC vs. Cash-Out Refinance Blended Rate Simulator",
+      "url": "https://mortgagesintel.com/heloc-vs-cash-out-refinance-calculator",
+      "description": "Calculate and compare the blended interest rate of keeping your current mortgage plus a HELOC vs refinancing into a new cash-out home loan.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="HELOC vs. Cash-Out Refinance Blended Rate Simulator"
+  description="Compare HELOCs side-by-side with cash-out refinancing. Calculate blended interest rates, monthly P&I carrying costs, closing fees, and lifetime savings."
+  canonicalUrl="/heloc-vs-cash-out-refinance-calculator"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="heloc-vs-cash-out-refinance-calculator" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full border border-brand-accent/20 bg-brand-accent/10 px-2.5 py-0.5 text-3xs font-medium text-brand-accent">Flagship Utility</span>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">HELOC vs. Cash-Out Refinance Blended Rate Simulator</h1>
+      <p class="text-xs text-text-muted max-w-3xl">
+        Decide how to tap your home equity. Model the blended rate of keeping your low-rate first mortgage and adding a HELOC, versus refinancing your entire balance at current market rates.
+      </p>
+      <p class="text-3xs text-text-muted">Reviewed by <strong>Sarah Jenkins</strong>, Director of Underwriting &mdash; Last updated <time datetime="2026-07-19">July 2026</time></p>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Left Inputs -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">First Mortgage & Equity Target</h2>
+          
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label for="first-balance" class="text-xs font-semibold text-text-muted">Current First Mortgage Balance</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="first-balance" value="250000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="first-rate" class="text-xs font-semibold text-text-muted">First Loan Rate</label>
+                <div class="relative">
+                  <input type="number" id="first-rate" value="3.125" step="0.001" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="first-term-months" class="text-xs font-semibold text-text-muted">Remaining Months</label>
+                <div class="relative">
+                  <input type="number" id="first-term-months" value="280" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">mos</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="equity-needed" class="text-xs font-semibold text-text-muted">Additional Cash/Equity Needed</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="equity-needed" value="75000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">HELOC & Refinance Settings</h2>
+          
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="heloc-rate" class="text-xs font-semibold text-text-muted">HELOC Interest Rate</label>
+                <div class="relative">
+                  <input type="number" id="heloc-rate" value="8.75" step="0.01" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="heloc-term" class="text-xs font-semibold text-text-muted">HELOC Term</label>
+                <select id="heloc-term" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold focus:outline-none">
+                  <option value="15">15 Years</option>
+                  <option value="10">10 Years</option>
+                  <option value="20">20 Years</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="refi-rate" class="text-xs font-semibold text-text-muted">Cash-Out Refi Rate</label>
+                <div class="relative">
+                  <input type="number" id="refi-rate" value="6.75" step="0.01" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="refi-costs" class="text-xs font-semibold text-text-muted">Closing Costs</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                  <input type="number" id="refi-costs" value="6500" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Results -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-border-subtle pb-4">
+            <h2 class="font-display text-base font-semibold text-text-main">Equity Access Comparison</h2>
+            <div id="winner-badge" class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500">HELOC Favored</div>
+          </div>
+
+          <!-- Key Metrics Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">HELOC Blended Rate</span>
+              <span id="blended-rate" class="block text-xl font-bold text-brand-accent">4.42%</span>
+              <span class="block text-4xs text-text-muted">Combined interest weight</span>
+            </div>
+
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Monthly Savings</span>
+              <span id="monthly-diff" class="block text-xl font-bold text-emerald-500">+$231/mo</span>
+              <span class="block text-4xs text-text-muted">Under HELOC option</span>
+            </div>
+
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Refi Balance</span>
+              <span id="refi-new-balance" class="block text-xl font-bold text-text-main">$331,500</span>
+              <span class="block text-4xs text-text-muted">Balance + Closing costs</span>
+            </div>
+          </div>
+
+          <!-- Table Comparison -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-border-subtle">
+                  <th class="py-2 text-text-muted font-semibold">Payment / Cost Breakdown</th>
+                  <th class="py-2 text-text-main font-semibold">HELOC Path (Blended)</th>
+                  <th class="py-2 text-text-main font-semibold">Cash-Out Refi Path</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border-subtle text-text-muted font-tabular">
+                <tr>
+                  <td class="py-2 font-medium text-text-main">First Mortgage Payment</td>
+                  <td id="table-heloc-first-pi" class="py-2">$1,072</td>
+                  <td class="py-2">$0</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">Equity Draw Payment (HELOC)</td>
+                  <td id="table-heloc-draw-pi" class="py-2">$751</td>
+                  <td class="py-2">$0</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-medium text-text-main">New Refinance Payment</td>
+                  <td class="py-2">$0</td>
+                  <td id="table-refi-new-pi" class="py-2">$2,150</td>
+                </tr>
+                <tr class="font-bold text-text-main bg-bg-main">
+                  <td class="py-3 px-2 rounded-l">Total Monthly Outlay</td>
+                  <td id="table-total-heloc" class="py-3">$1,823</td>
+                  <td id="table-total-refi" class="py-3 px-2 rounded-r">$2,150</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="rounded-xl border border-border-subtle bg-bg-main p-4 text-xs text-text-muted leading-relaxed">
+            <p id="blended-verdict">
+              <strong>Verdict:</strong> Keeping your 3.125% rate and adding a HELOC at 8.75% yields a blended rate of 4.42%, saving you significant money over refinancing the entire balance.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational section -->
+    <MortgageGuide
+      title="HELOC vs Cash-Out Refinancing"
+      subtitle="Evaluating home equity borrowing strategies"
+      whatItDoes="This simulator evaluates the math behind keeping your primary mortgage intact and adding a HELOC, versus refinancing your entire mortgage balance to pull cash out."
+      whenToUse="Use this tool when you need to access equity for home renovations, consolidating high-interest debt, or other funding needs, and want to avoid losing a low primary rate."
+      howItWorks="We calculate the combined blended rate of your first mortgage and equity draw, then compare it to the single rate and increased loan size of a cash-out refinance that includes closing costs."
+      mistakes="A common mistake is refinancing a large, low-rate first mortgage to tap a relatively small amount of equity. This moves your entire balance to a higher rate. Another mistake is ignoring HELOC rate volatility: most HELOCs have variable rates, meaning your costs could escalate if market rates rise."
+      faqs={faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateHelocVsCashOut } from '../utils/helocVsCashOut';
+
+  function updateCalculations() {
+    const firstBalance = parseFloat((document.getElementById('first-balance') as HTMLInputElement).value) || 0;
+    const firstRate = parseFloat((document.getElementById('first-rate') as HTMLInputElement).value) || 0;
+    const firstTerm = parseFloat((document.getElementById('first-term-months') as HTMLInputElement).value) || 0;
+    const equityNeeded = parseFloat((document.getElementById('equity-needed') as HTMLInputElement).value) || 0;
+    const helocRate = parseFloat((document.getElementById('heloc-rate') as HTMLInputElement).value) || 0;
+    const helocTermSelect = document.getElementById('heloc-term') as HTMLSelectElement;
+    const helocTermYears = parseFloat(helocTermSelect.value) || 15;
+    const refiRate = parseFloat((document.getElementById('refi-rate') as HTMLInputElement).value) || 0;
+    const refiCosts = parseFloat((document.getElementById('refi-costs') as HTMLInputElement).value) || 0;
+
+    const results = calculateHelocVsCashOut({
+      firstMortgageBalance: firstBalance,
+      firstMortgageRate: firstRate,
+      firstMortgageRemainingMonths: firstTerm,
+      equityNeeded,
+      helocRate,
+      helocTermYears,
+      cashOutRefinanceRate: refiRate,
+      cashOutRefinanceTermYears: 30,
+      cashOutClosingCosts: refiCosts
+    });
+
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+    // Update highlights
+    const blendedRateEl = document.getElementById('blended-rate');
+    if (blendedRateEl) blendedRateEl.textContent = results.helocBlendedRate.toFixed(2) + '%';
+
+    const monthlyDiffEl = document.getElementById('monthly-diff');
+    if (monthlyDiffEl) {
+      if (results.monthlyDifference > 0) {
+        monthlyDiffEl.textContent = '+' + fmt.format(results.monthlyDifference) + '/mo';
+        monthlyDiffEl.className = 'block text-xl font-bold text-emerald-500';
+      } else {
+        monthlyDiffEl.textContent = fmt.format(Math.abs(results.monthlyDifference)) + '/mo';
+        monthlyDiffEl.className = 'block text-xl font-bold text-rose-500';
+      }
+    }
+
+    const refiBalanceEl = document.getElementById('refi-new-balance');
+    if (refiBalanceEl) refiBalanceEl.textContent = fmt.format(results.cashOutNewBalance);
+
+    const winnerBadge = document.getElementById('winner-badge');
+    if (winnerBadge) {
+      if (results.winner === 'heloc') {
+        winnerBadge.textContent = 'HELOC Favored';
+        winnerBadge.className = 'rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500';
+      } else {
+        winnerBadge.textContent = 'Refinance Favored';
+        winnerBadge.className = 'rounded-full bg-rose-500/10 px-3 py-1 text-xs font-bold text-rose-500';
+      }
+    }
+
+    // Update table elements
+    const tableHelocFirstPi = document.getElementById('table-heloc-first-pi');
+    if (tableHelocFirstPi) tableHelocFirstPi.textContent = fmt.format(results.helocFirstMortgageMonthlyPI);
+    const tableHelocDrawPi = document.getElementById('table-heloc-draw-pi');
+    if (tableHelocDrawPi) tableHelocDrawPi.textContent = fmt.format(results.helocMonthlyPI);
+
+    const tableRefiNewPi = document.getElementById('table-refi-new-pi');
+    if (tableRefiNewPi) tableRefiNewPi.textContent = fmt.format(results.cashOutMonthlyPI);
+
+    const tableTotalHeloc = document.getElementById('table-total-heloc');
+    if (tableTotalHeloc) tableTotalHeloc.textContent = fmt.format(results.helocTotalMonthlyPI);
+    const tableTotalRefi = document.getElementById('table-total-refi');
+    if (tableTotalRefi) tableTotalRefi.textContent = fmt.format(results.cashOutMonthlyPI);
+
+    // Update verdict copy
+    const verdictEl = document.getElementById('blended-verdict');
+    if (verdictEl) {
+      if (results.winner === 'heloc') {
+        verdictEl.innerHTML = `<strong>Verdict:</strong> HELOC is mathematically favored. By keeping your <strong>${firstRate.toFixed(3)}%</strong> first mortgage, your combined weighted interest rate is only <strong>${results.helocBlendedRate.toFixed(2)}%</strong>, which is lower than the <strong>${refiRate.toFixed(2)}%</strong> refinance rate.`;
+      } else {
+        verdictEl.innerHTML = `<strong>Verdict:</strong> Cash-out refinancing is favored. Because current mortgage rates are lower or your draw amount is large, refinancing your entire balance at <strong>${refiRate.toFixed(2)}%</strong> yields lower overall payments.`;
+      }
+    }
+  }
+
+  // Bind events
+  const inputs = ['first-balance', 'first-rate', 'first-term-months', 'equity-needed', 'heloc-rate', 'heloc-term', 'refi-rate', 'refi-costs'];
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateCalculations);
+  });
+
+  // Init
+  updateCalculations();
+</script>

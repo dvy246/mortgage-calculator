@@ -1,0 +1,322 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Disclaimer from '../components/Calculator/Disclaimer.astro';
+import MortgageGuide from '../components/Calculator/MortgageGuide.astro';
+
+const faqs = [
+  {
+    question: "Should I pay off my mortgage early or invest?",
+    answer: "Deciding between paying off your mortgage early or investing depends on your loan's interest rate compared to expected stock market returns. If your interest rate is high (e.g. over 6.5%), paying it down offers a guaranteed tax-free return. If your rate is low (e.g. 3%), investing in index funds historically yields higher net wealth over 30 years."
+  },
+  {
+    question: "What is opportunity cost in mortgage pay down?",
+    answer: "Opportunity cost is the potential return you forfeit by using extra cash to pay down your mortgage principal instead of putting that same cash into high-yield investments like stock market index funds."
+  },
+  {
+    question: "Does the mortgage interest deduction affect this decision?",
+    answer: "Yes. If you itemize deductions, your mortgage interest write-offs reduce your effective interest rate. If your tax bracket is 24%, a 6% mortgage rate effectively costs you 4.56% after tax deductions. This makes investing even more favorable."
+  },
+  {
+    question: "Why is mortgage prepayment considered a 'guaranteed return'?",
+    answer: "Paying down $10,000 of principal on a 6.5% mortgage guarantees you will save 6.5% interest on that balance every year. Unlike investing in stocks, where returns fluctuate, debt prepayment yields a risk-free return."
+  },
+  {
+    question: "Is stock market investing riskier than prepayment?",
+    answer: "Yes. Prepayment provides a guaranteed return, while stock market investing exposes you to market volatility. However, over long-term 15-to-30-year horizons, stock index funds have historically returned 8% to 10% annually."
+  },
+  {
+    question: "What is the liquidity difference between paying off debt and investing?",
+    answer: "Investment portfolios are highly liquid: you can sell shares and access cash within days. Mortgage equity is illiquid: you cannot easily withdraw cash unless you sell the house or qualify for a HELOC or refinance."
+  },
+  {
+    question: "Should I have an emergency fund before prepaying my mortgage?",
+    answer: "Yes. You should build a liquid emergency fund covering 3 to 6 months of living expenses before putting any extra money toward your mortgage. Once paid to the lender, principal prepayments cannot be reversed to cover short-term financial emergencies."
+  },
+  {
+    question: "Does prepaying my mortgage affect my credit score?",
+    answer: "No, making extra principal payments does not directly impact your credit score. However, reducing your overall debt balance over time is a positive indicator on your long-term debt-to-income profile."
+  },
+  {
+    question: "Can I deduct investment capital gains taxes?",
+    answer: "No, long-term capital gains taxes (typically 15% or 20%) apply when you sell stock market assets. This tax drag slightly reduces your net investment returns, which this calculator factors into its side-by-side models."
+  },
+  {
+    question: "Is there a psychological benefit to a paid-off home?",
+    answer: "Yes. For many homeowners, the peace of mind of having no monthly housing obligation outweighs the potential mathematical advantage of stock market investing. This calculator shows the math, but you must choose what fits your risk tolerance."
+  }
+];
+
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Pay Off Mortgage vs. Invest Opportunity Cost Tool",
+      "url": "https://mortgagesintel.com/invest-vs-payoff-calculator",
+      "description": "Evaluate the financial opportunity cost of making extra mortgage payments vs investing that extra capital in stock market index funds.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
+---
+
+<Layout
+  title="Pay Off Mortgage vs. Invest Opportunity Cost Tool"
+  description="Compare the financial trade-off of paying down your mortgage early vs. investing in the stock market. Model inflation, tax brackets, and expected S&P 500 returns."
+  canonicalUrl="/invest-vs-payoff-calculator"
+  schemaMarkup={JSON.stringify(schema)}
+>
+  <Header activeSlug="invest-vs-payoff-calculator" />
+
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
+    <div class="space-y-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center rounded-full border border-brand-accent/20 bg-brand-accent/10 px-2.5 py-0.5 text-3xs font-medium text-brand-accent">Flagship Utility</span>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-text-main sm:text-3xl">Pay Off Mortgage vs. Invest Opportunity Cost Tool</h1>
+      <p class="text-xs text-text-muted max-w-3xl">
+        Evaluate the 30-year opportunity cost of using surplus capital for mortgage principal curtailment vs. stock market investments. Account for inflation and tax brackets.
+      </p>
+      <p class="text-3xs text-text-muted">Reviewed by <strong>Marcus Vance</strong>, Senior Credit &amp; Loan Policy Advisor &mdash; Last updated <time datetime="2026-07-19">July 2026</time></p>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Left Inputs -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">Mortgage Parameters</h2>
+          
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label for="mortgage-balance" class="text-xs font-semibold text-text-muted">Outstanding Mortgage Balance</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="mortgage-balance" value="300000" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="interest-rate" class="text-xs font-semibold text-text-muted">Mortgage Rate</label>
+                <div class="relative">
+                  <input type="number" id="interest-rate" value="6.5" step="0.1" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="term-years" class="text-xs font-semibold text-text-muted">Remaining Term</label>
+                <div class="relative">
+                  <input type="number" id="term-years" value="30" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">years</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-4 shadow-sm">
+          <h2 class="font-display text-sm font-semibold text-text-main">Strategy Settings</h2>
+          
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <label for="extra-monthly" class="text-xs font-semibold text-text-muted">Extra Monthly Capital Available</label>
+              <div class="relative">
+                <span class="absolute left-3 top-2.5 text-xs text-text-muted">$</span>
+                <input type="number" id="extra-monthly" value="500" class="h-9 w-full rounded border border-border-input bg-bg-input pl-6 pr-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="investment-return" class="text-xs font-semibold text-text-muted">Expected Annual Return</label>
+                <div class="relative">
+                  <input type="number" id="investment-return" value="8.0" step="0.1" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+
+              <div class="space-y-1.5">
+                <label for="tax-bracket" class="text-xs font-semibold text-text-muted">Marginal Tax Bracket</label>
+                <div class="relative">
+                  <input type="number" id="tax-bracket" value="22" class="h-9 w-full rounded border border-border-input bg-bg-input px-3 text-xs text-text-main font-bold font-tabular focus:outline-none" />
+                  <span class="absolute right-3 top-2.5 text-xs text-text-muted">%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Results -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="rounded-xl border border-border-subtle bg-bg-card p-6 space-y-6 shadow-sm">
+          <div class="flex items-center justify-between border-b border-border-subtle pb-4">
+            <h2 class="font-display text-base font-semibold text-text-main">Opportunity Cost Evaluation</h2>
+            <div id="strategy-badge" class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500">Investing Favored</div>
+          </div>
+
+          <!-- Highlight Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Mortgage Payoff Savings</span>
+              <span id="interest-saved" class="block text-xl font-bold text-text-main">$64,320</span>
+              <span class="block text-4xs text-text-muted">Interest saved by prepaying</span>
+            </div>
+
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Investment Net Value</span>
+              <span id="investment-value" class="block text-xl font-bold text-brand-accent">$448,500</span>
+              <span class="block text-4xs text-text-muted">Estimated portfolio value</span>
+            </div>
+
+            <div class="rounded-lg bg-bg-main p-4 border border-border-subtle space-y-1">
+              <span class="text-3xs font-semibold text-text-muted uppercase">Net Opportunity Cost</span>
+              <span id="net-cost" class="block text-xl font-bold text-emerald-500">+$384,180</span>
+              <span class="block text-4xs text-text-muted">Difference in total wealth</span>
+            </div>
+          </div>
+
+          <!-- Progress timelines -->
+          <div class="space-y-4">
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs font-semibold text-text-muted">
+                <span>Timeline Payoff Acceleration</span>
+                <span id="payoff-timeline-label">Payoff in 18 Years</span>
+              </div>
+              <div class="h-3 w-full bg-bg-main rounded-full overflow-hidden border border-border-subtle">
+                <div id="timeline-fill" class="bg-emerald-500 h-full" style="width: 60%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-border-subtle bg-bg-main p-4 text-xs text-text-muted leading-relaxed">
+            <p id="opportunity-verdict">
+              <strong>Verdict:</strong> Investing the extra capital in index funds is mathematically favored here. Over 30 years, compound interest in stock investments beats early mortgage prepayment by <strong>$384,180</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Educational section -->
+    <MortgageGuide
+      title="Mortgage Payoff vs Stock Market Investing"
+      subtitle="Deciding between principal curtailment and index fund allocations"
+      whatItDoes="This tool calculates the long-term difference in your net worth if you choose to pay down your mortgage balance early vs. investing those same extra funds in the market."
+      whenToUse="Use this utility when you have disposable cash flow and are trying to decide whether to accelerate homeownership debt paydown or grow long-term liquid portfolios."
+      howItWorks="We calculate your accelerated mortgage amortization schedule and pro-rate your interest savings. Simultaneously, we model the compound growth of your monthly contributions at your chosen investment return rate."
+      mistakes="A common mistake is forgetting that mortgage prepayment returns are guaranteed, whereas stock market returns are variable. Another error is neglecting liquidity: if you prepay your mortgage, your wealth is locked in home equity. If you invest, your capital remains highly liquid."
+      faqs={faqs}
+    />
+
+    <Disclaimer />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { calculateInvestVsPayoff } from '../utils/investVsPayoff';
+
+  function updateCalculations() {
+    const mortgageBalance = parseFloat((document.getElementById('mortgage-balance') as HTMLInputElement).value) || 0;
+    const interestRate = parseFloat((document.getElementById('interest-rate') as HTMLInputElement).value) || 0;
+    const termYears = parseFloat((document.getElementById('term-years') as HTMLInputElement).value) || 0;
+    const extraMonthly = parseFloat((document.getElementById('extra-monthly') as HTMLInputElement).value) || 0;
+    const investmentReturn = parseFloat((document.getElementById('investment-return') as HTMLInputElement).value) || 0;
+    const taxBracket = parseFloat((document.getElementById('tax-bracket') as HTMLInputElement).value) || 0;
+
+    const results = calculateInvestVsPayoff({
+      mortgageBalance,
+      interestRate,
+      remainingTermYears: termYears,
+      extraMonthlyPayment: extraMonthly,
+      investmentReturnRate: investmentReturn,
+      taxBracket,
+      itemizesDeductions: false
+    });
+
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+    // Update highlights
+    const interestSavedEl = document.getElementById('interest-saved');
+    if (interestSavedEl) interestSavedEl.textContent = fmt.format(results.interestSaved);
+
+    const investmentValueEl = document.getElementById('investment-value');
+    if (investmentValueEl) investmentValueEl.textContent = fmt.format(results.investPortfolioTotal);
+
+    const netCostEl = document.getElementById('net-cost');
+    if (netCostEl) {
+      if (results.netOpportunityCost > 0) {
+        netCostEl.textContent = '+' + fmt.format(results.netOpportunityCost);
+        netCostEl.className = 'block text-xl font-bold text-emerald-500';
+      } else {
+        netCostEl.textContent = fmt.format(Math.abs(results.netOpportunityCost));
+        netCostEl.className = 'block text-xl font-bold text-rose-500';
+      }
+    }
+
+    const badgeEl = document.getElementById('strategy-badge');
+    if (badgeEl) {
+      if (results.winner === 'invest') {
+        badgeEl.textContent = 'Investing Favored';
+        badgeEl.className = 'rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500';
+      } else {
+        badgeEl.textContent = 'Payoff Favored';
+        badgeEl.className = 'rounded-full bg-rose-500/10 px-3 py-1 text-xs font-bold text-rose-500';
+      }
+    }
+
+    // Timeline Acceleration Label & Bar
+    const timelineLabel = document.getElementById('payoff-timeline-label');
+    const timelineFill = document.getElementById('timeline-fill');
+    if (timelineLabel && timelineFill) {
+      const years = (results.acceleratedPayoffMonths / 12).toFixed(1);
+      timelineLabel.textContent = `Payoff in ${years} Years (Saved ${(results.monthsSaved / 12).toFixed(1)} Years)`;
+      const pct = Math.max(10, Math.min(100, (results.acceleratedPayoffMonths / (termYears * 12)) * 100));
+      timelineFill.style.width = pct + '%';
+    }
+
+    // Verdict update
+    const verdictEl = document.getElementById('opportunity-verdict');
+    if (verdictEl) {
+      if (results.winner === 'invest') {
+        verdictEl.innerHTML = `<strong>Verdict:</strong> Stock market investing is mathematically favored. By investing the extra capital, you accumulate a portfolio of <strong>${fmt.format(results.investPortfolioTotal)}</strong>, beating mortgage prepayments by <strong>${fmt.format(results.netOpportunityCost)}</strong>.`;
+      } else {
+        verdictEl.innerHTML = `<strong>Verdict:</strong> Mortgage payoff is favored here. Your mortgage rate of <strong>${interestRate.toFixed(2)}%</strong> guarantees a higher, tax-free return than expected market growth.`;
+      }
+    }
+  }
+
+  // Bind events
+  const inputs = ['mortgage-balance', 'interest-rate', 'term-years', 'extra-monthly', 'investment-return', 'tax-bracket'];
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateCalculations);
+  });
+
+  // Init
+  updateCalculations();
+</script>
