@@ -18,12 +18,43 @@ const faqs = [
     answer: "Yes, if one partner pays for a major capital improvement (like a $20,000 roof replacement or kitchen remodel), it increases the home's value. A co-ownership agreement should specify whether that partner receives a dollar-for-dollar credit to their equity share, or if the cost is split. This planner allows you to configure how capital improvements are credited."
   }
 ];
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Co-Buying Mortgage Equity Splitter & Legal Term Planner",
+      "url": "https://mortgagesintel.com/co-buying-equity-splitter",
+      "description": "An interactive calculator to compute dynamic equity splits, amortization, and ownership shares for co-buyers with unequal financial contributions.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
 ---
 
 <Layout 
   title="Co-Buying Mortgage Equity Splitter & Legal Term Planner"
   description="Calculate dynamic home equity ownership percentages for unmarried partners or friends buying a house with unequal contributions, and plan legal Tenants in Common exit rules."
   canonicalUrl="/co-buying-equity-splitter"
+  schemaMarkup={JSON.stringify(schema)}
 >
   <Header activeSlug="equity-splitter" />
 

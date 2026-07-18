@@ -18,12 +18,43 @@ const faqs = [
     answer: "Section C of your Loan Estimate lists 'Services You Can Shop For'. You do not have to use the title insurance company your lender lists. Shopping around can save you hundreds of dollars. You can get quotes from independent title companies and submit your choice to the lender."
   }
 ];
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Lender Loan Estimate Auditor & Fee Negotiator",
+      "url": "https://mortgagesintel.com/lender-fee-auditor",
+      "description": "An interactive tool to audit mortgage Loan Estimate page 2 fees, uncover hidden junk fees, compare costs against regional benchmarks, and draft custom email negotiation scripts.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
 ---
 
 <Layout 
   title="Lender Loan Estimate Auditor & Fee Negotiator"
   description="Audit your mortgage Loan Estimate (LE) Page 2 fees. Uncover hidden lender junk fees, compare closing costs to regional benchmarks, and generate a customized fee negotiation script."
   canonicalUrl="/lender-fee-auditor"
+  schemaMarkup={JSON.stringify(schema)}
 >
   <Header activeSlug="lender-auditor" />
 

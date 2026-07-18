@@ -18,12 +18,43 @@ const faqs = [
     answer: "Home warranties typically cover mechanical breakdowns of appliances and systems (like HVAC electrical failures or leaking water heaters), but they do not cover structural elements like roofs, siding, or cosmetic renovations. A home warranty can act as a secondary buffer to protect your sinking fund from premature failures, but it is not a replacement for a CapEx plan."
   }
 ];
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "30-Year Homeownership CapEx & Sinking Fund Planner",
+      "url": "https://mortgagesintel.com/homeownership-capex-planner",
+      "description": "An interactive planning tool to model a 30-year capital expenditure (CapEx) replacement timeline for physical home components and calculate monthly sinking fund targets.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    }
+  ]
+};
 ---
 
 <Layout 
   title="30-Year Homeownership CapEx & Sinking Fund Planner"
   description="Plan for the long-term maintenance and replacement costs of your home. Model a custom 30-year capital expenditure (CapEx) replacement timeline and calculate your monthly sinking fund reserves."
   canonicalUrl="/homeownership-capex-planner"
+  schemaMarkup={JSON.stringify(schema)}
 >
   <Header activeSlug="capex-planner" />
 

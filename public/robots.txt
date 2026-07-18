@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap Location
-Sitemap: https://mortgagesintel.com/sitemap.xml
+Sitemap: https://mortgagesintel.com/sitemap-index.xml
