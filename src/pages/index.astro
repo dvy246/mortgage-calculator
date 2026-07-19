@@ -5,12 +5,13 @@ import Footer from '../components/Footer.astro';
 import ScenarioComparer from '../components/Calculator/ScenarioComparer.astro';
 import MiniMortgageForm from '../components/Calculator/MiniMortgageForm.astro';
 
-const calculators = [
+const buyingTools = [
   {
     name: "Homebuyer Deal Room & Analyzer",
     href: "/deal-room",
     description: "Our signature moat tool. Input your income and reserves, then add actual homes you're touring to compare DTI limits, payments, and closing cost cash side-by-side.",
-    icon: `<svg class="h-6 w-6 text-brand-accent animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>`
+    icon: `<svg class="h-6 w-6 text-brand-accent animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>`,
+    isFeatured: true
   },
   {
     name: "House Affordability Calculator",
@@ -18,6 +19,27 @@ const calculators = [
     description: "Determine your maximum home purchase price based on gross income, recurring monthly debts, and standard Debt-to-Income (DTI) rule brackets.",
     icon: `<svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>`
   },
+  {
+    name: "PMI Calculator",
+    href: "/mortgage-calculator-with-pmi",
+    description: "Estimate monthly Private Mortgage Insurance costs for down payments below 20%. Calculate exactly when PMI will automatically terminate.",
+    icon: `<svg class="h-6 w-6 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>`
+  },
+  {
+    name: "Assumable Mortgage Savings",
+    href: "/assumable-mortgage-calculator",
+    description: "Calculate the exact equity cash gap, blended interest rates, and payback timelines when assuming FHA, VA, or USDA mortgages.",
+    icon: `<svg class="h-6 w-6 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>`
+  },
+  {
+    name: "Lender Loan Estimate Auditor",
+    href: "/lender-fee-auditor",
+    description: "Audit closing fees from your lender Loan Estimate. Identify inflated junk charges, compare settlement costs, and generate negotiation drafts.",
+    icon: `<svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>`
+  }
+];
+
+const payoffTools = [
   {
     name: "Mortgage Payoff Calculator",
     href: "/mortgage-payoff-calculator",
@@ -31,40 +53,10 @@ const calculators = [
     icon: `<svg class="h-6 w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>`
   },
   {
-    name: "Refinance Calculator",
-    href: "/refinance-calculator",
-    description: "Compare your current mortgage terms against today's rates. Factor in closing costs to identify your break-even month and lifetime net savings.",
-    icon: `<svg class="h-6 w-6 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>`
-  },
-  {
-    name: "PMI Calculator",
-    href: "/mortgage-calculator-with-pmi",
-    description: "Estimate monthly Private Mortgage Insurance costs for down payments below 20%. Calculate exactly when PMI will automatically terminate.",
-    icon: `<svg class="h-6 w-6 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>`
-  },
-  {
-    name: "Lender Loan Estimate Auditor",
-    href: "/lender-fee-auditor",
-    description: "Audit closing fees from your lender Loan Estimate. Identify inflated junk charges, compare settlement costs, and generate negotiation drafts.",
-    icon: `<svg class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>`
-  },
-  {
-    name: "30-Year Homeownership CapEx Planner",
-    href: "/homeownership-capex-planner",
-    description: "Model future replacement cycles for your roof, HVAC, and major systems. Calculate monthly sinking fund targets to prevent debt.",
-    icon: `<svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m0 4h3m-3 0H5m3 10v-4m0 4h3m-3 0H5m14 0V3m0 14h-3m3 0h3m-3-10V3m0 4h-3m3 0h3" /></svg>`
-  },
-  {
-    name: "Co-Buying Mortgage Equity Splitter",
-    href: "/co-buying-equity-splitter",
-    description: "Calculate dynamic equity shifts over time for unmarried co-buyers with unequal contributions. Configure co-ownership exit and buyout terms.",
-    icon: `<svg class="h-6 w-6 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`
-  },
-  {
-    name: "Assumable Mortgage Savings",
-    href: "/assumable-mortgage-calculator",
-    description: "Calculate the exact equity cash gap, blended interest rates, and payback timelines when assuming FHA, VA, or USDA mortgages.",
-    icon: `<svg class="h-6 w-6 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>`
+    name: "Mortgage Payoff vs Invest",
+    href: "/invest-vs-payoff-calculator",
+    description: "Compare stock index fund compounding interest vs early debt paydown. Evaluate risk-free return opportunity costs.",
+    icon: `<svg class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m-9 1v-3a2 2 0 012-2h2a2 2 0 012 2v3m0-6V5a2 2 0 012-2h2a2 2 0 012 2v3m-6 0a2 2 0 002-2h2a2 2 0 002-2" /></svg>`
   },
   {
     name: "Mortgage Recast vs Refi",
@@ -73,22 +65,37 @@ const calculators = [
     icon: `<svg class="h-6 w-6 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
   },
   {
+    name: "30-Year Homeownership CapEx Planner",
+    href: "/homeownership-capex-planner",
+    description: "Model future replacement cycles for your roof, HVAC, and major systems. Calculate monthly sinking fund targets to prevent debt.",
+    icon: `<svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m0 4h3m-3 0H5m3 10v-4m0 4h3m-3 0H5m14 0V3m0 14h-3m3 0h3m-3-10V3m0 4h-3m3 0h3" /></svg>`
+  }
+];
+
+const advancedTools = [
+  {
+    name: "Refinance Calculator",
+    href: "/refinance-calculator",
+    description: "Compare your current mortgage terms against today's rates. Factor in closing costs to identify your break-even month and lifetime net savings.",
+    icon: `<svg class="h-6 w-6 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>`
+  },
+  {
     name: "HELOC vs Cash-Out Simulator",
     href: "/heloc-vs-cash-out-refinance-calculator",
     description: "Calculate the weighted blended rate of keeping your primary low-rate mortgage + adding a HELOC, vs a single refinance.",
     icon: `<svg class="h-6 w-6 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>`
   },
   {
+    name: "Co-Buying Mortgage Equity Splitter",
+    href: "/co-buying-equity-splitter",
+    description: "Calculate dynamic equity shifts over time for unmarried co-buyers with unequal contributions. Configure co-ownership exit and buyout terms.",
+    icon: `<svg class="h-6 w-6 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`
+  },
+  {
     name: "Seller Financing & Balloon",
     href: "/seller-financing-calculator",
     description: "Amortize owner-financed contracts, determine remaining principal balances at maturity, and track balloon payoff dates.",
     icon: `<svg class="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>`
-  },
-  {
-    name: "Mortgage Payoff vs Invest",
-    href: "/invest-vs-payoff-calculator",
-    description: "Compare stock index fund compounding interest vs early debt paydown. Evaluate risk-free return opportunity costs.",
-    icon: `<svg class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m-9 1v-3a2 2 0 012-2h2a2 2 0 012 2v3m0-6V5a2 2 0 012-2h2a2 2 0 012 2v3m-6 0a2 2 0 002-2h2a2 2 0 002-2" /></svg>`
   }
 ];
 
@@ -318,49 +325,231 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
 <Layout title="Mortgage Intelligence Hub - Planning & Analytics" canonicalUrl="/" schemaMarkup={schemaMarkup}>
   <Header activeSlug="home" />
 
-  <main class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 space-y-16 flex-grow">
+  <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-16 flex-grow">
     <!-- Hero Section -->
-    <div class="text-center max-w-3xl mx-auto space-y-4">
-      <div class="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-bg-card px-3 py-1.5 text-xs text-text-muted font-semibold">
-        <span class="h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
-        <span>Advanced Mortgage Planning &amp; Scenario Analytics</span>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center border-b border-border-subtle pb-12">
+      <div class="lg:col-span-7 space-y-6 text-left">
+        <div class="inline-flex items-center gap-2 rounded-full border border-border-subtle bg-bg-card px-3 py-1.5 text-xs text-text-muted font-semibold">
+          <span class="h-2 w-2 rounded-full bg-brand-accent animate-pulse"></span>
+          <span>Advanced Mortgage Planning &amp; Scenario Analytics</span>
+        </div>
+        <h1 class="font-display text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl lg:text-6.5xl leading-[1.1]">
+          Calculate the <span class="text-brand-accent">true cost</span> of buying a home.
+        </h1>
+        <p class="text-md sm:text-lg text-text-muted leading-relaxed max-w-2xl">
+          Model monthly payments, calculate PMI drop milestones, compare refinance break-even dates, and map accelerated payoff timelines on a zero-bloat, privacy-first platform.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-2">
+          <a
+            href="/deal-room"
+            class="inline-flex h-11 items-center justify-center rounded-lg bg-brand-accent text-white px-6 font-display font-semibold transition-all hover:bg-brand-accent-hover hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-brand-accent"
+          >
+            Launch Deal Room Analyzer
+          </a>
+          <a
+            href="#guides-section"
+            class="inline-flex h-11 items-center justify-center rounded-lg border border-border-subtle bg-bg-card text-text-main px-6 font-display font-semibold transition-all hover:bg-bg-card-hover focus:outline-none focus:ring-2 focus:ring-brand-accent"
+          >
+            Read Education Guides
+          </a>
+        </div>
       </div>
-      <h1 class="font-display text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl lg:text-6xl">
-        Calculate the <span class="text-brand-accent">true cost</span> of buying a home.
-      </h1>
-      <p class="text-lg text-text-muted leading-relaxed">
-        Model monthly payments, calculate PMI drop milestones, compare refinance break-even dates, and map accelerated payoff timelines on a zero-bloat, privacy-first platform.
-      </p>
+      
+      <!-- Interactive Quick Mortgage Widget -->
+      <div class="lg:col-span-5 rounded-xl border border-border-subtle bg-bg-card p-6 shadow-xs space-y-6 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-brand-accent animate-pulse"></div>
+        <div class="space-y-1">
+          <h2 class="font-display text-sm font-semibold text-text-main">Quick Cost Estimator</h2>
+          <p class="text-3xs text-text-muted">Estimate monthly P&amp;I payments instantly at the fold</p>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <div class="flex justify-between text-2xs font-semibold text-text-muted">
+              <label for="hero-price-input">Home Purchase Price</label>
+              <span id="hero-price-val" class="font-tabular text-text-main font-bold">$400,000</span>
+            </div>
+            <input 
+              id="hero-price-input" 
+              type="range" 
+              min="100000" 
+              max="2000000" 
+              step="10000" 
+              value="400000" 
+              class="w-full h-1.5 cursor-pointer"
+            />
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <div class="flex justify-between text-2xs font-semibold text-text-muted">
+                <label for="hero-down-input">Down Payment (%)</label>
+                <span id="hero-down-val" class="font-tabular text-text-main font-bold">20%</span>
+              </div>
+              <input 
+                id="hero-down-input" 
+                type="number" 
+                min="0" 
+                max="99" 
+                value="20" 
+                class="w-full h-9 rounded border border-border-input bg-bg-input px-3 text-xs text-text-main focus:border-border-focus focus:outline-none"
+              />
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between text-2xs font-semibold text-text-muted">
+                <label for="hero-rate-input">Interest Rate (%)</label>
+                <span id="hero-rate-val" class="font-tabular text-text-main font-bold">6.5%</span>
+              </div>
+              <input 
+                id="hero-rate-input" 
+                type="number" 
+                min="0.1" 
+                max="25" 
+                step="0.1" 
+                value="6.5" 
+                class="w-full h-9 rounded border border-border-input bg-bg-input px-3 text-xs text-text-main focus:border-border-focus focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div class="rounded-lg bg-bg-main border border-border-subtle p-4 flex items-center justify-between">
+          <div class="space-y-0.5">
+            <span class="text-3xs text-text-muted font-bold uppercase tracking-wider">Estimated Monthly P&amp;I</span>
+            <span id="hero-payment" class="block font-display text-base sm:text-lg font-bold text-brand-accent font-tabular">$2,022.62</span>
+          </div>
+          <a
+            href="/mortgage-calculator-with-pmi"
+            id="hero-calc-cta"
+            class="inline-flex h-8 items-center justify-center rounded-md bg-brand-primary text-xs font-semibold text-bg-main px-4 hover:opacity-90 active:scale-[0.98] transition-all cursor-pointer border border-border-subtle"
+          >
+            Full Details
+          </a>
+        </div>
+      </div>
     </div>
 
-    <!-- Calculators Grid -->
-    <div class="space-y-6">
-      <h2 class="font-display text-xl font-bold text-text-main tracking-tight border-b border-border-subtle pb-2">Financial Decision Engines</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {calculators.map(calc => (
-          <a 
-            href={calc.href} 
-            class="group rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col justify-between hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
-          >
-            <div class="space-y-3">
-              <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
-                <Fragment set:html={calc.icon} />
+    <!-- Tabbed Calculators Hub -->
+    <div class="space-y-8">
+      <div class="space-y-2">
+        <h2 class="font-display text-xl font-bold text-text-main tracking-tight">Financial Decision Engines</h2>
+        <p class="text-xs sm:text-sm text-text-muted max-w-2xl">Grouped by purchase status and advanced strategy to reduce choice friction.</p>
+      </div>
+
+      <!-- Tab Buttons -->
+      <div class="flex border-b border-border-subtle overflow-x-auto no-scrollbar scroll-smooth gap-4 text-xs sm:text-sm">
+        <button
+          id="tab-btn-buying"
+          class="pb-3 font-display font-semibold border-b-2 border-brand-accent text-brand-accent transition-colors duration-150 cursor-pointer whitespace-nowrap"
+        >
+          1. Home Purchase &amp; Readiness
+        </button>
+        <button
+          id="tab-btn-payoff"
+          class="pb-3 font-display font-semibold border-b-2 border-transparent text-text-muted hover:text-text-main transition-colors duration-150 cursor-pointer whitespace-nowrap"
+        >
+          2. Accelerated Payoffs &amp; Sinking Funds
+        </button>
+        <button
+          id="tab-btn-advanced"
+          class="pb-3 font-display font-semibold border-b-2 border-transparent text-text-muted hover:text-text-main transition-colors duration-150 cursor-pointer whitespace-nowrap"
+        >
+          3. Refinancing &amp; Co-Ownership Equity
+        </button>
+      </div>
+
+      <!-- Tab Panels -->
+      <div class="space-y-6">
+        <!-- Panel 1: Buying -->
+        <div id="tab-panel-buying" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {buyingTools.map(calc => (
+            <a 
+              href={calc.href} 
+              class={`group rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col justify-between hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent ${calc.isFeatured ? 'md:col-span-2 border-brand-accent/30 shadow-xs' : ''}`}
+            >
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
+                    <Fragment set:html={calc.icon} />
+                  </div>
+                  {calc.isFeatured && (
+                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-accent/10 px-2 py-0.5 text-4xs font-bold text-brand-accent border border-brand-accent/20 animate-pulse">
+                      Flagship Moat Tool
+                    </span>
+                  )}
+                </div>
+                <h3 class="font-display text-base font-semibold text-text-main group-hover:text-brand-accent transition-colors">
+                  {calc.name}
+                </h3>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  {calc.description}
+                </p>
               </div>
-              <h3 class="font-display text-base font-semibold text-text-main group-hover:text-brand-accent transition-colors">
-                {calc.name}
-              </h3>
-              <p class="text-xs text-text-muted leading-relaxed">
-                {calc.description}
-              </p>
-            </div>
-            <div class="mt-6 flex items-center gap-1.5 text-xs font-semibold text-brand-accent group-hover:text-brand-accent-hover">
-              <span>Launch Engine</span>
-              <svg class="h-3.5 w-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-          </a>
-        ))}
+              <div class="mt-6 flex items-center gap-1.5 text-xs font-semibold text-brand-accent group-hover:text-brand-accent-hover">
+                <span>Launch Engine</span>
+                <svg class="h-3.5 w-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <!-- Panel 2: Payoff -->
+        <div id="tab-panel-payoff" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {payoffTools.map(calc => (
+            <a 
+              href={calc.href} 
+              class="group rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col justify-between hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            >
+              <div class="space-y-3">
+                <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
+                  <Fragment set:html={calc.icon} />
+                </div>
+                <h3 class="font-display text-base font-semibold text-text-main group-hover:text-brand-accent transition-colors">
+                  {calc.name}
+                </h3>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  {calc.description}
+                </p>
+              </div>
+              <div class="mt-6 flex items-center gap-1.5 text-xs font-semibold text-brand-accent group-hover:text-brand-accent-hover">
+                <span>Launch Engine</span>
+                <svg class="h-3.5 w-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <!-- Panel 3: Advanced -->
+        <div id="tab-panel-advanced" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {advancedTools.map(calc => (
+            <a 
+              href={calc.href} 
+              class="group rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col justify-between hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+            >
+              <div class="space-y-3">
+                <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
+                  <Fragment set:html={calc.icon} />
+                </div>
+                <h3 class="font-display text-base font-semibold text-text-main group-hover:text-brand-accent transition-colors">
+                  {calc.name}
+                </h3>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  {calc.description}
+                </p>
+              </div>
+              <div class="mt-6 flex items-center gap-1.5 text-xs font-semibold text-brand-accent group-hover:text-brand-accent-hover">
+                <span>Launch Engine</span>
+                <svg class="h-3.5 w-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
 
@@ -592,7 +781,104 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
   </main>
 
   <script>
-    // FAQ search script
+    // --- Tab Switching Logic ---
+    const tabBtnBuying = document.getElementById('tab-btn-buying');
+    const tabBtnPayoff = document.getElementById('tab-btn-payoff');
+    const tabBtnAdvanced = document.getElementById('tab-btn-advanced');
+
+    const tabPanelBuying = document.getElementById('tab-panel-buying');
+    const tabPanelPayoff = document.getElementById('tab-panel-payoff');
+    const tabPanelAdvanced = document.getElementById('tab-panel-advanced');
+
+    function setActiveTab(activeBtn: HTMLButtonElement, activePanel: HTMLElement) {
+      const allBtns = [tabBtnBuying, tabBtnPayoff, tabBtnAdvanced] as HTMLButtonElement[];
+      const allPanels = [tabPanelBuying, tabPanelPayoff, tabPanelAdvanced] as HTMLElement[];
+
+      allBtns.forEach(btn => {
+        if (btn) {
+          btn.classList.remove('border-brand-accent', 'text-brand-accent');
+          btn.classList.add('border-transparent', 'text-text-muted');
+        }
+      });
+      activeBtn.classList.remove('border-transparent', 'text-text-muted');
+      activeBtn.classList.add('border-brand-accent', 'text-brand-accent');
+
+      allPanels.forEach(panel => {
+        if (panel) panel.classList.add('hidden');
+      });
+      activePanel.classList.remove('hidden');
+    }
+
+    if (tabBtnBuying && tabPanelBuying) {
+      tabBtnBuying.addEventListener('click', () => setActiveTab(tabBtnBuying as HTMLButtonElement, tabPanelBuying));
+    }
+    if (tabBtnPayoff && tabPanelPayoff) {
+      tabBtnPayoff.addEventListener('click', () => setActiveTab(tabBtnPayoff as HTMLButtonElement, tabPanelPayoff));
+    }
+    if (tabBtnAdvanced && tabPanelAdvanced) {
+      tabBtnAdvanced.addEventListener('click', () => setActiveTab(tabBtnAdvanced as HTMLButtonElement, tabPanelAdvanced));
+    }
+
+    // --- Quick Mortgage Cost Estimator ---
+    const heroPriceInput = document.getElementById('hero-price-input') as HTMLInputElement;
+    const heroPriceVal = document.getElementById('hero-price-val');
+    const heroDownInput = document.getElementById('hero-down-input') as HTMLInputElement;
+    const heroRateInput = document.getElementById('hero-rate-input') as HTMLInputElement;
+    const heroPayment = document.getElementById('hero-payment');
+    const heroCalcCta = document.getElementById('hero-calc-cta') as HTMLAnchorElement;
+
+    function formatUSD(val: number) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+    }
+
+    function calculateQuickEstimator() {
+      if (!heroPriceInput || !heroDownInput || !heroRateInput || !heroPayment) return;
+
+      const price = parseFloat(heroPriceInput.value) || 0;
+      const downPct = parseFloat(heroDownInput.value) || 0;
+      const rate = parseFloat(heroRateInput.value) || 0;
+
+      if (heroPriceVal) {
+        heroPriceVal.textContent = formatUSD(price);
+      }
+
+      const downAmount = price * (downPct / 100);
+      const loanAmount = Math.max(0, price - downAmount);
+      const monthlyRate = (rate / 12) / 100;
+      const totalMonths = 360; // 30-year fixed baseline
+
+      let monthlyPI = 0;
+      if (monthlyRate === 0) {
+        monthlyPI = loanAmount / totalMonths;
+      } else {
+        monthlyPI = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, totalMonths)) / (Math.pow(1 + monthlyRate, totalMonths) - 1);
+      }
+
+      if (isNaN(monthlyPI) || !isFinite(monthlyPI)) {
+        monthlyPI = 0;
+      }
+
+      heroPayment.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(monthlyPI);
+
+      if (heroCalcCta) {
+        heroCalcCta.href = `/mortgage-calculator-with-pmi?homePrice=${price}&downPercent=${downPct}&interestRate=${rate}`;
+      }
+    }
+
+    if (heroPriceInput) {
+      heroPriceInput.addEventListener('input', calculateQuickEstimator);
+    }
+    if (heroDownInput) {
+      heroDownInput.addEventListener('input', calculateQuickEstimator);
+    }
+    if (heroRateInput) {
+      heroRateInput.addEventListener('input', calculateQuickEstimator);
+    }
+
+    // Run initial quick estimation
+    calculateQuickEstimator();
+
+    // --- FAQ Search Script ---
     const searchInput = document.getElementById('faq-search') as HTMLInputElement;
     const faqItems = document.querySelectorAll('.faq-item');
     const emptyState = document.getElementById('faq-empty-state');
@@ -625,7 +911,7 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
       });
     }
 
-    // Guides search and category filter script
+    // --- Guides Search and Category Filter Script ---
     const guideSearch = document.getElementById('guide-search') as HTMLInputElement;
     const categoryFilter = document.getElementById('guide-category-filter') as HTMLSelectElement;
     const guideCards = document.querySelectorAll('.guide-card');
@@ -662,8 +948,8 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
       }
     }
 
-    guideSearch?.addEventListener('input', filterGuides);
-    categoryFilter?.addEventListener('change', filterGuides);
+    if (guideSearch) guideSearch.addEventListener('input', filterGuides);
+    if (categoryFilter) categoryFilter.addEventListener('change', filterGuides);
   </script>
 
   <Footer />
