@@ -164,11 +164,31 @@ const searchIndexJson = JSON.stringify(searchIndex);
       <!-- Theme Switcher -->
       <button
         id="theme-toggle"
-        class="p-1.5 rounded-md border border-border-subtle bg-bg-card hover:bg-bg-card-hover text-text-muted hover:text-text-main focus-visible:ring-2 focus-visible:ring-brand-accent focus:outline-none transition-colors cursor-pointer"
+        class="w-12 h-6.5 rounded-full bg-bg-card hover:bg-bg-card-hover border border-border-subtle p-0.5 transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent flex items-center relative"
         aria-label="Toggle theme color"
       >
-        <svg id="theme-icon-sun" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>
-        <svg id="theme-icon-moon" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+        <!-- Background Indicators -->
+        <span class="absolute inset-0 flex justify-between px-1.5 items-center pointer-events-none text-text-muted opacity-30">
+          <!-- Sun (left) -->
+          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" /></svg>
+          <!-- Moon (right) -->
+          <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+        </span>
+        
+        <!-- Sliding knob -->
+        <span
+          id="theme-knob"
+          class="h-5 w-5 rounded-full bg-text-muted transform transition-all duration-200 shadow-sm flex items-center justify-center relative z-10 translate-x-0"
+        >
+          <!-- Sun Icon inside knob -->
+          <svg id="theme-icon-sun" class="h-3 w-3 text-amber-500 hidden" fill="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <!-- Moon Icon inside knob -->
+          <svg id="theme-icon-moon" class="h-3 w-3 text-indigo-400 hidden" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </span>
       </button>
 
       <!-- CTA -->
@@ -412,6 +432,7 @@ const searchIndexJson = JSON.stringify(searchIndex);
 
   // --- Theme Toggle ---
   const themeToggle = document.getElementById('theme-toggle');
+  const themeKnob = document.getElementById('theme-knob');
   const sunIcon = document.getElementById('theme-icon-sun');
   const moonIcon = document.getElementById('theme-icon-moon');
 
@@ -420,8 +441,27 @@ const searchIndexJson = JSON.stringify(searchIndex);
   function updateIcons() {
     if (!sunIcon || !moonIcon) return;
     const isDarkNow = document.documentElement.classList.contains('dark');
-    if (isDarkNow) { sunIcon.classList.remove('hidden'); moonIcon.classList.add('hidden'); }
-    else { sunIcon.classList.add('hidden'); moonIcon.classList.remove('hidden'); }
+    if (isDarkNow) {
+      sunIcon.classList.add('hidden');
+      moonIcon.classList.remove('hidden');
+      if (themeKnob) {
+        themeKnob.style.transform = 'translateX(22px)';
+        themeKnob.classList.replace('bg-text-muted', 'bg-bg-card');
+      }
+      if (themeToggle) {
+        themeToggle.classList.add('border-brand-accent/40');
+      }
+    } else {
+      sunIcon.classList.remove('hidden');
+      moonIcon.classList.add('hidden');
+      if (themeKnob) {
+        themeKnob.style.transform = 'translateX(0px)';
+        themeKnob.classList.replace('bg-bg-card', 'bg-text-muted');
+      }
+      if (themeToggle) {
+        themeToggle.classList.remove('border-brand-accent/40');
+      }
+    }
   }
 
   if (themeToggle) {
