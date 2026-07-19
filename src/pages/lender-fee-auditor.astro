@@ -7,15 +7,43 @@ import Footer from '../components/Footer.astro';
 const faqs = [
   {
     question: "What is a mortgage 'junk fee'?",
-    answer: "A junk fee is an inflated or unnecessary fee charged by a lender at closing. These often include document preparation fees, application fees, or separate processing and underwriting charges. While underwriters do perform work, charging both underwriting and processing fees is often double-charging for administrative tasks, and these fees can frequently be matched, reduced, or waived."
+    answer: "A junk fee is an inflated or unnecessary administrative fee charged by a lender at closing. These often include document preparation fees, application fees, courier fees, or separate processing and underwriting charges. While underwriters do perform valuable risk assessment work, charging high fees for both processing and underwriting can represent double-charging for administrative tasks. Many of these fees can be negotiated, matched, or waived entirely."
   },
   {
-    question: "Which closing costs are legally locked?",
-    answer: "Under the CFPB's TRID rules, Lender Origination Charges (Section A) and Transfer Taxes have a 0% tolerance. This means once a lender issues a Loan Estimate, they cannot increase these fees at closing unless there is a valid 'changed circumstance' (e.g., loan program change or appraisal mismatch). However, you can negotiate them *before* locking in your loan."
+    question: "Which closing costs are legally locked under TRID rules?",
+    answer: "Under the CFPB's TRID (TILA-RESPA Integrated Disclosure) rules, lender origination charges (Section A) and transfer taxes are subject to a '0% tolerance'. This means once a lender issues an official Loan Estimate, they cannot increase these fees at closing unless there is a valid 'changed circumstance' (such as a change in loan program or appraisal issues)."
   },
   {
-    question: "How do I shop for Title Insurance?",
-    answer: "Section C of your Loan Estimate lists 'Services You Can Shop For'. You do not have to use the title insurance company your lender lists. Shopping around can save you hundreds of dollars. You can get quotes from independent title companies and submit your choice to the lender."
+    question: "What is the difference between 0% tolerance and 10% tolerance fees?",
+    answer: "Lender origination charges and transfer taxes have a 0% tolerance and cannot increase at closing. Third-party services required by the lender where you cannot shop for the provider (such as lender-selected title services, appraisals, or credit reports) have a cumulative 10% tolerance, meaning their total cost cannot rise by more than 10% in aggregate. Prepaids, escrows, and services you shop for independently have no tolerance limit."
+  },
+  {
+    question: "How do I shop for independent Title Insurance and Settlement Escrow?",
+    answer: "Section C of your Loan Estimate lists 'Services You Can Shop For'. You do not have to use the title insurance company or closing escrow agent recommended by your lender. By requesting quotes from independent title companies, you can compare premiums and administrative fees, which can vary by hundreds or even thousands of dollars. Simply notify your loan officer of your selected provider before closing."
+  },
+  {
+    question: "Are underwriting fees and processing fees both negotiable?",
+    answer: "Yes. While underwriters assess loan risk and processors handle paperwork, charging high fees for both is common but highly negotiable. You can ask the lender to consolidate them into a single fee, reduce them to match national averages (typically around $950 for underwriting and $750 for processing), or waive them entirely in exchange for locking your interest rate."
+  },
+  {
+    question: "Can a lender charge an application fee or commitment fee?",
+    answer: "Many competitive lenders do not charge upfront application or commitment fees. If your Loan Estimate lists an application fee (often $200-$500), this is a prime candidate for negotiation. Ask the lender to waive it or match a competitor's loan estimate that does not charge one."
+  },
+  {
+    question: "How do loan discount points differ from lender origination fees?",
+    answer: "Discount points are optional fees paid directly to the lender at closing to buy down your interest rate (typically 1 point equals 1% of the loan amount and lowers your rate by 0.25%). Origination fees, on the other hand, are administrative charges for processing the loan and do not lower your interest rate. Make sure that any discount points listed are explicitly lowering your rate compared to a zero-point estimate."
+  },
+  {
+    question: "What should I do if a fee on my Closing Disclosure is higher than the Loan Estimate?",
+    answer: "Compare Section A, B, and C of both documents. If a 0% tolerance fee has increased, or if 10% tolerance fees have increased by more than 10% in total, ask your loan officer for a detailed explanation. If the increase is not due to a documented changed circumstance, the lender is legally required to issue a credit at closing to correct the overage."
+  },
+  {
+    question: "How does location affect average mortgage closing costs?",
+    answer: "Closing costs are highly state-dependent. Government-imposed transfer taxes and recording fees are set by state and county governments and cannot be negotiated. Title insurance rates are highly regulated in some states (like Texas and Florida, where rates are set by the state insurance commissioner) but are highly competitive and shoppable in others (like California and New York)."
+  },
+  {
+    question: "Is this fee auditor report a formal legal or financial evaluation?",
+    answer: "No. This fee auditor is an educational tool designed to help you compare your Loan Estimate line items with state-level and national averages and identify potential areas of savings. It does not provide legal representation, formal underwriting, or legal or financial advice. Always verify fees with your licensed mortgage professional or real estate attorney."
   }
 ];
 const schema = {
@@ -56,7 +84,7 @@ const schema = {
   canonicalUrl="/lender-fee-auditor"
   schemaMarkup={JSON.stringify(schema)}
 >
-  <Header activeSlug="lender-auditor" />
+  <Header activeSlug="lender-fee-auditor" />
 
   <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 space-y-10 flex-grow">
     <!-- Header Section -->
@@ -422,20 +450,7 @@ const schema = {
 </Layout>
 
 <script>
-  // State specific benchmarks database
-  const stateBenchmarks = {
-    CA: { title: 980, escrow: 650, app: 0 },
-    TX: { title: 1120, escrow: 590, app: 0 },
-    NY: { title: 1250, escrow: 720, app: 0 },
-    FL: { title: 890, escrow: 450, app: 0 },
-    IL: { title: 950, escrow: 600, app: 0 },
-    PA: { title: 920, escrow: 550, app: 0 },
-    OH: { title: 820, escrow: 480, app: 0 },
-    GA: { title: 880, escrow: 520, app: 0 },
-    NC: { title: 780, escrow: 500, app: 0 },
-    MI: { title: 850, escrow: 510, app: 0 },
-    OTHER: { title: 900, escrow: 550, app: 0 }
-  };
+  import { auditFees, type FeeInput, stateBenchmarks } from '../utils/lenderFeeAuditor';
 
   const nationalBenchmarks = {
     underwriting: 950,
@@ -471,64 +486,32 @@ const schema = {
 
   function calculateAudit() {
     const state = stateSelect.value;
-    const loanAmount = parseFloat(loanAmountInput.value) || 0;
-    
-    // Get state title insurance and settlement benchmarks
-    const stateData = stateBenchmarks[state] || stateBenchmarks['OTHER'];
     
     // Update displayed benchmarks in form label
+    const stateData = stateBenchmarks[state] || stateBenchmarks['OTHER'];
     if (benchmarkTitleVal) benchmarkTitleVal.textContent = `$${stateData.title}`;
     if (benchmarkEscrowVal) benchmarkEscrowVal.textContent = `$${stateData.escrow}`;
 
     // Get current user inputs
-    const underwriting = parseFloat(underwritingInput.value) || 0;
-    const processing = parseFloat(processingInput.value) || 0;
-    const application = parseFloat(applicationInput.value) || 0;
-    const points = parseFloat(pointsInput.value) || 0;
-    const appraisal = parseFloat(appraisalInput.value) || 0;
-    const credit = parseFloat(creditInput.value) || 0;
-    const titleLender = parseFloat(titleLenderInput.value) || 0;
-    const escrow = parseFloat(escrowInput.value) || 0;
+    const inputs: FeeInput = {
+      underwriting: parseFloat(underwritingInput.value) || 0,
+      processing: parseFloat(processingInput.value) || 0,
+      application: parseFloat(applicationInput.value) || 0,
+      points: parseFloat(pointsInput.value) || 0,
+      appraisal: parseFloat(appraisalInput.value) || 0,
+      credit: parseFloat(creditInput.value) || 0,
+      titleLender: parseFloat(titleLenderInput.value) || 0,
+      escrow: parseFloat(escrowInput.value) || 0
+    };
 
-    const inputs = [
-      { el: underwritingInput, val: underwriting, bench: nationalBenchmarks.underwriting, label: 'Underwriting' },
-      { el: processingInput, val: processing, bench: nationalBenchmarks.processing, label: 'Processing' },
-      { el: applicationInput, val: application, bench: stateData.app, label: 'Application' },
-      { el: appraisalInput, val: appraisal, bench: nationalBenchmarks.appraisal, label: 'Appraisal' },
-      { el: creditInput, val: credit, bench: nationalBenchmarks.credit, label: 'Credit Report' },
-      { el: titleLenderInput, val: titleLender, bench: stateData.title, label: 'Lender Title Policy' },
-      { el: escrowInput, val: escrow, bench: stateData.escrow, label: 'Settlement Escrow' }
-    ];
-
-    let totalJunkFees = 0;
-    let totalPotentialSavings = 0;
-    let flaggedItems = [];
-
-    inputs.forEach(item => {
-      const badge = item.el.parentElement.nextElementSibling as HTMLSpanElement;
-      const difference = item.val - item.bench;
-      totalJunkFees += item.val;
-
-      if (badge) {
-        if (difference > 0) {
-          totalPotentialSavings += difference;
-          flaggedItems.push({ label: item.label, overcharge: difference, actual: item.val, expected: item.bench });
-          
-          badge.textContent = `+$${Math.round(difference)} Over`;
-          badge.className = "audit-badge px-2 py-0.5 rounded text-4xs font-bold bg-danger/10 text-danger border border-danger/20 block";
-        } else {
-          badge.textContent = "Fair Rate";
-          badge.className = "audit-badge px-2 py-0.5 rounded text-4xs font-bold bg-success/10 text-success border border-success/20 block";
-        }
-      }
-    });
+    const auditResult = auditFees(state, inputs);
 
     // Update Scorecard Values
-    if (totalAuditedEl) totalAuditedEl.textContent = `$${Math.round(totalJunkFees).toLocaleString()}`;
-    if (potentialSavingsEl) potentialSavingsEl.textContent = `$${Math.round(totalPotentialSavings).toLocaleString()}`;
+    if (totalAuditedEl) totalAuditedEl.textContent = `$${Math.round(auditResult.totalJunkFees).toLocaleString()}`;
+    if (potentialSavingsEl) potentialSavingsEl.textContent = `$${Math.round(auditResult.totalPotentialSavings).toLocaleString()}`;
 
     if (savingsCard) {
-      if (totalPotentialSavings > 0) {
+      if (auditResult.totalPotentialSavings > 0) {
         savingsCard.className = "bg-danger/5 p-3.5 rounded-lg border border-danger/30 transition-all";
         if (potentialSavingsEl) potentialSavingsEl.className = "text-xl font-extrabold text-danger font-tabular block animate-pulse";
       } else {
@@ -537,71 +520,60 @@ const schema = {
       }
     }
 
-    // Regulatory Status Update (YMYL Security)
-    if (regulatoryBadge && riskDescription) {
-      if (totalPotentialSavings > 800) {
-        regulatoryBadge.textContent = "HIGH OVERCHARGES";
-        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-danger text-white border border-danger";
-        riskDescription.innerHTML = `⚠️ Your lender is charging <strong>$${Math.round(totalPotentialSavings)}</strong> above average closing cost benchmarks in your state. Multiple origination and settlement line items are flagged as inflated. We recommend requesting a waiver of administrative charges.`;
-      } else if (totalPotentialSavings > 200) {
-        regulatoryBadge.textContent = "MODERATE OVERCHARGES";
-        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-warning text-white border border-warning";
-        riskDescription.innerHTML = `👉 Your closing cost details show moderate markup of <strong>$${Math.round(totalPotentialSavings)}</strong>. Some administration or settlement items can be optimized. See the negotiation email below to request adjustments.`;
-      } else {
-        regulatoryBadge.textContent = "OPTIMIZED ESTIMATE";
-        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-success text-white border border-success";
-        riskDescription.innerHTML = `✅ Congratulations! Your Loan Estimate fees match or fall below our target regional benchmarks. This represents an optimized financial structure. Proceed with rate lock options.`;
+    // Update badges
+    const items = [
+      { el: underwritingInput, label: 'Underwriting' },
+      { el: processingInput, label: 'Processing' },
+      { el: applicationInput, label: 'Application' },
+      { el: appraisalInput, label: 'Appraisal' },
+      { el: creditInput, label: 'Credit Report' },
+      { el: titleLenderInput, label: 'Lender Title Policy' },
+      { el: escrowInput, label: 'Settlement Escrow' }
+    ];
+
+    items.forEach(item => {
+      const badge = item.el.parentElement.nextElementSibling as HTMLSpanElement;
+      if (badge) {
+        const flagged = auditResult.flaggedItems.find(f => f.label === item.label);
+        if (flagged) {
+          badge.textContent = `+$${Math.round(flagged.overcharge)} Over`;
+          badge.className = "audit-badge px-2 py-0.5 rounded text-4xs font-bold bg-danger/10 text-danger border border-danger/20 block";
+        } else {
+          badge.textContent = "Fair Rate";
+          badge.className = "audit-badge px-2 py-0.5 rounded text-4xs font-bold bg-success/10 text-success border border-success/20 block";
+        }
       }
-    }
-
-    // Generate Negotiation Script
-    updateNegotiationScript(flaggedItems, totalPotentialSavings);
-  }
-
-  function updateNegotiationScript(flaggedItems: { label: string; overcharge: number; actual: number; expected: number }[], totalSavings: number) {
-    if (!scriptContainer) return;
-
-    if (totalSavings === 0) {
-      scriptContainer.textContent = `Subject: Mortgage Closing Cost Clarification\n\nDear [Loan Officer Name],\n\nI have reviewed the Loan Estimate dated [Date] for our mortgage application. I notice that all administrative and closing fees are in alignment with the industry standard benchmarks.\n\nCould you please let me know if there are any promotional waivers or rate incentives available for locking in our loan today?\n\nThank you,\n[Your Name]`;
-      return;
-    }
-
-    let itemsDetails = "";
-    flaggedItems.forEach(item => {
-      itemsDetails += `- **${item.label}**: Currently quoted at $${item.actual}, while the regional benchmark average is $${item.expected} (a difference of $${Math.round(item.overcharge)}).\n`;
     });
 
-    scriptContainer.innerHTML = `Subject: Clarification on Loan Estimate Fees - Loan # [Loan Number]
+    // Regulatory Status Update
+    if (regulatoryBadge && riskDescription) {
+      regulatoryBadge.textContent = auditResult.regulatoryBadge;
+      if (auditResult.regulatoryBadge === "HIGH OVERCHARGES") {
+        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-danger text-white border border-danger";
+      } else if (auditResult.regulatoryBadge === "MODERATE OVERCHARGES") {
+        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-warning text-white border border-warning";
+      } else {
+        regulatoryBadge.className = "px-2 py-0.5 rounded text-4xs font-extrabold bg-success text-white border border-success";
+      }
+      riskDescription.innerHTML = auditResult.riskDescription;
+    }
 
-Dear [Loan Officer Name],
-
-Thank you for providing the Loan Estimate for our home purchase application. I am reviewing the closing fee outline and noticed a few administrative line items that appear to be significantly above regional benchmarks. 
-
-I would appreciate it if we could discuss the following items listed on Page 2:
-
-${itemsDetails}
-Specifically, since the Underwriting and Processing fees are administrative overhead charges, I would like to request that we combine these into a single processing fee of $${nationalBenchmarks.processing} or waive the application fee. 
-
-Furthermore, I plan to seek independent quotes for the Title and Escrow fees (Section C) to see if we can locate a more cost-effective settlement provider, unless your team is able to match those local benchmarks.
-
-I would love to lock in our loan and move forward with your company. Can we modify these origination charges to make the loan estimates more competitive?
-
-Sincerely,
-
-[Your Name]
-[Your Phone Number]`;
+    // Update script container
+    if (scriptContainer) {
+      scriptContainer.textContent = auditResult.emailScript;
+    }
   }
 
   // Bind change listeners to all elements
   stateSelect.addEventListener('change', calculateAudit);
   loanAmountInput.addEventListener('input', calculateAudit);
   
-  const inputs = [
+  const inputsList = [
     underwritingInput, processingInput, applicationInput, pointsInput,
     appraisalInput, creditInput, titleLenderInput, escrowInput
   ];
   
-  inputs.forEach(input => {
+  inputsList.forEach(input => {
     if (input) {
       input.addEventListener('input', calculateAudit);
     }
