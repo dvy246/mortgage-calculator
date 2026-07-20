@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SplineHouseViewer from '../components/Calculator/SplineHouseViewer.astro';
 
 // YMYL Safety FAQs and disclaimers
 const faqs = [
@@ -238,6 +239,9 @@ const schema = {
 
       <!-- RIGHT: Sinking Fund Scorecard & Visual Timeline (5 Cols) -->
       <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-20">
+        
+        <!-- Interactive 3D/2D House Viewer -->
+        <SplineHouseViewer />
         
         <!-- Sinking Fund Target Card -->
         <div class="rounded-xl border border-border-subtle bg-bg-card p-5 space-y-5 shadow-md">

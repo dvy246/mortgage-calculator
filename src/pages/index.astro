@@ -67,8 +67,9 @@ const payoffTools = [
   {
     name: "30-Year Homeownership CapEx Planner",
     href: "/homeownership-capex-planner",
-    description: "Model future replacement cycles for your roof, HVAC, and major systems. Calculate monthly sinking fund targets to prevent debt.",
-    icon: `<svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m0 4h3m-3 0H5m3 10v-4m0 4h3m-3 0H5m14 0V3m0 14h-3m3 0h3m-3-10V3m0 4h-3m3 0h3" /></svg>`
+    description: "Interactive 3D model & planning engine to map replacement cycles for your roof, HVAC, and systems. Set monthly sinking fund savings targets.",
+    icon: `<svg class="h-6 w-6 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m0 4h3m-3 0H5m3 10v-4m0 4h3m-3 0H5m14 0V3m0 14h-3m3 0h3m-3-10V3m0 4h-3m3 0h3" /></svg>`,
+    badge: "3D Interactive"
   }
 ];
 
@@ -503,8 +504,15 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
               class="group rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col justify-between hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             >
               <div class="space-y-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
-                  <Fragment set:html={calc.icon} />
+                <div class="flex items-center justify-between">
+                  <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
+                    <Fragment set:html={calc.icon} />
+                  </div>
+                  {calc.badge && (
+                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-accent/10 px-2 py-0.5 text-4xs font-bold text-brand-accent border border-brand-accent/20 animate-pulse">
+                      {calc.badge}
+                    </span>
+                  )}
                 </div>
                 <h3 class="font-display text-base font-semibold text-text-main group-hover:text-brand-accent transition-colors">
                   {calc.name}
@@ -531,8 +539,15 @@ const schemaMarkup = JSON.stringify(schemaMarkupObj);
               class="group rounded-xl border border-border-subtle bg-bg-card p-6 flex flex-col justify-between hover:border-border-focus hover:bg-bg-card-hover transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
             >
               <div class="space-y-3">
-                <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
-                  <Fragment set:html={calc.icon} />
+                <div class="flex items-center justify-between">
+                  <div class="flex h-11 w-11 items-center justify-center rounded-lg bg-bg-main border border-border-subtle group-hover:border-border-focus transition-colors">
+                    <Fragment set:html={calc.icon} />
+                  </div>
+                  {calc.badge && (
+                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-accent/10 px-2 py-0.5 text-4xs font-bold text-brand-accent border border-brand-accent/20 animate-pulse">
+                      {calc.badge}
+                    </span>
+                  )}
                 </div>
                 <h3 class="font-display text-base font-semibold text-text-main group-hover:text-brand-accent transition-colors">
                   {calc.name}
